@@ -1,6 +1,4 @@
 import { Redis } from "@upstash/redis";
 
-export const redis = new Redis({
-  url: process.env.KV_REST_API_URL!,
-  token: process.env.KV_REST_API_TOKEN!,
-});
+// Auto-reads UPSTASH_REDIS_REST_URL and UPSTASH_REDIS_REST_TOKEN from env
+export const redis = Redis.fromEnv();
