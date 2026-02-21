@@ -20,7 +20,7 @@ export default function HeroDemo() {
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60"></span>
                             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                         </span>
-                        <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium tracking-[0.2em] uppercase">Built for Indian Startups</p>
+                        <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium tracking-[0.2em] uppercase">Public Beta · Built for Indian Startups</p>
                     </div>
 
                     {/* Main Headline */}

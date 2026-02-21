@@ -30,11 +30,11 @@ export default function PricingPage() {
                     <div className="text-center mb-14">
                         <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground/60 mb-4">Pricing</p>
                         <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-4">
-                            Simple pricing.<br />Free during early access.
+                            Simple pricing.<br />Free during public beta.
                         </h1>
                         <p className="text-[15px] text-muted-foreground leading-relaxed max-w-lg mx-auto">
-                            We&apos;re building ClauseWala in the open. During early access, everything is free —
-                            just sign in with Google and start drafting.
+                            ClauseWala is in public beta. Everything is free &mdash;
+                            just sign in with Google and start drafting. Help us improve by testing.
                         </p>
                     </div>
 
@@ -44,7 +44,7 @@ export default function PricingPage() {
                             {/* Badge */}
                             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 text-[11px] font-semibold mb-6">
                                 <Sparkles className="w-3 h-3" />
-                                Early Access
+                                Public Beta
                             </div>
 
                             {/* Price */}
@@ -54,7 +54,7 @@ export default function PricingPage() {
                                     <span className="text-muted-foreground text-[13px]">/ forever*</span>
                                 </div>
                                 <p className="text-[12px] text-muted-foreground/60 mt-1">
-                                    *During early access period
+                                    *During public beta period
                                 </p>
                             </div>
 
@@ -85,7 +85,7 @@ export default function PricingPage() {
                         <div className="space-y-4">
                             <FaqItem
                                 question="Will ClauseWala always be free?"
-                                answer="During early access, yes — completely free with no limits. When we introduce paid plans in the future, early access users will be notified 30 days in advance and may receive special pricing."
+                                answer="During the public beta, yes — completely free with no limits. When we introduce paid plans in the future, beta users will be notified 30 days in advance and may receive special pricing."
                             />
                             <FaqItem
                                 question="Do I need to create an account?"
@@ -97,7 +97,7 @@ export default function PricingPage() {
                             />
                             <FaqItem
                                 question="How many documents can I generate?"
-                                answer="Unlimited. There are no caps on document generation during early access."
+                                answer="Unlimited. There are no caps on document generation during the public beta."
                             />
                             <FaqItem
                                 question="Is my data stored?"

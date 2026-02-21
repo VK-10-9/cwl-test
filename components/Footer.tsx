@@ -52,7 +52,7 @@ export default function Footer() {
                                 India-specific legal clauses
                             </span>
                             <span>22 templates &middot; 6 categories</span>
-                            <span>AI-powered &middot; Free during early access</span>
+                            <span>AI-powered &middot; Free during public beta</span>
                         </div>
                         <a
                             href="mailto:clausewala@vishwadev.tech"
