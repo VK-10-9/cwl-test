@@ -6,6 +6,7 @@ import {
   useState,
   useEffect,
   useCallback,
+  useRef,
   type ReactNode,
 } from "react";
 
@@ -36,16 +37,11 @@ export function useAuth() {
 const STORAGE_KEY = "cw_user";
 const GOOGLE_CLIENT_ID = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "";
 
-/** Decode a JWT payload without a library */
-function decodeJwtPayload(token: string): Record<string, string> {
-  const base64 = token.split(".")[1].replace(/-/g, "+").replace(/_/g, "/");
-  return JSON.parse(atob(base64));
-}
-
 export default function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [gsiReady, setGsiReady] = useState(false);
+  const tokenClientRef = useRef<{ requestAccessToken: () => void } | null>(null);
 
   // Hydrate from localStorage
   useEffect(() => {
@@ -73,86 +69,53 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
     document.head.appendChild(script);
   }, []);
 
-  // Initialize Google Sign-In once the script loads
+  // Initialize OAuth2 token client once GIS script loads
   useEffect(() => {
     if (!gsiReady || !GOOGLE_CLIENT_ID) return;
 
     const google = (window as unknown as { google: {
       accounts: {
-        id: {
-          initialize: (config: Record<string, unknown>) => void;
-          prompt: () => void;
-        };
-      };
-    } }).google;
-
-    if (!google?.accounts?.id) return;
-
-    google.accounts.id.initialize({
-      client_id: GOOGLE_CLIENT_ID,
-      callback: (response: { credential: string }) => {
-        try {
-          const payload = decodeJwtPayload(response.credential);
-          const userData: User = {
-            name: payload.name || "",
-            email: payload.email || "",
-            picture: payload.picture || "",
-          };
-          setUser(userData);
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-        } catch {
-          console.error("Failed to decode Google credential");
-        }
-      },
-      auto_select: false,
-      itp_support: true,
-    });
-  }, [gsiReady]);
-
-  const login = useCallback(() => {
-    if (!gsiReady || !GOOGLE_CLIENT_ID) return;
-
-    const google = (window as unknown as { google: {
-      accounts: {
-        id: { prompt: (cb?: (notification: { isNotDisplayed: () => boolean }) => void) => void };
         oauth2: {
           initTokenClient: (config: Record<string, unknown>) => { requestAccessToken: () => void };
         };
       };
     } }).google;
 
-    if (!google?.accounts) return;
+    if (!google?.accounts?.oauth2) return;
 
-    // Try One Tap first; if it can't show, fall back to OAuth popup
-    google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed()) {
-        // Fallback: use OAuth token client (popup)
-        const client = google.accounts.oauth2.initTokenClient({
-          client_id: GOOGLE_CLIENT_ID,
-          scope: "openid email profile",
-          callback: async (tokenResponse: { access_token: string }) => {
-            try {
-              const res = await fetch(
-                "https://www.googleapis.com/oauth2/v3/userinfo",
-                { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
-              );
-              const profile = await res.json();
-              const userData: User = {
-                name: profile.name || "",
-                email: profile.email || "",
-                picture: profile.picture || "",
-              };
-              setUser(userData);
-              localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
-            } catch {
-              console.error("Failed to fetch Google profile");
-            }
-          },
-        });
-        client.requestAccessToken();
-      }
+    tokenClientRef.current = google.accounts.oauth2.initTokenClient({
+      client_id: GOOGLE_CLIENT_ID,
+      scope: "openid email profile",
+      callback: async (tokenResponse: { access_token?: string; error?: string }) => {
+        if (tokenResponse.error || !tokenResponse.access_token) {
+          console.error("Google OAuth error:", tokenResponse.error);
+          return;
+        }
+        try {
+          const res = await fetch(
+            "https://www.googleapis.com/oauth2/v3/userinfo",
+            { headers: { Authorization: `Bearer ${tokenResponse.access_token}` } }
+          );
+          const profile = await res.json();
+          const userData: User = {
+            name: profile.name || "",
+            email: profile.email || "",
+            picture: profile.picture || "",
+          };
+          setUser(userData);
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+        } catch {
+          console.error("Failed to fetch Google profile");
+        }
+      },
     });
   }, [gsiReady]);
+
+  const login = useCallback(() => {
+    if (tokenClientRef.current) {
+      tokenClientRef.current.requestAccessToken();
+    }
+  }, []);
 
   const logout = useCallback(() => {
     setUser(null);
