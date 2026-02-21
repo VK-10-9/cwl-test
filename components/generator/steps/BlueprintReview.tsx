@@ -346,7 +346,7 @@ function ClauseSelectionStep({
                                             {isExpanded ? "HIDE DRAFT" : "VIEW DRAFT"}
                                         </button>
                                         {isExpanded && (
-                                            <div className="mt-2 p-3 bg-black/20 rounded border border-border/30 text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
+                                            <div className="mt-2 p-3 bg-secondary rounded border border-border text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
                                                 {clause.content}
                                             </div>
                                         )}

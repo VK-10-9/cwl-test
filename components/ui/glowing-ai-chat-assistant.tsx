@@ -73,7 +73,7 @@ const FloatingAiAssistant = () => {
                 </div>
 
                 {/* Glowing animation */}
-                <div className="absolute inset-0 rounded-full animate-ping opacity-20 bg-indigo-500"></div>
+                <div className="absolute inset-0 rounded-full animate-ping opacity-20 bg-primary"></div>
             </button>
 
             {/* Chat Interface */}

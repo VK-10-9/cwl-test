@@ -6,7 +6,7 @@ import { LiquidButton } from '@/components/ui/liquid-glass-button';
 
 export default function HeroDemo() {
     return (
-        <div className="relative flex w-full min-h-screen flex-col items-center justify-center overflow-hidden bg-black selection:bg-indigo-500/30">
+        <div className="relative flex w-full min-h-screen flex-col items-center justify-center overflow-hidden bg-background selection:bg-primary/20">
             <WebGLShader />
 
             {/* Content Container */}
@@ -14,36 +14,36 @@ export default function HeroDemo() {
 
                 <main className="relative py-20 flex flex-col items-center text-center">
                     {/* Status Badge */}
-                    <div className="mb-8 flex items-center justify-center gap-3 bg-white/5 backdrop-blur-xl px-5 py-2.5 rounded-full border border-white/10 shadow-2xl animate-fade-in hover:bg-white/10 transition-colors cursor-default select-none">
-                        <span className="relative flex h-3 w-3 items-center justify-center">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-indigo-500 opacity-75"></span>
-                            <span className="relative inline-flex h-2 w-2 rounded-full bg-indigo-500"></span>
+                    <div className="mb-8 flex items-center justify-center gap-3 bg-card px-5 py-2.5 rounded-full border border-border animate-fade-in cursor-default select-none">
+                        <span className="relative flex h-2.5 w-2.5 items-center justify-center">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
+                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span>
                         </span>
-                        <p className="text-[10px] md:text-xs text-indigo-200 font-bold tracking-widest uppercase">v1.0 Public Beta</p>
+                        <p className="text-[10px] md:text-xs text-primary font-semibold tracking-widest uppercase">v1.0 Public Beta</p>
                     </div>
 
                     {/* Main Headline */}
-                    <h1 className="mb-6 text-white text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight drop-shadow-2xl">
+                    <h1 className="mb-6 text-foreground text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
                         Legal Drafting <br />
-                        <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-purple-300 to-cyan-300 animate-pulse-slow">
+                        <span className="text-primary">
                             Reimagined
                         </span>
                     </h1>
 
                     {/* Subtitle */}
-                    <p className="text-slate-300/80 text-lg md:text-xl max-w-2xl mb-12 font-light leading-relaxed drop-shadow-md mx-auto">
+                    <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mb-12 font-light leading-relaxed mx-auto">
                         Generate complex legal documents in seconds from a simple conversation.
                         <br className="hidden md:block" />
                         Powered by advanced AI for precision and speed.
                     </p>
 
                     {/* CTA Button */}
-                    <div className="flex justify-center transform hover:scale-105 transition-transform duration-300">
+                    <div className="flex justify-center">
                         <Link href="/generate">
                             <LiquidButton
-                                className="text-white border-white/20 bg-white/5 hover:bg-white/10 px-8 py-6 text-lg"
+                                className="text-primary-foreground bg-primary hover:bg-primary/90 px-8 py-6 text-lg"
                                 size={'xl'}
-                                variant="ghost"
+                                variant="default"
                             >
                                 Start Drafting Now
                             </LiquidButton>
@@ -51,8 +51,8 @@ export default function HeroDemo() {
                     </div>
 
                     {/* Footer Tech Stack/Credits */}
-                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-8 text-[10px] md:text-xs text-white/20 font-mono uppercase tracking-[0.2em] pointer-events-none">
-                        <span>Next.js 14</span>
+                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-8 text-[10px] md:text-xs text-muted-foreground/30 font-mono uppercase tracking-[0.2em] pointer-events-none">
+                        <span>Next.js 16</span>
                         <span>•</span>
                         <span>Three.js</span>
                         <span>•</span>

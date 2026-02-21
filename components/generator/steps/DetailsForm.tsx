@@ -195,7 +195,7 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto glass-card animate-fade-in shadow-xl border-white/10" suppressHydrationWarning>
+        <Card className="w-full max-w-2xl mx-auto animate-fade-in bg-card border-border shadow-lg" suppressHydrationWarning>
             <CardHeader className="pb-6">
                 <div className="flex items-center gap-3 mb-1">
                     <div className="h-10 w-10 rounded-lg bg-primary/15 border border-primary/20 flex items-center justify-center">

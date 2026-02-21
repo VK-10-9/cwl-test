@@ -49,11 +49,11 @@ function ThinkingBlock({ content, isActive }: { content: string; isActive: boole
         <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="bg-purple-500/5 border border-purple-500/20 rounded-sm overflow-hidden"
+            className="bg-muted/50 border border-border rounded-sm overflow-hidden"
         >
             <button
                 onClick={() => setExpanded(!expanded)}
-                className="w-full flex items-center gap-2 p-2 text-[10px] font-mono text-purple-400 hover:bg-purple-500/10 transition-colors"
+                className="w-full flex items-center gap-2 p-2 text-[10px] font-mono text-muted-foreground hover:bg-muted transition-colors"
             >
                 <Brain className={`h-3 w-3 ${isActive ? "animate-pulse" : ""}`} />
                 <span>{isActive ? "THINKING..." : "REASONING"}</span>
@@ -70,7 +70,7 @@ function ThinkingBlock({ content, isActive }: { content: string; isActive: boole
                         initial={{ opacity: 0, height: 0 }}
                         animate={{ opacity: 1, height: "auto" }}
                         exit={{ opacity: 0, height: 0 }}
-                        className="px-3 pb-2 text-[11px] font-mono text-purple-300/80 leading-relaxed border-t border-purple-500/10"
+                        className="px-3 pb-2 text-[11px] font-mono text-muted-foreground leading-relaxed border-t border-border"
                     >
                         {content}
                     </motion.div>
@@ -114,15 +114,15 @@ function AnalysisBlock({ content, isActive }: { content: string; isActive: boole
         <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
-            className="bg-cyan-500/5 border border-cyan-500/20 rounded-sm p-2"
+            className="bg-muted/50 border border-border rounded-sm p-2"
         >
-            <div className="flex items-center gap-2 text-[10px] font-mono text-cyan-400 mb-1">
+            <div className="flex items-center gap-2 text-[10px] font-mono text-primary mb-1">
                 <Search className={`h-3 w-3 ${isActive ? "animate-pulse" : ""}`} />
                 <span>{isActive ? "ANALYZING..." : "ANALYSIS"}</span>
                 {isActive && <Loader2 className="h-3 w-3 ml-auto animate-spin" />}
             </div>
             {content && (
-                <p className="text-[11px] font-mono text-cyan-300/70 leading-relaxed">
+                <p className="text-[11px] font-mono text-muted-foreground leading-relaxed">
                     {content}
                 </p>
             )}
@@ -273,7 +273,7 @@ function ChatInterface({
             </div>
 
             {/* Messages Area */}
-            <ScrollArea className="flex-1 p-4 bg-black/20" ref={scrollRef}>
+            <ScrollArea className="flex-1 p-4" ref={scrollRef}>
                 <div className="space-y-4">
                     {/* Welcome Message */}
                     {messages.length === 0 && (
@@ -363,7 +363,7 @@ function ChatInterface({
                         value={input}
                         onChange={handleInputChange}
                         placeholder="Ask about clauses, risks, or request changes..."
-                        className="pl-6 pr-10 bg-background/50 border-white/5 focus:border-primary/50 font-mono text-xs h-9 rounded-sm"
+                        className="pl-6 pr-10 bg-secondary border-border focus:border-primary/50 font-mono text-xs h-9 rounded-sm"
                     />
                     <Button
                         type="submit"
@@ -553,7 +553,7 @@ export default function BlueprintChat({
                         isOpen ? "bg-destructive hover:bg-destructive/90 rotate-90" : "bg-primary hover:bg-primary/90"
                     }`}
                 >
-                    {isOpen ? <X className="h-6 w-6 text-white" /> : <MessageSquare className="h-6 w-6 text-white" />}
+                    {isOpen ? <X className="h-6 w-6 text-primary-foreground" /> : <MessageSquare className="h-6 w-6 text-primary-foreground" />}
                 </Button>
             </motion.div>
 
@@ -565,7 +565,7 @@ export default function BlueprintChat({
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: 20, scale: 0.95 }}
                         transition={{ duration: 0.2 }}
-                        className="fixed bottom-24 right-6 w-[400px] h-[600px] bg-card/95 backdrop-blur-xl border border-border/50 rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden ring-1 ring-white/10"
+                        className="fixed bottom-24 right-6 w-[400px] h-[600px] bg-card border border-border rounded-lg shadow-2xl z-50 flex flex-col overflow-hidden"
                     >
                         <ChatInterface {...chatProps} />
                     </motion.div>

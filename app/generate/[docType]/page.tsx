@@ -14,18 +14,12 @@ export default async function GeneratePage({ params }: GeneratePageProps) {
     const icon = DOCUMENT_TYPE_ICONS[docType as DocumentType] || "📄";
 
     return (
-        <div className="min-h-screen bg-background relative overflow-hidden">
-            {/* Ambient Background */}
-            <div className="fixed inset-0 pointer-events-none z-0 opacity-20">
-                <div className="absolute top-[-20%] right-[-10%] w-[60%] h-[60%] bg-indigo-900/40 rounded-full blur-[150px]" />
-                <div className="absolute bottom-[-20%] left-[-10%] w-[60%] h-[60%] bg-cyan-900/30 rounded-full blur-[150px]" />
-            </div>
-
+        <div className="min-h-screen bg-background relative">
             <Navbar />
 
             <main className="relative z-10 pt-24 pb-20 container mx-auto px-4">
                 <div className="text-center mb-8 animate-fade-in">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-primary/10 border border-primary/20 text-xs font-mono text-primary mb-4">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-mono text-primary mb-4">
                         <span>{icon}</span>
                         <span className="uppercase tracking-wider">{docType.replace("-", " ")}</span>
                     </div>

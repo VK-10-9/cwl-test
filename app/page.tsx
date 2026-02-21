@@ -16,7 +16,7 @@ export default function LandingPage() {
       <HeroDemo />
 
       {/* Features Section */}
-      <div id="features" className="relative z-10 w-full bg-gradient-to-b from-transparent via-background/90 to-background backdrop-blur-sm pt-20 pb-32">
+      <div id="features" className="relative z-10 w-full bg-background pt-20 pb-32">
         <Features />
       </div>
 

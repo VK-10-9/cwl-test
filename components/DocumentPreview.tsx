@@ -27,12 +27,12 @@ export default function DocumentPreview({ fullText, onExport, isExporting }: Doc
     <div className="flex flex-col h-full animate-fade-in space-y-8 relative z-10 w-full max-w-4xl mx-auto">
 
       {/* Toolbar */}
-      <div className="flex justify-between items-center glass-panel p-4 rounded-xl sticky top-24 z-20 backdrop-blur-xl bg-black/60 border border-white/10 shadow-lg shadow-black/40">
+      <div className="flex justify-between items-center bg-card p-4 rounded-xl sticky top-24 z-20 border border-border shadow-md">
         <div className="flex gap-4">
           <LiquidButton
             onClick={() => onExport("pdf")}
             disabled={isExporting}
-            className="text-white border-white/20 hover:bg-white/10 px-6 py-2 text-sm"
+            className="text-foreground border-border hover:bg-accent px-6 py-2 text-sm"
             size={'lg'}
             variant="ghost"
           >
@@ -41,7 +41,7 @@ export default function DocumentPreview({ fullText, onExport, isExporting }: Doc
           <LiquidButton
             onClick={() => onExport("docx")}
             disabled={isExporting}
-            className="text-white border-white/20 hover:bg-white/10 px-6 py-2 text-sm"
+            className="text-foreground border-border hover:bg-accent px-6 py-2 text-sm"
             size={'lg'}
             variant="ghost"
           >
@@ -51,7 +51,7 @@ export default function DocumentPreview({ fullText, onExport, isExporting }: Doc
 
         <button
           onClick={handleCopy}
-          className="text-slate-400 hover:text-white transition-colors text-sm font-medium flex items-center gap-2 px-4 py-2 hover:bg-white/5 rounded-lg"
+          className="text-muted-foreground hover:text-foreground transition-colors text-sm font-medium flex items-center gap-2 px-4 py-2 hover:bg-accent rounded-lg"
         >
           {copied ? "Copied!" : "Copy Text"}
         </button>
