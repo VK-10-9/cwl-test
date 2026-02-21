@@ -16,7 +16,7 @@ const features = [
     "AI chat iteration & refinement",
     "PDF & DOCX export",
     "India-specific legal clauses",
-    "No sign-up required",
+    "Free Google sign-in",
     "Unlimited documents",
 ];
 
@@ -34,7 +34,7 @@ export default function PricingPage() {
                         </h1>
                         <p className="text-[15px] text-muted-foreground leading-relaxed max-w-lg mx-auto">
                             We&apos;re building ClauseWala in the open. During early access, everything is free —
-                            no credit card, no sign-up, no limits.
+                            just sign in with Google and start drafting.
                         </p>
                     </div>
 
@@ -70,7 +70,7 @@ export default function PricingPage() {
 
                             {/* CTA */}
                             <Link
-                                href="/generate"
+                                href="/signin"
                                 className="block w-full text-center px-6 py-3 rounded-lg bg-foreground text-background font-medium text-[14px] hover:bg-foreground/85 transition-all duration-200"
                             >
                                 Start Drafting — Free
@@ -89,7 +89,7 @@ export default function PricingPage() {
                             />
                             <FaqItem
                                 question="Do I need to create an account?"
-                                answer="No. You can start drafting documents immediately — no sign-up, no email required. Just pick a template and go."
+                                answer="Just sign in with your Google account — it takes 2 seconds. No credit card, no forms, no email verification. One click and you're in."
                             />
                             <FaqItem
                                 question="Are generated documents legally valid?"

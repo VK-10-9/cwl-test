@@ -41,7 +41,7 @@ export default function HeroDemo() {
 
                     {/* CTA Buttons */}
                     <div className="flex items-center gap-4 animate-fade-in-up" style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}>
-                        <Link href="/generate">
+                        <Link href="/signin">
                             <LiquidButton
                                 className="text-primary-foreground bg-primary hover:bg-primary/90 px-8 py-5 text-[15px] font-medium"
                                 size={'xl'}

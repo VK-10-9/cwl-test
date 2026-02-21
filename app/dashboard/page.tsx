@@ -2,8 +2,6 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import { useDocumentStore, type SavedDocument } from "@/components/DocumentStoreProvider";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
@@ -97,24 +95,10 @@ function DocumentCard({ doc, onDelete }: { doc: SavedDocument; onDelete: (id: st
 }
 
 export default function DashboardPage() {
-  const { user, isLoading } = useAuth();
+  const { user } = useAuth();
   const { documents, deleteDocument } = useDocumentStore();
-  const router = useRouter();
 
-  // Redirect to sign-in if not authenticated
-  useEffect(() => {
-    if (!isLoading && !user) {
-      router.replace("/signin");
-    }
-  }, [user, isLoading, router]);
-
-  if (isLoading || !user) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-8 h-8 rounded-full border-2 border-foreground/20 border-t-foreground animate-spin" />
-      </div>
-    );
-  }
+  if (!user) return null;
 
   const stats = {
     total: documents.length,

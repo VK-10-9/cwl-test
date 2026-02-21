@@ -122,9 +122,9 @@ export default function AboutPage() {
                     {/* CTA */}
                     <div className="text-center p-8 rounded-xl border border-border bg-card">
                         <h2 className="text-lg font-semibold tracking-tight mb-2">Ready to draft your first contract?</h2>
-                        <p className="text-[13px] text-muted-foreground mb-5">Pick a template and get started — no sign-up required.</p>
+                        <p className="text-[13px] text-muted-foreground mb-5">Pick a template and get started — sign in to begin.</p>
                         <Link
-                            href="/generate"
+                            href="/signin"
                             className="inline-flex px-6 py-2.5 rounded-full bg-foreground text-background font-medium text-[13px] hover:bg-foreground/85 transition-all duration-200 shadow-sm"
                         >
                             Start Drafting →
