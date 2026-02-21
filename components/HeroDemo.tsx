@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { WebGLShader } from "@/components/ui/web-gl-shader";
 import { LiquidButton } from '@/components/ui/liquid-glass-button';
-import { ArrowDown } from "lucide-react";
+import { ArrowDown, Shield } from "lucide-react";
 
 export default function HeroDemo() {
     return (
@@ -20,13 +20,13 @@ export default function HeroDemo() {
                             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60"></span>
                             <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                         </span>
-                        <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium tracking-[0.2em] uppercase">Contracts. Simplified.</p>
+                        <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium tracking-[0.2em] uppercase">Built for Indian Startups</p>
                     </div>
 
                     {/* Main Headline */}
                     <h1 className="mb-6 text-foreground animate-fade-in-up" style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}>
                         <span className="block text-[clamp(2.5rem,7.5vw,5.5rem)] font-extrabold tracking-[-0.04em] leading-[0.9]">
-                            Draft Contracts
+                            Draft Legal Docs
                         </span>
                         <span className="block text-[clamp(2.5rem,7.5vw,5.5rem)] font-extrabold tracking-[-0.04em] leading-[0.9] text-gradient-subtle mt-1">
                             Not Headaches
@@ -34,10 +34,22 @@ export default function HeroDemo() {
                     </h1>
 
                     {/* Subtitle */}
-                    <p className="text-muted-foreground text-base md:text-[17px] max-w-lg mb-12 font-normal leading-relaxed mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
-                        ClauseWala turns plain English into legally sound Indian contracts.<br className="hidden sm:block" />
-                        NDAs, MOUs, letters &mdash; drafted, reviewed, and exported in minutes.
+                    <p className="text-muted-foreground text-base md:text-[17px] max-w-lg mb-8 font-normal leading-relaxed mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
+                        Contracts, letters, agreements &mdash; compliant with Indian law.<br className="hidden sm:block" />
+                        AI-drafted, clause-by-clause reviewed, exported in minutes.
                     </p>
+
+                    {/* Trust Line */}
+                    <div className="flex items-center gap-4 mb-10 animate-fade-in-up text-[12px] text-muted-foreground/50" style={{ animationDelay: "0.25s", animationFillMode: "backwards" }}>
+                        <span className="flex items-center gap-1.5">
+                            <Shield className="w-3.5 h-3.5" />
+                            India-specific clauses
+                        </span>
+                        <span className="w-px h-3 bg-border" />
+                        <span>22 templates</span>
+                        <span className="w-px h-3 bg-border" />
+                        <span>100% free</span>
+                    </div>
 
                     {/* CTA Buttons */}
                     <div className="flex items-center gap-4 animate-fade-in-up" style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}>
@@ -47,7 +59,7 @@ export default function HeroDemo() {
                                 size={'xl'}
                                 variant="default"
                             >
-                                Draft Your First Contract
+                                Start Drafting &mdash; It&apos;s Free
                             </LiquidButton>
                         </Link>
                         <Link href="/#features" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors font-medium px-4 py-2.5">

@@ -11,7 +11,7 @@ import {
   Handshake, Store,
   Flag, Building2,
   Briefcase, FileText, XCircle, Award, GraduationCap,
-  Brain, Users, ScrollText,
+  Brain, Users, ScrollText, Flame,
 } from "lucide-react";
 
 const icons: Record<string, LucideIcon> = {
@@ -54,10 +54,20 @@ const categoryIcons: Record<string, LucideIcon> = {
   "compliance": Flag,
 };
 
+// Most-used templates get a "Popular" badge
+const POPULAR_TEMPLATES: Set<DocumentType> = new Set([
+  "nda",
+  "offer-letter",
+  "co-founder-agreement",
+  "mou",
+  "appointment-letter",
+  "legal-notice",
+]);
+
 export default function DocumentSelector() {
   return (
     <div className="space-y-12 animate-fade-in">
-      {DOCUMENT_CATEGORIES.map((category) => {
+      {DOCUMENT_CATEGORIES.map((category, catIdx) => {
         const CatIcon = categoryIcons[category.key] || BookText;
 
         return (
@@ -73,20 +83,36 @@ export default function DocumentSelector() {
               </div>
             </div>
 
+            {/* Hint for first category */}
+            {catIdx === 0 && (
+              <p className="text-[11px] text-muted-foreground/50 mb-3 ml-11 italic">
+                Most startups start with an NDA or Offer Letter
+              </p>
+            )}
+
             {/* Document Cards */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
               {category.types.map((type: DocumentType) => {
                 const Icon = icons[type] || BookText;
+                const isPopular = POPULAR_TEMPLATES.has(type);
 
                 return (
                   <Link key={type} href={`/generate/${type}`} className="group block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl">
-                    <Card className="h-full flex flex-col bg-card border-border hover:border-foreground/12 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-0.5">
+                    <Card className="h-full flex flex-col bg-card border-border hover:border-foreground/12 transition-all duration-300 hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-0.5 hover:scale-[1.01]">
                       <CardHeader className="pb-2">
                         <div className="flex items-center justify-between mb-3">
-                          <div className="w-9 h-9 rounded-lg bg-foreground/[0.04] flex items-center justify-center text-foreground/70 group-hover:bg-foreground/[0.08] group-hover:text-foreground transition-all duration-300 border border-border group-hover:border-foreground/15">
+                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center transition-all duration-300 border ${isPopular ? "bg-foreground/[0.07] text-foreground border-foreground/15 group-hover:bg-foreground/[0.12]" : "bg-foreground/[0.04] text-foreground/70 border-border group-hover:bg-foreground/[0.08] group-hover:text-foreground group-hover:border-foreground/15"}`}>
                             <Icon size={18} />
                           </div>
-                          <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all duration-300 -translate-x-1 group-hover:translate-x-0" />
+                          <div className="flex items-center gap-2">
+                            {isPopular && (
+                              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[10px] font-semibold">
+                                <Flame className="w-2.5 h-2.5" />
+                                Popular
+                              </span>
+                            )}
+                            <ArrowUpRight className="w-3.5 h-3.5 text-muted-foreground/0 group-hover:text-muted-foreground transition-all duration-300 -translate-x-1 group-hover:translate-x-0" />
+                          </div>
                         </div>
                         <CardTitle className="text-[15px] font-semibold tracking-tight group-hover:text-foreground transition-colors">
                           {DOCUMENT_TYPE_LABELS[type] || type}
