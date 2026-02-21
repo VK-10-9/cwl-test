@@ -2,8 +2,9 @@
 
 import { useAuth } from "@/components/AuthProvider";
 import Image from "next/image";
+import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
-import { LogOut, User } from "lucide-react";
+import { LogOut, User, LayoutDashboard } from "lucide-react";
 
 export default function UserMenu() {
   const { user, isLoading, login, logout } = useAuth();
@@ -73,6 +74,14 @@ export default function UserMenu() {
             </p>
           </div>
           <div className="p-1.5">
+            <Link
+              href="/dashboard"
+              onClick={() => setOpen(false)}
+              className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors"
+            >
+              <LayoutDashboard className="w-3.5 h-3.5" />
+              Dashboard
+            </Link>
             <button
               onClick={() => { logout(); setOpen(false); }}
               className="w-full flex items-center gap-2.5 px-3 py-2 text-[13px] text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-lg transition-colors cursor-pointer"

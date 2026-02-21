@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
+import DocumentStoreProvider from "@/components/DocumentStoreProvider";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://clausewala.com"),
@@ -72,7 +73,9 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          {children}
+          <DocumentStoreProvider>
+            {children}
+          </DocumentStoreProvider>
         </AuthProvider>
       </body>
     </html>

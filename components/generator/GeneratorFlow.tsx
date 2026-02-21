@@ -1,11 +1,13 @@
 "use client";
 
-import { useReducer, useEffect } from "react";
+import { useReducer, useEffect, useRef } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import DetailsForm from "./steps/DetailsForm";
 import BlueprintReview from "./steps/BlueprintReview";
 import DocumentEditor from "./steps/DocumentEditor";
 import type { DocumentType, Blueprint, WorkflowStage } from "@/types";
+import { DOCUMENT_TYPE_LABELS } from "@/types";
+import { useDocumentStore } from "@/components/DocumentStoreProvider";
 import { CheckCircle2, ClipboardList, Search, FileCheck, X } from "lucide-react";
 
 interface GeneratorFlowProps {
@@ -77,6 +79,8 @@ function reducer(state: State, action: Action): State {
 
 export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
+    const { saveDocument, updateDocument } = useDocumentStore();
+    const docIdRef = useRef<string | null>(null);
 
     // Hydrate state from localStorage on mount
     useEffect(() => {
@@ -160,6 +164,18 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                 type: "SET_BLUEPRINT",
                 payload: { blueprint, formData: data }
             });
+
+            // Save to document store
+            const title = blueprint.title || DOCUMENT_TYPE_LABELS[docType] || docType;
+            const id = saveDocument({
+                type: docType,
+                title,
+                status: "draft",
+                formData: data,
+                blueprint,
+                fullText: null,
+            });
+            docIdRef.current = id;
         } catch (err: unknown) {
             dispatch({ type: "SET_ERROR", payload: err instanceof Error ? err.message : "An unexpected error occurred" });
         }
@@ -185,6 +201,11 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
             const json = await res.json();
             const text = json.fullText ?? json.content ?? JSON.stringify(json);
             dispatch({ type: "SET_DOCUMENT", payload: text });
+
+            // Update document store
+            if (docIdRef.current) {
+                updateDocument(docIdRef.current, { fullText: text, status: "completed" });
+            }
         } catch (err: unknown) {
             dispatch({ type: "SET_ERROR", payload: err instanceof Error ? err.message : "An unexpected error occurred" });
         }
@@ -220,6 +241,11 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
             document.body.removeChild(a);
 
             dispatch({ type: "END_EXPORT" });
+
+            // Update document store
+            if (docIdRef.current) {
+                updateDocument(docIdRef.current, { status: "exported" });
+            }
         } catch (err: unknown) {
             dispatch({ type: "SET_ERROR", payload: err instanceof Error ? err.message : "An unexpected error occurred" });
         }

@@ -10,10 +10,10 @@ export default function SignInPage() {
   const { user, isLoading, login } = useAuth();
   const router = useRouter();
 
-  // If already signed in, redirect to /generate
+  // If already signed in, redirect to /dashboard
   useEffect(() => {
     if (!isLoading && user) {
-      router.replace("/generate");
+      router.replace("/dashboard");
     }
   }, [user, isLoading, router]);
 
