@@ -91,7 +91,7 @@ function renderMessageContent(content: string, appliedFields: Set<string>, onApp
                             Suggested Fields ({Object.keys(fields).length})
                         </span>
                         {isApplied ? (
-                            <span className="text-[10px] font-mono text-green-400 flex items-center gap-1">
+                            <span className="text-[10px] font-mono text-green-600 flex items-center gap-1">
                                 <CheckCircle2 className="h-3 w-3" /> Applied
                             </span>
                         ) : (
@@ -307,7 +307,7 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                 }`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 bg-primary/5 border-b border-border/50 shrink-0">
+                <div className="flex items-center justify-between px-4 py-3 bg-primary/5 border-b border-border shrink-0">
                     <div className="flex items-center gap-2.5">
                         <div className="h-8 w-8 rounded-lg bg-primary/15 border border-primary/20 flex items-center justify-center">
                             <Bot className="h-4 w-4 text-primary" />
@@ -360,7 +360,7 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                                     <button
                                         key={chip}
                                         onClick={() => handleChipClick(chip)}
-                                        className="px-3 py-1.5 text-[11px] font-mono bg-muted/40 border border-border/50 rounded-full hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
+                                        className="px-3 py-1.5 text-[11px] font-mono bg-muted border border-border rounded-full hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
                                     >
                                         {chip}
                                     </button>
@@ -381,7 +381,7 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                                 <div className={`max-w-[85%] space-y-1 ${
                                     msg.role === "user"
                                         ? "bg-primary/10 border border-primary/20 rounded-xl rounded-br-sm px-3 py-2"
-                                        : "bg-card/80 border border-border/40 rounded-xl rounded-bl-sm px-3 py-2"
+                                        : "bg-card border border-border rounded-xl rounded-bl-sm px-3 py-2"
                                 }`}>
                                     {msg.role === "assistant" && msg.content ? (
                                         renderMessageContent(msg.content, appliedFields, handleApplyFields)
@@ -402,7 +402,7 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                 {/* Input */}
                 <form
                     onSubmit={handleSubmit}
-                    className="flex items-center gap-2 p-3 border-t border-border/50 bg-card/50 shrink-0"
+                    className="flex items-center gap-2 p-3 border-t border-border bg-muted/50 shrink-0"
                 >
                     <input
                         ref={inputRef}

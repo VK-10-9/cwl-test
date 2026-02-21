@@ -91,8 +91,8 @@ function ToolCallBlock({ tool, input, isActive }: { tool: string; input: string;
         >
             <div className={`flex items-center gap-1.5 px-2 py-1 rounded-sm text-[10px] font-mono border ${
                 isActive
-                    ? "bg-blue-500/10 text-blue-400 border-blue-500/20 animate-pulse"
-                    : "bg-green-500/10 text-green-400 border-green-500/20"
+                    ? "bg-blue-50 text-blue-600 border-blue-200 animate-pulse"
+                    : "bg-green-50 text-green-600 border-green-200"
             }`}>
                 {isActive ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
                 <ToolIcon tool={tool} />
@@ -190,7 +190,7 @@ function AgentMessage({ sections }: { sections: AgentMessageSection[] }) {
                                 animate={{ opacity: 1 }}
                                 className="flex items-center gap-2 text-xs font-mono"
                             >
-                                <span className="flex items-center gap-1.5 bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-sm">
+                                <span className="flex items-center gap-1.5 bg-green-50 text-green-600 border border-green-200 px-2 py-1 rounded-sm">
                                     <Check className="w-3 h-3" />
                                     Blueprint updated
                                 </span>
@@ -340,7 +340,7 @@ function ChatInterface({
 
                     {/* Error Display */}
                     {error && (
-                        <div className="bg-red-500/10 border border-red-500/30 rounded-sm p-3 text-xs font-mono text-red-400">
+                        <div className="bg-red-50 border border-red-200 rounded-sm p-3 text-xs font-mono text-red-600">
                             <span className="font-bold">ERR:</span> {error.message || "Something went wrong. Please try again."}
                         </div>
                     )}

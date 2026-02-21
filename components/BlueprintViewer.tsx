@@ -11,9 +11,9 @@ interface BlueprintViewerProps {
 }
 
 const riskColors: Record<RiskLevel, string> = {
-  low: "bg-emerald-500/20 text-emerald-300 border-emerald-500/30",
-  medium: "bg-amber-500/20 text-amber-300 border-amber-500/30",
-  high: "bg-rose-500/20 text-rose-300 border-rose-500/30",
+  low: "bg-green-50 text-green-700 border-green-200",
+  medium: "bg-amber-50 text-amber-700 border-amber-200",
+  high: "bg-red-50 text-red-700 border-red-200",
 };
 
 export default function BlueprintViewer({ blueprint, onToggleClause, onApprove, isLoading }: BlueprintViewerProps) {

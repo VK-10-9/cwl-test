@@ -37,7 +37,7 @@ export function FormField({ field, register, control, errors, prefix = "" }: For
             </Label>
 
             {field.description && !['checkbox'].includes(field.type) && (
-                <div className="text-xs text-muted-foreground/80 bg-muted/30 p-2.5 rounded-md border border-border/40 flex gap-2">
+                <div className="text-xs text-muted-foreground/80 bg-muted/50 p-2.5 rounded-md border border-border flex gap-2">
                     {field.description}
                 </div>
             )}

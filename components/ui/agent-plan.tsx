@@ -30,10 +30,10 @@ function StatusIcon({ status, size = "md" }: { status: AgentTaskStatus; size?: "
 
 function statusColor(status: AgentTaskStatus): string {
     switch (status) {
-        case "completed": return "bg-green-500/10 text-green-400 border-green-500/20";
-        case "in-progress": return "bg-blue-500/10 text-blue-400 border-blue-500/20";
-        case "failed": return "bg-red-500/10 text-red-400 border-red-500/20";
-        default: return "bg-muted text-muted-foreground border-border/50";
+        case "completed": return "bg-green-50 text-green-600 border-green-200";
+        case "in-progress": return "bg-blue-50 text-blue-600 border-blue-200";
+        case "failed": return "bg-red-50 text-red-600 border-red-200";
+        default: return "bg-muted text-muted-foreground border-border";
     }
 }
 
@@ -172,7 +172,7 @@ function SubtaskRow({ subtask, taskId, expandedSubtasks, toggleSubtaskExpansion 
                     {subtask.title}
                 </span>
                 {subtask.status === "in-progress" && (
-                    <span className="ml-auto text-[9px] font-mono text-blue-400 animate-pulse">RUNNING</span>
+                    <span className="ml-auto text-[9px] font-mono text-blue-600 animate-pulse">RUNNING</span>
                 )}
             </motion.div>
 
@@ -279,7 +279,7 @@ export default function Plan({ tasks }: PlanProps) {
                                 return (
                                     <motion.li
                                         key={task.id}
-                                        className={index !== 0 ? "mt-1 pt-2 border-t border-border/20" : ""}
+                                        className={index !== 0 ? "mt-1 pt-2 border-t border-border" : ""}
                                         initial="hidden"
                                         animate="visible"
                                         variants={taskVariants}

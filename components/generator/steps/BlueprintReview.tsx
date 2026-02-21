@@ -45,9 +45,9 @@ function getRiskStats(clauses: BlueprintClause[]) {
 
 function getRiskColor(risk: string) {
     switch (risk) {
-        case "high": return { text: "text-red-400", bg: "bg-red-500/10", border: "border-red-500/30", badge: "bg-red-500" };
-        case "medium": return { text: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/30", badge: "bg-yellow-500" };
-        default: return { text: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/30", badge: "bg-green-500" };
+        case "high": return { text: "text-red-600", bg: "bg-red-50", border: "border-red-200", badge: "bg-red-500" };
+        case "medium": return { text: "text-amber-600", bg: "bg-amber-50", border: "border-amber-200", badge: "bg-amber-500" };
+        default: return { text: "text-green-600", bg: "bg-green-50", border: "border-green-200", badge: "bg-green-500" };
     }
 }
 
@@ -67,7 +67,7 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
         >
             {/* Document Summary */}
             {blueprint.summary && (
-                <div className="bg-card/40 border border-border/50 rounded-xl p-5">
+                <div className="bg-card border border-border rounded-xl p-5">
                     <div className="flex items-start gap-3">
                         <div className="h-8 w-8 rounded-lg bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
                             <FileText className="h-4 w-4 text-primary" />
@@ -83,13 +83,13 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
             {/* Stats Grid */}
             <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
                 <StatCard label="Total Clauses" value={stats.total} icon={<LayoutList className="h-4 w-4" />} color="text-primary" />
-                <StatCard label="Included" value={stats.included} icon={<Check className="h-4 w-4" />} color="text-green-400" />
-                <StatCard label="High Risk" value={stats.high} icon={<Shield className="h-4 w-4" />} color="text-red-400" />
-                <StatCard label="Medium Risk" value={stats.medium} icon={<AlertTriangle className="h-4 w-4" />} color="text-yellow-400" />
+                <StatCard label="Included" value={stats.included} icon={<Check className="h-4 w-4" />} color="text-green-600" />
+                <StatCard label="High Risk" value={stats.high} icon={<Shield className="h-4 w-4" />} color="text-red-600" />
+                <StatCard label="Medium Risk" value={stats.medium} icon={<AlertTriangle className="h-4 w-4" />} color="text-amber-600" />
             </div>
 
             {/* Risk Score Meter */}
-            <div className="bg-card/40 border border-border/50 rounded-xl p-5">
+            <div className="bg-card border border-border rounded-xl p-5">
                 <h4 className="text-xs font-mono text-muted-foreground mb-3 uppercase tracking-wider">Risk Score</h4>
                 <div className="flex items-center gap-4">
                     <div className="flex-1 h-3 bg-muted/50 rounded-full overflow-hidden">
@@ -105,7 +105,7 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
                         />
                     </div>
                     <span className={`text-sm font-bold font-mono tabular-nums ${
-                        stats.high > 0 ? "text-red-400" : stats.medium > 0 ? "text-yellow-400" : "text-green-400"
+                        stats.high > 0 ? "text-red-600" : stats.medium > 0 ? "text-amber-600" : "text-green-600"
                     }`}>
                         {stats.included > 0 ? ((stats.riskScore / (stats.included * 3)) * 100).toFixed(0) : 0}%
                     </span>
@@ -120,11 +120,11 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
             </div>
 
             {/* Clause Preview List (compact) */}
-            <div className="bg-card/40 border border-border/50 rounded-xl overflow-hidden">
-                <div className="px-4 py-3 border-b border-border/40">
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-border">
                     <h4 className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Clause Breakdown</h4>
                 </div>
-                <div className="divide-y divide-border/30 max-h-[280px] overflow-y-auto">
+                <div className="divide-y divide-border max-h-[280px] overflow-y-auto">
                     {(blueprint.clauses || []).map((clause, i) => {
                         const colors = getRiskColor(clause.risk);
                         return (
@@ -150,7 +150,7 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
 
 function StatCard({ label, value, icon, color }: { label: string; value: number; icon: React.ReactNode; color: string }) {
     return (
-        <div className="bg-card/40 border border-border/50 rounded-xl p-4 flex flex-col items-center text-center">
+        <div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center text-center">
             <div className={`mb-2 ${color}`}>{icon}</div>
             <span className="text-2xl font-bold tabular-nums">{value}</span>
             <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider mt-1">{label}</span>
@@ -203,7 +203,7 @@ function ClauseSelectionStep({
                         className={`px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider rounded-md border transition-all ${
                             filter === f
                                 ? "bg-primary/15 text-primary border-primary/30"
-                                : "bg-card/30 text-muted-foreground border-border/40 hover:border-border"
+                                : "bg-muted/50 text-muted-foreground border-border hover:border-foreground/30"
                         }`}
                     >
                         {f === "all" ? `ALL (${stats.total})` : f === "included" ? `INCLUDED (${stats.included})` : `EXCLUDED (${stats.excluded})`}
@@ -255,7 +255,7 @@ function ClauseSelectionStep({
                             className={`transition-all duration-300 relative overflow-hidden group ${
                                 clause.included
                                     ? "border-primary/20 bg-primary/5 hover:border-primary/40"
-                                    : "border-border/50 opacity-50 bg-muted/20 hover:opacity-70"
+                                    : "border-border opacity-50 bg-muted/30 hover:opacity-70"
                             }`}
                         >
                             {clause.included && (
@@ -270,17 +270,17 @@ function ClauseSelectionStep({
                                         </span>
                                         <span className="mr-2">{clause.title}</span>
                                         {clause.risk === "high" && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-red-500/30 bg-red-500/10 text-red-400 font-mono uppercase tracking-wider">
+                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-red-200 bg-red-50 text-red-600 font-mono uppercase tracking-wider">
                                                 <Shield className="h-2.5 w-2.5" /> HIGH_RISK
                                             </span>
                                         )}
                                         {clause.risk === "medium" && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 font-mono uppercase tracking-wider">
+                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-amber-200 bg-amber-50 text-amber-600 font-mono uppercase tracking-wider">
                                                 <AlertTriangle className="h-2.5 w-2.5" /> MEDIUM
                                             </span>
                                         )}
                                         {clause.risk === "low" && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-green-500/30 bg-green-500/10 text-green-400 font-mono uppercase tracking-wider">
+                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-green-200 bg-green-50 text-green-600 font-mono uppercase tracking-wider">
                                                 OK
                                             </span>
                                         )}
@@ -390,7 +390,7 @@ function RiskAssessmentStep({
             className="space-y-5"
         >
             {/* Risk Distribution */}
-            <div className="bg-card/40 border border-border/50 rounded-xl p-5">
+            <div className="bg-card border border-border rounded-xl p-5">
                 <h4 className="text-xs font-mono text-muted-foreground mb-4 uppercase tracking-wider">Risk Distribution</h4>
                 <div className="flex gap-2 h-8 rounded-full overflow-hidden bg-muted/30">
                     {stats.high > 0 && (
@@ -441,10 +441,10 @@ function RiskAssessmentStep({
                             `I need you to improve the risk factors for these flagged clauses: ${clauseNames}. For each one: (1) explain what makes it risky, (2) rewrite the clause description with stronger protective language, (3) if a HIGH risk clause can be reduced to MEDIUM through better drafting, do so. Return the full updated clause list.`
                         );
                     }}
-                    className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-red-500/20 bg-gradient-to-r from-red-500/5 via-yellow-500/5 to-green-500/5 hover:from-red-500/10 hover:via-yellow-500/10 hover:to-green-500/10 hover:border-red-500/30 transition-all duration-300"
+                    className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-red-200 bg-gradient-to-r from-red-50/50 via-amber-50/50 to-green-50/50 hover:from-red-50 hover:via-amber-50 hover:to-green-50 hover:border-red-300 transition-all duration-300"
                 >
-                    <div className="h-9 w-9 rounded-lg bg-red-500/10 border border-red-500/20 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                        <ShieldCheck className="h-4 w-4 text-red-400" />
+                    <div className="h-9 w-9 rounded-lg bg-red-50 border border-red-200 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                        <ShieldCheck className="h-4 w-4 text-red-600" />
                     </div>
                     <div className="flex-1 text-left">
                         <p className="text-xs font-mono font-bold text-foreground">IMPROVE {stats.high + stats.medium} FLAGGED CLAUSES</p>
@@ -467,7 +467,7 @@ function RiskAssessmentStep({
                         subtitle="These clauses have significant legal implications if omitted or poorly drafted"
                         clauses={highRisk}
                         color="red"
-                        icon={<Shield className="h-4 w-4 text-red-400" />}
+                        icon={<Shield className="h-4 w-4 text-red-600" />}
                         onAsk={(title) => {
                             setActiveTab("chat");
                             setSuggestedInput({ text: `Analyze the risk of the "${title}" clause and suggest ways to mitigate it.`, ts: Date.now() });
@@ -480,7 +480,7 @@ function RiskAssessmentStep({
                         subtitle="These clauses should be reviewed for completeness"
                         clauses={mediumRisk}
                         color="yellow"
-                        icon={<AlertTriangle className="h-4 w-4 text-yellow-400" />}
+                        icon={<AlertTriangle className="h-4 w-4 text-amber-600" />}
                         onAsk={(title) => {
                             setActiveTab("chat");
                             setSuggestedInput({ text: `What could go wrong if the "${title}" clause is weak?`, ts: Date.now() });
@@ -493,7 +493,7 @@ function RiskAssessmentStep({
                         subtitle="Standard clauses with well-established legal precedent"
                         clauses={lowRisk}
                         color="green"
-                        icon={<CheckCircle2 className="h-4 w-4 text-green-400" />}
+                        icon={<CheckCircle2 className="h-4 w-4 text-green-600" />}
                         onAsk={(title) => {
                             setActiveTab("chat");
                             setSuggestedInput({ text: `Explain the "${title}" clause in simple terms.`, ts: Date.now() });
@@ -593,9 +593,9 @@ function RefinementStep({
             </div>
 
             {/* Agent Panel (full-height embedded) */}
-            <div className="flex flex-col bg-card/30 rounded-xl border border-border/50 overflow-hidden shadow-xl backdrop-blur-sm h-[calc(100vh-420px)] min-h-[400px]">
+            <div className="flex flex-col bg-card rounded-xl border border-border overflow-hidden shadow-lg h-[calc(100vh-420px)] min-h-[400px]">
                 {/* Tab Switcher */}
-                <div className="flex items-center p-1 bg-muted/40 border-b border-border/40 gap-1 shrink-0">
+                <div className="flex items-center p-1 bg-muted/60 border-b border-border gap-1 shrink-0">
                     <button
                         onClick={() => setActivePanel("chat")}
                         className={`flex-1 flex items-center justify-center gap-2 py-2 text-xs font-mono font-medium rounded transition-all duration-200 ${
@@ -672,7 +672,7 @@ function ApprovalStep({
             className="space-y-6"
         >
             {/* Pre-flight Checks */}
-            <div className="bg-card/40 border border-border/50 rounded-xl p-5">
+            <div className="bg-card border border-border rounded-xl p-5">
                 <h4 className="text-xs font-mono text-muted-foreground mb-4 uppercase tracking-wider flex items-center gap-2">
                     <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                     PRE-FLIGHT CHECKS
@@ -681,7 +681,7 @@ function ApprovalStep({
                     {checks.map((check, i) => (
                         <div key={i} className="flex items-center gap-3">
                             <div className={`h-5 w-5 rounded-full flex items-center justify-center ${
-                                check.passed ? "bg-green-500/20 text-green-400" : "bg-red-500/20 text-red-400"
+                                check.passed ? "bg-green-50 text-green-600" : "bg-red-50 text-red-600"
                             }`}>
                                 {check.passed ? <Check className="h-3 w-3" /> : <X className="h-3 w-3" />}
                             </div>
@@ -694,11 +694,11 @@ function ApprovalStep({
             </div>
 
             {/* Final Summary */}
-            <div className="bg-card/40 border border-border/50 rounded-xl p-5">
+            <div className="bg-card border border-border rounded-xl p-5">
                 <h4 className="text-xs font-mono text-muted-foreground mb-3 uppercase tracking-wider">Final Summary</h4>
                 <div className="grid grid-cols-3 gap-4 text-center">
                     <div>
-                        <span className="text-2xl font-bold tabular-nums text-green-400">{stats.included}</span>
+                        <span className="text-2xl font-bold tabular-nums text-green-600">{stats.included}</span>
                         <p className="text-[10px] text-muted-foreground font-mono mt-1">INCLUDED</p>
                     </div>
                     <div>
@@ -707,7 +707,7 @@ function ApprovalStep({
                     </div>
                     <div>
                         <span className={`text-2xl font-bold tabular-nums ${
-                            stats.high > 0 ? "text-red-400" : stats.medium > 0 ? "text-yellow-400" : "text-green-400"
+                            stats.high > 0 ? "text-red-600" : stats.medium > 0 ? "text-amber-600" : "text-green-600"
                         }`}>{stats.high + stats.medium}</span>
                         <p className="text-[10px] text-muted-foreground font-mono mt-1">FLAGGED</p>
                     </div>
@@ -715,16 +715,16 @@ function ApprovalStep({
             </div>
 
             {/* Included clauses final listing */}
-            <div className="bg-card/40 border border-border/50 rounded-xl overflow-hidden">
-                <div className="px-4 py-3 border-b border-border/40">
+            <div className="bg-card border border-border rounded-xl overflow-hidden">
+                <div className="px-4 py-3 border-b border-border">
                     <h4 className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Clauses to Compile</h4>
                 </div>
-                <div className="divide-y divide-border/20 max-h-[200px] overflow-y-auto">
+                <div className="divide-y divide-border max-h-[200px] overflow-y-auto">
                     {included.map((clause, i) => {
                         const colors = getRiskColor(clause.risk);
                         return (
                             <div key={clause.id} className="flex items-center gap-3 px-4 py-2 text-xs">
-                                <CheckCircle2 className="h-3.5 w-3.5 text-green-400 shrink-0" />
+                                <CheckCircle2 className="h-3.5 w-3.5 text-green-600 shrink-0" />
                                 <span className="font-mono truncate flex-1">{clause.title}</span>
                                 <span className={`text-[10px] font-mono uppercase ${colors.text}`}>{clause.risk}</span>
                             </div>
@@ -795,7 +795,7 @@ function ReviewStepper({
                                 isActive
                                     ? "bg-primary text-primary-foreground ring-2 ring-primary/20"
                                     : isCompleted
-                                        ? "bg-green-500/20 text-green-400"
+                                        ? "bg-green-50 text-green-600"
                                         : isPast
                                             ? "bg-muted text-muted-foreground"
                                             : "bg-muted/50 text-muted-foreground/50"
@@ -886,7 +886,7 @@ export default function BlueprintReview({
     return (
         <div className="flex flex-col h-[calc(100vh-120px)] gap-3 animate-fade-in w-full max-w-5xl mx-auto">
             {/* Top Header */}
-            <div className="flex items-center justify-between gap-3 bg-card/50 backdrop-blur-md p-3 rounded-xl border border-border shadow-sm shrink-0">
+            <div className="flex items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border shadow-sm shrink-0">
                 <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
@@ -901,11 +901,11 @@ export default function BlueprintReview({
                             <span className="text-primary">&#9889;</span> BLUEPRINT REVIEW
                         </h2>
                         <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] text-muted-foreground font-mono px-1.5 py-0.5 rounded bg-muted/40 border border-border/50">
+                            <span className="text-[10px] text-muted-foreground font-mono px-1.5 py-0.5 rounded bg-muted border border-border">
                                 {stats.included}/{stats.total} ACTIVE
                             </span>
                             {stats.high > 0 && (
-                                <span className="text-[10px] text-red-400 font-mono px-1.5 py-0.5 rounded bg-red-500/10 border border-red-500/20 flex items-center gap-1">
+                                <span className="text-[10px] text-red-600 font-mono px-1.5 py-0.5 rounded bg-red-50 border border-red-200 flex items-center gap-1">
                                     <TriangleAlert className="h-2.5 w-2.5" /> {stats.high} HIGH
                                 </span>
                             )}
@@ -920,7 +920,7 @@ export default function BlueprintReview({
             </div>
 
             {/* Step Navigation Bar */}
-            <div className="bg-card/30 backdrop-blur-sm border border-border/40 rounded-xl px-2 py-1 shrink-0">
+            <div className="bg-card border border-border rounded-xl px-2 py-1 shrink-0">
                 <ReviewStepper
                     currentStep={currentStep}
                     onStepClick={goToStep}
@@ -982,7 +982,7 @@ export default function BlueprintReview({
             </div>
 
             {/* Bottom Navigation Bar */}
-            <div className="flex items-center justify-between bg-card/50 backdrop-blur-md p-3 rounded-xl border border-border shadow-sm shrink-0">
+            <div className="flex items-center justify-between bg-card p-3 rounded-xl border border-border shadow-sm shrink-0">
                 <Button
                     variant="ghost"
                     size="sm"

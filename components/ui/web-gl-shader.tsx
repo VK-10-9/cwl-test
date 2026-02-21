@@ -55,7 +55,9 @@ export function WebGLShader() {
         float g = 0.05 / abs(p.y + sin((gx + time) * xScale) * yScale);
         float b = 0.05 / abs(p.y + sin((bx + time) * xScale) * yScale);
         
-        gl_FragColor = vec4(r, g, b, 1.0);
+        float intensity = (r + g + b) / 3.0;
+        float fade = smoothstep(0.0, 1.0, intensity * 0.15);
+        gl_FragColor = vec4(1.0 - fade * 0.12, 1.0 - fade * 0.12, 1.0 - fade * 0.14, 1.0);
       }
     `
 
@@ -63,7 +65,7 @@ export function WebGLShader() {
             refs.scene = new THREE.Scene()
             refs.renderer = new THREE.WebGLRenderer({ canvas })
             refs.renderer.setPixelRatio(window.devicePixelRatio)
-            refs.renderer.setClearColor(new THREE.Color(0x000000))
+            refs.renderer.setClearColor(new THREE.Color(0xffffff))
 
             refs.camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, -1)
 
