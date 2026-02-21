@@ -3,8 +3,8 @@ import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Terms of Service — ClauseWala.",
-    description: "Terms and conditions for using ClauseWala's AI-powered legal document generation platform.",
+    title: "Terms of Service",
+    description: "Terms and conditions for using ClauseWala’s AI-powered legal document generation platform for Indian startups.",
 };
 
 export default function TermsPage() {

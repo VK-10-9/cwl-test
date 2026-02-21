@@ -4,8 +4,8 @@ import { Mail, MessageSquare } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Contact — ClauseWala.",
-    description: "Get in touch with ClauseWala for support, partnerships, or feedback.",
+    title: "Contact",
+    description: "Get in touch with ClauseWala for support, feedback, or partnership enquiries. We respond within 24 hours.",
 };
 
 export default function ContactPage() {

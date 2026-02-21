@@ -6,8 +6,8 @@ import { FileText, Shield, Zap, Scale } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "About — ClauseWala.",
-    description: "ClauseWala is an AI-powered legal document platform built for Indian startups. Learn about our mission.",
+    title: "About",
+    description: "ClauseWala is an AI-powered legal document platform built for Indian startups. 22 templates, India-specific clauses, free during public beta.",
 };
 
 const stats = [

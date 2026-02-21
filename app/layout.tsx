@@ -5,57 +5,85 @@ import DocumentStoreProvider from "@/components/DocumentStoreProvider";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://clausewala.com"),
+  metadataBase: new URL("https://clausewala.vishwadev.tech"),
   title: {
-    default: "ClauseWala. — Contracts. Simplified.",
-    template: "%s — ClauseWala.",
+    default: "ClauseWala. — AI Legal Documents for Indian Startups",
+    template: "%s | ClauseWala.",
   },
   description:
-    "AI-powered legal documents for Indian startups. Draft NDAs, MOUs, offer letters, co-founder agreements and 18 more — clause by clause, export-ready.",
+    "Draft legally sound Indian contracts in minutes. NDAs, MOUs, offer letters, co-founder agreements, ESOP grants and 16 more — AI-powered, clause-by-clause reviewed, export as PDF or DOCX. Free during public beta.",
   keywords: [
     "legal documents India",
     "NDA generator India",
-    "startup contracts",
+    "startup contracts India",
     "AI legal drafting",
     "ClauseWala",
     "Indian contract generator",
     "MOU template India",
-    "offer letter generator",
+    "offer letter generator India",
     "ESOP grant letter",
-    "co-founder agreement",
+    "co-founder agreement India",
+    "legal notice generator",
+    "appointment letter India",
+    "startup legal documents",
+    "Indian startup contracts",
+    "free legal templates India",
+    "AI contract drafting",
+    "board resolution template",
+    "IP assignment agreement",
+    "relieving letter generator",
+    "vendor onboarding letter",
   ],
   authors: [{ name: "ClauseWala" }],
   creator: "ClauseWala",
+  publisher: "ClauseWala",
+  category: "Legal Technology",
   icons: {
-    icon: "/brand/logo-mark.png",
-    apple: "/brand/logo-mark.png",
+    icon: [
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" },
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+    ],
+    apple: "/apple-touch-icon.png",
+    shortcut: "/favicon.ico",
   },
+  manifest: "/site.webmanifest",
   openGraph: {
     type: "website",
     locale: "en_IN",
-    url: "https://clausewala.com",
+    url: "https://clausewala.vishwadev.tech",
     siteName: "ClauseWala.",
-    title: "ClauseWala. — Contracts. Simplified.",
-    description: "AI-powered legal documents for Indian startups. Draft contracts in minutes, not days.",
+    title: "ClauseWala. — AI Legal Documents for Indian Startups",
+    description: "Draft legally sound Indian contracts in minutes — NDAs, MOUs, offer letters, co-founder agreements and more. AI-powered, free during public beta.",
     images: [
       {
         url: "/brand/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ClauseWala — Contracts. Simplified.",
+        alt: "ClauseWala — AI Legal Documents for Indian Startups",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ClauseWala. — Contracts. Simplified.",
-    description: "AI-powered legal documents for Indian startups. Draft contracts in minutes, not days.",
+    title: "ClauseWala. — AI Legal Documents for Indian Startups",
+    description: "Draft legally sound Indian contracts in minutes — NDAs, MOUs, offer letters, co-founder agreements and more. AI-powered, free during public beta.",
     images: ["/brand/og-image.png"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
   },
+  alternates: {
+    canonical: "https://clausewala.vishwadev.tech",
+  },
+  verification: {},
 };
 
 export default function RootLayout({
@@ -66,10 +94,40 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        {/* Ideally use next/font, but keeping existing link for compatibility */}
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
+        />
+        {/* JSON-LD Structured Data */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "SoftwareApplication",
+              name: "ClauseWala",
+              applicationCategory: "LegalService",
+              operatingSystem: "Web",
+              offers: {
+                "@type": "Offer",
+                price: "0",
+                priceCurrency: "INR",
+                description: "Free during public beta",
+              },
+              description:
+                "AI-powered legal document generation platform for Indian startups. Draft NDAs, MOUs, offer letters, co-founder agreements and more.",
+              url: "https://clausewala.vishwadev.tech",
+              author: {
+                "@type": "Organization",
+                name: "ClauseWala",
+                url: "https://clausewala.vishwadev.tech",
+              },
+              areaServed: {
+                "@type": "Country",
+                name: "India",
+              },
+            }),
+          }}
         />
       </head>
       <body>

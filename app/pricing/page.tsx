@@ -5,8 +5,8 @@ import { Check, Sparkles } from "lucide-react";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Pricing — ClauseWala.",
-    description: "ClauseWala is free during early access. Draft unlimited Indian legal documents at no cost.",
+    title: "Pricing",
+    description: "ClauseWala is free during public beta. Draft unlimited AI-powered Indian legal documents at no cost — no credit card required.",
 };
 
 const features = [

@@ -3,8 +3,8 @@ import Footer from "@/components/Footer";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Privacy Policy — ClauseWala.",
-    description: "How ClauseWala collects, uses, and protects your data.",
+    title: "Privacy Policy",
+    description: "Learn how ClauseWala collects, uses, and protects your personal data under the DPDP Act 2023 and Indian privacy law.",
 };
 
 export default function PrivacyPage() {
