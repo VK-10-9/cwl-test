@@ -56,8 +56,8 @@ export async function POST(request: NextRequest) {
         if (format === "pdf") {
             const html = textToHtml(fullText);
             fileBuffer = await generatePdf(html);
-            contentType = "application/pdf";
-            fileName = `${blueprint.documentType}-export.pdf`;
+            contentType = "text/html";
+            fileName = `${blueprint.documentType}-export.html`;
         } else {
             fileBuffer = await generateDocx(fullText);
             contentType =
