@@ -104,6 +104,13 @@ export default function AuthProvider({ children }: { children: ReactNode }) {
           };
           setUser(userData);
           localStorage.setItem(STORAGE_KEY, JSON.stringify(userData));
+
+          // Save email to backend (fire-and-forget)
+          fetch("/api/users", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(userData),
+          }).catch(() => { /* non-blocking */ });
         } catch {
           console.error("Failed to fetch Google profile");
         }
