@@ -884,7 +884,7 @@ export default function BlueprintReview({
     }, [currentIndex, goToStep, onBack]);
 
     return (
-        <div className="flex flex-col h-[calc(100vh-120px)] gap-3 animate-fade-in w-full max-w-5xl mx-auto">
+        <div className="flex flex-col h-[calc(100vh-200px)] gap-3 animate-fade-in w-full max-w-5xl mx-auto">
             {/* Top Header */}
             <div className="flex items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border shadow-sm shrink-0">
                 <div className="flex items-center gap-3">

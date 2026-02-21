@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Navbar() {
     return (
-        <nav className="fixed top-0 left-0 right-0 z-50 px-6 py-4 pointer-events-none">
+        <nav className="fixed top-0 left-0 right-0 z-[60] px-6 py-4 pointer-events-none">
             <div className="max-w-7xl mx-auto flex justify-between items-center pointer-events-auto">
                 {/* Logo */}
                 <Link href="/" className="flex items-center gap-2.5 bg-card rounded-full px-5 py-2.5 border border-border hover:border-primary/40 transition-colors cursor-pointer group">

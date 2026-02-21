@@ -2,6 +2,7 @@
 
 import HeroDemo from "@/components/HeroDemo";
 import Features from "@/components/Features";
+import DocumentAppSection from "@/components/DocumentAppSection";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
@@ -18,6 +19,11 @@ export default function LandingPage() {
       {/* Features Section */}
       <div id="features" className="relative z-10 w-full bg-background pt-20 pb-32">
         <Features />
+      </div>
+
+      {/* Document Templates Section */}
+      <div className="relative z-10 w-full bg-background">
+        <DocumentAppSection />
       </div>
 
       {/* Footer */}

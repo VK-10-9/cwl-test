@@ -27,7 +27,7 @@ export default function DocumentPreview({ fullText, onExport, isExporting }: Doc
     <div className="flex flex-col h-full animate-fade-in space-y-8 relative z-10 w-full max-w-4xl mx-auto">
 
       {/* Toolbar */}
-      <div className="flex justify-between items-center bg-card p-4 rounded-xl sticky top-24 z-20 border border-border shadow-md">
+      <div className="flex justify-between items-center bg-card p-4 rounded-xl sticky top-20 z-20 border border-border shadow-md">
         <div className="flex gap-4">
           <LiquidButton
             onClick={() => onExport("pdf")}

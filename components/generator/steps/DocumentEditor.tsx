@@ -37,7 +37,7 @@ export default function DocumentEditor({ fullText, onExport, isExporting, onBack
     return (
         <div className="w-full max-w-5xl mx-auto space-y-4 animate-fade-in relative z-10">
             {/* Toolbar */}
-            <div className="flex flex-col gap-3 bg-card p-4 rounded-xl border border-border sticky top-24 z-20 shadow-md">
+            <div className="flex flex-col gap-3 bg-card p-4 rounded-xl border border-border sticky top-20 z-20 shadow-md">
                 <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-3">
                     <div className="flex items-center gap-2">
                         {onBack && (

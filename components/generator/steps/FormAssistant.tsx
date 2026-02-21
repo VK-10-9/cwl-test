@@ -295,59 +295,63 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
 
     return (
         <AnimatePresence>
+            {/* Backdrop overlay to dim the form underneath */}
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 z-40 bg-black/20 backdrop-blur-[2px]"
+                onClick={() => setIsOpen(false)}
+            />
             <motion.div
                 initial={{ opacity: 0, y: 20, scale: 0.95 }}
                 animate={{ opacity: 1, y: 0, scale: 1 }}
                 exit={{ opacity: 0, y: 20, scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                className={`fixed z-50 flex flex-col bg-card border border-border rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ${
+                className={`fixed z-50 flex flex-col bg-white border-2 border-foreground/15 rounded-2xl shadow-[0_25px_60px_-12px_rgba(0,0,0,0.25),0_0_0_1px_rgba(0,0,0,0.05)] overflow-hidden transition-all duration-300 ${
                     isExpanded
                         ? "bottom-4 right-4 left-4 top-4 sm:left-auto sm:w-[600px] sm:top-4"
-                        : "bottom-6 right-6 w-[380px] h-[520px]"
+                        : "bottom-6 right-6 w-[400px] h-[560px]"
                 }`}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-4 py-3 bg-primary/5 border-b border-border shrink-0">
+                <div className="flex items-center justify-between px-4 py-3 bg-foreground text-background border-b border-border shrink-0">
                     <div className="flex items-center gap-2.5">
-                        <div className="h-8 w-8 rounded-lg bg-primary/15 border border-primary/20 flex items-center justify-center">
-                            <Bot className="h-4 w-4 text-primary" />
+                        <div className="h-8 w-8 rounded-lg bg-white/15 border border-white/20 flex items-center justify-center">
+                            <Bot className="h-4 w-4 text-white" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold font-mono">FORM ASSISTANT</h3>
-                            <p className="text-[10px] text-muted-foreground font-mono">
+                            <h3 className="text-sm font-bold font-mono text-white">FORM ASSISTANT</h3>
+                            <p className="text-[10px] text-white/60 font-mono">
                                 {isStreaming ? "Thinking..." : "Describe your needs, I'll fill the form"}
                             </p>
                         </div>
                     </div>
                     <div className="flex items-center gap-1">
-                        <Button
-                            variant="ghost"
-                            size="icon"
+                        <button
                             onClick={() => setIsExpanded(!isExpanded)}
-                            className="h-7 w-7 text-muted-foreground hover:text-foreground"
+                            className="h-7 w-7 flex items-center justify-center rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                         >
                             {isExpanded ? <Minimize2 className="h-3.5 w-3.5" /> : <Maximize2 className="h-3.5 w-3.5" />}
-                        </Button>
-                        <Button
-                            variant="ghost"
-                            size="icon"
+                        </button>
+                        <button
                             onClick={() => {
                                 setIsOpen(false);
                                 abortRef.current?.abort();
                             }}
-                            className="h-7 w-7 text-muted-foreground hover:text-destructive"
+                            className="h-7 w-7 flex items-center justify-center rounded-md text-white/60 hover:text-white hover:bg-white/10 transition-colors"
                         >
                             <X className="h-3.5 w-3.5" />
-                        </Button>
+                        </button>
                     </div>
                 </div>
 
                 {/* Messages Area */}
-                <div ref={scrollRef} className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-hide">
+                <div ref={scrollRef} className="flex-1 overflow-y-auto p-5 space-y-4 scrollbar-hide bg-neutral-50">
                     {messages.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                            <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/15 flex items-center justify-center mb-4">
-                                <MessageSquare className="h-6 w-6 text-primary/60" />
+                            <div className="h-12 w-12 rounded-xl bg-foreground/5 border border-foreground/10 flex items-center justify-center mb-4">
+                                <MessageSquare className="h-6 w-6 text-foreground/40" />
                             </div>
                             <h4 className="text-sm font-bold font-mono mb-1">Hey! I can help fill this form.</h4>
                             <p className="text-xs text-muted-foreground font-mono mb-6 max-w-[280px]">
@@ -360,7 +364,7 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                                     <button
                                         key={chip}
                                         onClick={() => handleChipClick(chip)}
-                                        className="px-3 py-1.5 text-[11px] font-mono bg-muted border border-border rounded-full hover:bg-primary/10 hover:border-primary/30 hover:text-primary transition-all"
+                                        className="px-3 py-1.5 text-[11px] font-mono bg-white border border-neutral-200 rounded-full shadow-sm hover:shadow-md hover:border-foreground/30 transition-all"
                                     >
                                         {chip}
                                     </button>
@@ -374,14 +378,14 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                                 className={`flex gap-2.5 ${msg.role === "user" ? "justify-end" : "justify-start"}`}
                             >
                                 {msg.role === "assistant" && (
-                                    <div className="h-6 w-6 rounded-md bg-primary/10 border border-primary/15 flex items-center justify-center shrink-0 mt-1">
-                                        <Bot className="h-3.5 w-3.5 text-primary" />
+                                    <div className="h-6 w-6 rounded-md bg-foreground flex items-center justify-center shrink-0 mt-1">
+                                        <Bot className="h-3.5 w-3.5 text-background" />
                                     </div>
                                 )}
                                 <div className={`max-w-[85%] space-y-1 ${
                                     msg.role === "user"
-                                        ? "bg-primary/10 border border-primary/20 rounded-xl rounded-br-sm px-3 py-2"
-                                        : "bg-card border border-border rounded-xl rounded-bl-sm px-3 py-2"
+                                        ? "bg-foreground text-background rounded-xl rounded-br-sm px-3 py-2"
+                                        : "bg-white border border-neutral-200 shadow-sm rounded-xl rounded-bl-sm px-3 py-2"
                                 }`}>
                                     {msg.role === "assistant" && msg.content ? (
                                         renderMessageContent(msg.content, appliedFields, handleApplyFields)
@@ -402,7 +406,7 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                 {/* Input */}
                 <form
                     onSubmit={handleSubmit}
-                    className="flex items-center gap-2 p-3 border-t border-border bg-muted/50 shrink-0"
+                    className="flex items-center gap-2 p-3 border-t border-neutral-200 bg-white shrink-0"
                 >
                     <input
                         ref={inputRef}
@@ -411,20 +415,19 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Describe your document needs..."
                         disabled={isStreaming}
-                        className="flex-1 bg-transparent text-sm font-mono outline-none placeholder:text-muted-foreground/50"
+                        className="flex-1 bg-neutral-50 border border-neutral-200 rounded-lg px-3 py-2 text-sm font-mono outline-none focus:border-foreground/30 focus:ring-1 focus:ring-foreground/10 placeholder:text-neutral-400 transition-all"
                     />
-                    <Button
+                    <button
                         type="submit"
-                        size="icon"
                         disabled={!input.trim() || isStreaming}
-                        className="h-8 w-8 rounded-lg shrink-0"
+                        className="h-9 w-9 rounded-lg shrink-0 bg-foreground text-background flex items-center justify-center hover:bg-foreground/85 disabled:opacity-40 disabled:pointer-events-none transition-colors"
                     >
                         {isStreaming ? (
                             <Loader2 className="h-3.5 w-3.5 animate-spin" />
                         ) : (
                             <Send className="h-3.5 w-3.5" />
                         )}
-                    </Button>
+                    </button>
                 </form>
             </motion.div>
         </AnimatePresence>
