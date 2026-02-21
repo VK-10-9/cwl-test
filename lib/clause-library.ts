@@ -7,6 +7,11 @@ export const STANDARD_CLAUSES = {
 This Agreement shall be governed by and construed in accordance with the laws of India. The courts at [JURISDICTION_CITY] shall have exclusive jurisdiction to adjudicate any dispute arising out of or in connection with this Agreement. The parties hereby submit to the exclusive jurisdiction of such courts.
     `.trim(),
 
+    governing_law_with_arbitration: `
+**Governing Law and Jurisdiction.** 
+This Agreement shall be governed by and construed in accordance with the laws of India. Subject to the Arbitration clause herein, the courts at [JURISDICTION_CITY] shall have jurisdiction solely for: (a) the grant of interim or injunctive relief pending constitution of the arbitral tribunal; and (b) the enforcement of any arbitral award. The parties hereby submit to the jurisdiction of such courts for these limited purposes only.
+    `.trim(),
+
     severability: `
 **Severability.** 
 If any provision of this Agreement is held to be invalid, illegal or unenforceable, the validity, legality and enforceability of the remaining provisions shall not in any way be affected or impaired thereby. The parties shall replace the invalid provision with a valid provision that comes closest to the intention of the invalid provision.
@@ -69,7 +74,7 @@ The Employee understands and agrees that their role provides access to the Compa
 
     remedies_arbitration: `
 **Dispute Resolution (Arbitration).** 
-Any dispute arising out of or in connection with this Agreement, including any question regarding its existence, validity, or termination, shall be referred to and finally resolved by arbitration in accordance with the Arbitration and Conciliation Act, 1996. The seat and venue of the arbitration shall be [CITY], India. The language of the arbitration shall be English.
+Any dispute arising out of or in connection with this Agreement, including any question regarding its existence, validity, or termination, shall be referred to and finally resolved by arbitration in accordance with the Arbitration and Conciliation Act, 1996. The arbitration shall be conducted by a sole arbitrator mutually appointed by the parties. The seat and venue of the arbitration shall be [CITY], India. The language of the arbitration shall be English. The arbitral award shall be final and binding on both parties.
     `.trim(),
 
     remedies_court: `
@@ -79,7 +84,7 @@ Any dispute arising out of or in connection with this Agreement shall be subject
 
     return_of_materials: `
 **Return or Destruction of Materials.** 
-Upon the termination of this Agreement or written request by the Disclosing Party, the Receiving Party shall promptly return or, at the Disclosing Party's option, destroy all copies of the Confidential Information in its possession or control and certify such return or destruction in writing within fifteen (15) days.
+Upon the termination of this Agreement or written request by the Disclosing Party, the Receiving Party shall promptly return or, at the Disclosing Party's option, destroy all copies of the Confidential Information in its possession or control. The Receiving Party shall provide a signed written certification confirming such return or destruction, including confirmation that no copies have been retained in any form (electronic, physical, or otherwise), within fifteen (15) days of the request.
     `.trim(),
 
     survival_clause: `
@@ -107,10 +112,24 @@ During the Term of this Agreement and for a period of [PERIOD] months thereafter
     non_compete: `
 **Non-Compete.** 
 The Receiving Party acknowledges that access to the Confidential Information provides a competitive advantage. Accordingly, during the Term and for a period of [PERIOD] months thereafter, the Receiving Party shall not, directly or indirectly, engage in, invest in, or provide services to any business that competes with the business of the Disclosing Party within [TERRITORY], provided that this restriction shall apply only to the extent enforceable under applicable law (Section 27 of the Indian Contract Act, 1872 or relevant local statute).
+
+**Note:** Under Section 27 of the Indian Contract Act, 1872, post-employment non-compete covenants are generally held void as agreements in restraint of trade. This clause may be enforceable during the term of the agreement but its post-termination enforceability is limited under Indian law. Parties are advised to seek independent legal counsel regarding its applicability.
     `.trim(),
 
     ip_assignment_strong: `
 **Intellectual Property Assignment.** 
 The Receiving Party hereby irrevocably assigns, transfers, and conveys to the Disclosing Party all right, title, and interest in and to any work product created in the course of the relationship, including all intellectual property rights therein, worldwide and in perpetuity. The Receiving Party waives any moral rights to the extent permitted under applicable law (including Section 19(4) of the Copyright Act, 1957) and agrees to execute any further documents necessary to perfect such assignment.
+    `.trim(),
+
+    // ─── Employment-Specific ─────────────────────────────────────────────────
+
+    termination_employment_nda: `
+**Term and Termination.** 
+This Agreement shall become effective on the date of execution and shall remain in full force and effect for the duration of the Employee's employment with the Employer. This Agreement shall not be terminable by notice during the term of employment. Upon termination of employment (for any reason), the confidentiality obligations and restrictive covenants herein shall continue to bind the Employee in accordance with the Survival clause. Termination of employment shall not affect any accrued rights or obligations of either party.
+    `.trim(),
+
+    termination_general_nda: `
+**Term and Termination.** 
+This Agreement shall remain in effect for a period of [TERM] from the Effective Date. Either party may terminate this Agreement by providing [NOTICE_PERIOD] days' prior written notice to the other party. Termination shall not affect: (a) any accrued rights or obligations; (b) the confidentiality obligations, which shall survive as specified in the Survival clause; or (c) any other provisions that by their nature are intended to survive termination.
     `.trim(),
 };

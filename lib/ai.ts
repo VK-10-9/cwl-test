@@ -123,15 +123,17 @@ export async function generateBlueprint(
         const safeClauses = Array.isArray(rawResult.clauses) ? rawResult.clauses : [];
 
         // Map clauses to ensure they have all required fields
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const validatedClauses: BlueprintClause[] = safeClauses.map((c: Record<string, unknown>, index: number) => ({
-            id: String(c.id || `clause-${index}`),
-            title: String(c.title || "Untitled Clause"),
-            description: String(c.description || ""),
-            content: String(c.content || c.text || ""), // Handle content/text variance
-            risk: ["low", "medium", "high"].includes(String(c.risk)) ? (c.risk as "low" | "medium" | "high") : "low",
-            included: c.included !== false // Default to true
-        }));
+        const validatedClauses: BlueprintClause[] = safeClauses.map((c, index) => {
+            const clause = c as unknown as Record<string, unknown>;
+            return {
+                id: String(clause.id || `clause-${index}`),
+                title: String(clause.title || "Untitled Clause"),
+                description: String(clause.description || ""),
+                content: String(clause.content || clause.text || ""),
+                risk: ["low", "medium", "high"].includes(String(clause.risk)) ? (clause.risk as "low" | "medium" | "high") : "low",
+                included: clause.included !== false
+            };
+        });
 
         // Use default clauses from template if AI returns empty
         if (validatedClauses.length === 0) {

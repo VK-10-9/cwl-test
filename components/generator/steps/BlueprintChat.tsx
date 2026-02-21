@@ -1,25 +1,230 @@
 "use client";
 
-import { useChat, type Message } from "@ai-sdk/react";
-import { MessageSquare, Send, X, Bot, User, Sparkles, Check, Terminal, Loader2 } from "lucide-react";
-import { useState, useRef, useEffect } from "react";
+import { useChat, type UIMessage } from "@ai-sdk/react";
+import { TextStreamChatTransport } from "ai";
+import {
+    MessageSquare, Send, X, Bot, User, Sparkles, Check,
+    Terminal, Loader2, Brain, Wrench, Search, ChevronDown,
+    ChevronRight, Zap,
+} from "lucide-react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { AnimatePresence, motion } from "framer-motion";
-import { Blueprint } from "@/types";
+import type { Blueprint, AgentMessageSection } from "@/types";
+import { parseAgentResponse, parseStreamingState, type StreamingAgentState } from "@/lib/useAgentTasks";
 
-// --- Extracted Chat Interface Component ---
+// ─── Helper: extract text from UIMessage parts ──────────────────────────────
+
+function getMessageText(message: UIMessage): string {
+    return message.parts
+        .filter((p): p is { type: "text"; text: string } => p.type === "text")
+        .map((p) => p.text)
+        .join("");
+}
+
+// ─── Tool Icon Mapping ───────────────────────────────────────────────────────
+
+function ToolIcon({ tool }: { tool: string }) {
+    switch (tool) {
+        case "risk-assessor":
+            return <Zap className="h-3 w-3" />;
+        case "legal-research":
+            return <Search className="h-3 w-3" />;
+        case "clause-analyzer":
+        case "compliance-checker":
+            return <Terminal className="h-3 w-3" />;
+        default:
+            return <Wrench className="h-3 w-3" />;
+    }
+}
+
+// ─── Thinking Block ──────────────────────────────────────────────────────────
+
+function ThinkingBlock({ content, isActive }: { content: string; isActive: boolean }) {
+    const [expanded, setExpanded] = useState(false);
+
+    return (
+        <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            className="bg-purple-500/5 border border-purple-500/20 rounded-sm overflow-hidden"
+        >
+            <button
+                onClick={() => setExpanded(!expanded)}
+                className="w-full flex items-center gap-2 p-2 text-[10px] font-mono text-purple-400 hover:bg-purple-500/10 transition-colors"
+            >
+                <Brain className={`h-3 w-3 ${isActive ? "animate-pulse" : ""}`} />
+                <span>{isActive ? "THINKING..." : "REASONING"}</span>
+                {!isActive && (
+                    expanded
+                        ? <ChevronDown className="h-3 w-3 ml-auto" />
+                        : <ChevronRight className="h-3 w-3 ml-auto" />
+                )}
+                {isActive && <Loader2 className="h-3 w-3 ml-auto animate-spin" />}
+            </button>
+            <AnimatePresence>
+                {(expanded || isActive) && content && (
+                    <motion.div
+                        initial={{ opacity: 0, height: 0 }}
+                        animate={{ opacity: 1, height: "auto" }}
+                        exit={{ opacity: 0, height: 0 }}
+                        className="px-3 pb-2 text-[11px] font-mono text-purple-300/80 leading-relaxed border-t border-purple-500/10"
+                    >
+                        {content}
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </motion.div>
+    );
+}
+
+// ─── Tool Call Block ─────────────────────────────────────────────────────────
+
+function ToolCallBlock({ tool, input, isActive }: { tool: string; input: string; isActive: boolean }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center gap-2 pl-2"
+        >
+            <div className={`flex items-center gap-1.5 px-2 py-1 rounded-sm text-[10px] font-mono border ${
+                isActive
+                    ? "bg-blue-500/10 text-blue-400 border-blue-500/20 animate-pulse"
+                    : "bg-green-500/10 text-green-400 border-green-500/20"
+            }`}>
+                {isActive ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+                <ToolIcon tool={tool} />
+                <span className="font-semibold">{tool}</span>
+            </div>
+            {input && (
+                <span className="text-[10px] font-mono text-muted-foreground/60 truncate max-w-[180px]">
+                    {input}
+                </span>
+            )}
+        </motion.div>
+    );
+}
+
+// ─── Analysis Block ──────────────────────────────────────────────────────────
+
+function AnalysisBlock({ content, isActive }: { content: string; isActive: boolean }) {
+    return (
+        <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="bg-cyan-500/5 border border-cyan-500/20 rounded-sm p-2"
+        >
+            <div className="flex items-center gap-2 text-[10px] font-mono text-cyan-400 mb-1">
+                <Search className={`h-3 w-3 ${isActive ? "animate-pulse" : ""}`} />
+                <span>{isActive ? "ANALYZING..." : "ANALYSIS"}</span>
+                {isActive && <Loader2 className="h-3 w-3 ml-auto animate-spin" />}
+            </div>
+            {content && (
+                <p className="text-[11px] font-mono text-cyan-300/70 leading-relaxed">
+                    {content}
+                </p>
+            )}
+        </motion.div>
+    );
+}
+
+// ─── Streaming Indicator ─────────────────────────────────────────────────────
+
+function StreamingIndicator({ state }: { state: StreamingAgentState }) {
+    return (
+        <div className="flex flex-col gap-2 pl-8 pr-4">
+            {/* Thinking in progress */}
+            {state.isThinking && state.thinking && (
+                <ThinkingBlock content={state.thinking} isActive={true} />
+            )}
+
+            {/* Completed tool calls */}
+            {state.toolCalls.map((tc, i) => (
+                <ToolCallBlock key={i} tool={tc.tool} input={tc.input} isActive={false} />
+            ))}
+
+            {/* Active tool calls */}
+            {state.activeTools.map((tool) => (
+                <ToolCallBlock key={tool} tool={tool} input="Processing..." isActive={true} />
+            ))}
+
+            {/* Analysis in progress */}
+            {state.isAnalyzing && state.analysis && (
+                <AnalysisBlock content={state.analysis} isActive={true} />
+            )}
+
+            {/* Generic loading if nothing structured yet */}
+            {!state.isThinking && !state.isAnalyzing && state.toolCalls.length === 0 && state.activeTools.length === 0 && (
+                <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
+                    <Loader2 className="w-3 h-3 animate-spin text-primary" />
+                    <span className="animate-pulse">Initializing agent...</span>
+                </div>
+            )}
+        </div>
+    );
+}
+
+// ─── Parsed Message Renderer ─────────────────────────────────────────────────
+// Renders a completed AI message with its structured sections
+
+function AgentMessage({ sections }: { sections: AgentMessageSection[] }) {
+    if (sections.length === 0) return null;
+
+    return (
+        <div className="space-y-2">
+            {sections.map((section, i) => {
+                switch (section.type) {
+                    case "thinking":
+                        return <ThinkingBlock key={i} content={section.content} isActive={false} />;
+                    case "tool_call":
+                        return <ToolCallBlock key={i} tool={section.tool} input={section.input} isActive={false} />;
+                    case "analysis":
+                        return <AnalysisBlock key={i} content={section.content} isActive={false} />;
+                    case "blueprint_update":
+                        return (
+                            <motion.div
+                                key={i}
+                                initial={{ opacity: 0 }}
+                                animate={{ opacity: 1 }}
+                                className="flex items-center gap-2 text-xs font-mono"
+                            >
+                                <span className="flex items-center gap-1.5 bg-green-500/10 text-green-400 border border-green-500/20 px-2 py-1 rounded-sm">
+                                    <Check className="w-3 h-3" />
+                                    Blueprint updated
+                                </span>
+                                <span className="text-muted-foreground/60">{section.message}</span>
+                            </motion.div>
+                        );
+                    case "text":
+                        return (
+                            <p key={i} className="text-xs font-mono text-muted-foreground leading-relaxed">
+                                {section.content}
+                            </p>
+                        );
+                    default:
+                        return null;
+                }
+            })}
+        </div>
+    );
+}
+
+// ─── Chat Interface ──────────────────────────────────────────────────────────
+
 interface ChatInterfaceProps {
-    messages: Message[];
+    messages: UIMessage[];
     input: string;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleSubmit: (e: React.FormEvent) => void;
     setInput: (value: string) => void;
     isLoading: boolean;
-    inputRef: React.RefObject<HTMLInputElement | null>;
+    error?: Error;
+    inputRef: React.Ref<HTMLInputElement>;
     embedded?: boolean;
     onClose?: () => void;
+    streamingState: StreamingAgentState;
 }
 
 function ChatInterface({
@@ -29,18 +234,20 @@ function ChatInterface({
     handleSubmit,
     setInput,
     isLoading,
+    error,
     inputRef,
     embedded,
-    onClose
+    onClose,
+    streamingState,
 }: ChatInterfaceProps) {
     const scrollRef = useRef<HTMLDivElement>(null);
 
-    // Auto-scroll to bottom of chat
+    // Auto-scroll to bottom
     useEffect(() => {
         if (scrollRef.current) {
             scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
         }
-    }, [messages]);
+    }, [messages, isLoading, streamingState]);
 
     return (
         <div className="flex flex-col h-full w-full overflow-hidden">
@@ -51,14 +258,13 @@ function ChatInterface({
                         <Bot className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                        <h3 className="font-mono text-xs font-bold text-primary tracking-wider">AI_AGENT_V3</h3>
+                        <h3 className="font-mono text-xs font-bold text-primary tracking-wider">DOCUFORGE_AGENT</h3>
                         <p className="text-[10px] text-muted-foreground flex items-center gap-1 font-mono">
-                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse" />
-                            ACTIVE
+                            <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? "bg-blue-500 animate-pulse" : "bg-green-500"}`} />
+                            {isLoading ? "PROCESSING" : "READY"}
                         </p>
                     </div>
                 </div>
-                {/* Close for floating only */}
                 {!embedded && onClose && (
                     <Button variant="ghost" size="icon" className="h-6 w-6" onClick={onClose}>
                         <X className="h-3 w-3" />
@@ -72,44 +278,62 @@ function ChatInterface({
                     {/* Welcome Message */}
                     {messages.length === 0 && (
                         <div className="bg-muted/10 rounded-sm p-4 text-xs font-mono text-muted-foreground border border-dashed border-border/40">
-                            <p className="font-bold text-foreground mb-2">&gt; AGENT_READY</p>
-                            <p className="mb-2">I am ready to analyze your blueprint.</p>
-                            <p className="mt-2 text-primary/80">Capabilities:</p>
-                            <ul className="list-disc list-inside mt-1 space-y-1 opacity-70">
-                                <li>Risk Assessment</li>
-                                <li>Clause Modernization</li>
-                                <li>Plain English Explanation</li>
-                                <li>Legal Drafting</li>
-                            </ul>
+                            <p className="font-bold text-foreground mb-2 flex items-center gap-2">
+                                <Zap className="h-3 w-3 text-primary" />
+                                AGENT READY
+                            </p>
+                            <p className="mb-3 text-muted-foreground/80">
+                                I&apos;m your legal document assistant. I analyze, assess risk, and draft — step by step.
+                            </p>
+                            <div className="space-y-1.5">
+                                <p className="text-primary/80 text-[10px] flex items-center gap-1.5">
+                                    <Wrench className="h-2.5 w-2.5" /> AVAILABLE TOOLS:
+                                </p>
+                                <div className="flex flex-wrap gap-1.5">
+                                    {["clause-analyzer", "risk-assessor", "legal-research", "compliance-checker", "clause-drafter", "plain-english-translator"].map((tool) => (
+                                        <span key={tool} className="bg-primary/10 text-primary/70 px-1.5 py-0.5 rounded text-[9px] font-mono border border-primary/20">
+                                            {tool}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
 
-                    {messages.map((m: Message) => (
+                    {/* Rendered Messages */}
+                    {messages.map((m) => (
                         <div
                             key={m.id}
-                            className={`flex items-start gap-2 ${m.role === "user" ? "flex-row-reverse" : "flex-row"
-                                }`}
+                            className={`flex items-start gap-2 ${m.role === "user" ? "flex-row-reverse" : "flex-row"}`}
                         >
                             <div
-                                className={`h-6 w-6 rounded-sm flex items-center justify-center flex-shrink-0 ${m.role === "user" ? "bg-primary text-primary-foreground" : "bg-muted text-muted-foreground border border-border/50"
-                                    }`}
+                                className={`h-6 w-6 rounded-sm flex items-center justify-center flex-shrink-0 ${
+                                    m.role === "user"
+                                        ? "bg-primary text-primary-foreground"
+                                        : "bg-muted text-muted-foreground border border-border/50"
+                                }`}
                             >
                                 {m.role === "user" ? <User className="h-3 w-3" /> : <Sparkles className="h-3 w-3" />}
                             </div>
                             <div
-                                className={`rounded-sm p-3 text-xs font-mono max-w-[85%] ${m.role === "user"
-                                    ? "bg-primary/20 text-primary-foreground border border-primary/20"
-                                    : "bg-muted/10 border border-border/30 text-muted-foreground"
-                                    }`}
+                                className={`rounded-sm p-3 text-xs font-mono max-w-[85%] ${
+                                    m.role === "user"
+                                        ? "bg-primary/20 text-primary-foreground border border-primary/20"
+                                        : "bg-muted/10 border border-border/30 text-muted-foreground"
+                                }`}
                             >
-                                {m.role !== 'user' && typeof m.content === 'string' && m.content.startsWith('{') ? (
-                                    <span className="italic opacity-70 flex items-center gap-2">
-                                        <Check className="w-3 h-3 text-green-500" />
-                                        Blueprint updated.
-                                    </span>
-                                ) : (
-                                    (typeof m.content === 'string' ? m.content : JSON.stringify(m.content)) || "..."
-                                )}
+                                {(() => {
+                                    if (m.role === "user") {
+                                        return getMessageText(m) || "...";
+                                    }
+                                    // Parse assistant message for structured sections
+                                    const text = getMessageText(m);
+                                    const sections = parseAgentResponse(text);
+                                    if (sections.length > 0) {
+                                        return <AgentMessage sections={sections} />;
+                                    }
+                                    return text || "...";
+                                })()}
                             </div>
                         </div>
                     ))}
@@ -121,25 +345,9 @@ function ChatInterface({
                         </div>
                     )}
 
-                    {/* Agentic Thinking UI */}
+                    {/* Streaming Agentic UI */}
                     {isLoading && messages.length > 0 && (
-                        <div className="flex flex-col gap-2 pl-8 pr-4">
-                            <div className="flex items-center gap-2 text-xs text-muted-foreground font-mono">
-                                <Loader2 className="w-3 h-3 animate-spin text-primary" />
-                                <span className="animate-pulse">Processing request...</span>
-                            </div>
-                            <div className="bg-black/40 rounded-sm p-2 border-l-2 border-primary/30">
-                                <div className="flex items-center gap-2 text-[10px] text-primary/70 font-mono mb-1">
-                                    <Terminal className="w-3 h-3" />
-                                    <span>AGENT_LOGS</span>
-                                </div>
-                                <div className="space-y-1">
-                                    <div className="h-1.5 w-2/3 bg-muted/20 rounded animate-pulse" />
-                                    <div className="h-1.5 w-1/2 bg-muted/20 rounded animate-pulse delay-75" />
-                                    <div className="h-1.5 w-3/4 bg-muted/20 rounded animate-pulse delay-150" />
-                                </div>
-                            </div>
-                        </div>
+                        <StreamingIndicator state={streamingState} />
                     )}
                 </div>
             </ScrollArea>
@@ -154,7 +362,7 @@ function ChatInterface({
                         ref={inputRef}
                         value={input}
                         onChange={handleInputChange}
-                        placeholder="Type command..."
+                        placeholder="Ask about clauses, risks, or request changes..."
                         className="pl-6 pr-10 bg-background/50 border-white/5 focus:border-primary/50 font-mono text-xs h-9 rounded-sm"
                     />
                     <Button
@@ -171,30 +379,119 @@ function ChatInterface({
     );
 }
 
-// --- Main BlueprintChat Component ---
+// ─── Main BlueprintChat Component ────────────────────────────────────────────
 
 interface BlueprintChatProps {
     blueprint: Blueprint;
     onUpdateBlueprint: (updatedBlueprint: Blueprint) => void;
     embedded?: boolean;
     suggestedInput?: { text: string; ts: number } | null;
+    onStreamingStateChange?: (state: StreamingAgentState) => void;
 }
 
-export default function BlueprintChat({ blueprint, onUpdateBlueprint, embedded = false, suggestedInput }: BlueprintChatProps) {
+export default function BlueprintChat({
+    blueprint,
+    onUpdateBlueprint,
+    embedded = false,
+    suggestedInput,
+    onStreamingStateChange,
+}: BlueprintChatProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [input, setInput] = useState("");
     const inputRef = useRef<HTMLInputElement>(null);
+    const accumulatedTextRef = useRef("");
 
-    // Initialize useChat hook with the new SDK v3 API
+    // Current streaming state for agentic UI
+    const [streamingState, setStreamingState] = useState<StreamingAgentState>({
+        thinking: null,
+        toolCalls: [],
+        analysis: null,
+        isThinking: false,
+        isAnalyzing: false,
+        activeTools: [],
+    });
+
+    // Use a ref to always have the latest blueprint in callbacks
+    const blueprintRef = useRef(blueprint);
+    useEffect(() => {
+        blueprintRef.current = blueprint;
+    }, [blueprint]);
+
+    // Initialize useChat hook with the v3 API
     const { messages, sendMessage, status, error } = useChat({
-        api: "/api/chat/blueprint",
-        body: {
-            currentBlueprint: blueprint,
+        transport: new TextStreamChatTransport({
+            api: "/api/chat/blueprint",
+            body: () => ({
+                currentBlueprint: blueprintRef.current,
+                documentType: blueprintRef.current.documentType,
+            }),
+            prepareSendMessagesRequest: ({ messages: chatMessages, body: extraBody }) => ({
+                body: {
+                    messages: chatMessages.map((m) => ({
+                        role: m.role,
+                        content: getMessageText(m),
+                    })),
+                    ...((extraBody ?? {}) as Record<string, unknown>),
+                },
+            }),
+        }),
+        onFinish: ({ message }) => {
+            // Reset streaming state
+            accumulatedTextRef.current = "";
+            setStreamingState({
+                thinking: null,
+                toolCalls: [],
+                analysis: null,
+                isThinking: false,
+                isAnalyzing: false,
+                activeTools: [],
+            });
+            onStreamingStateChange?.({
+                thinking: null,
+                toolCalls: [],
+                analysis: null,
+                isThinking: false,
+                isAnalyzing: false,
+                activeTools: [],
+            });
+
+            // Process response for blueprint updates
+            try {
+                const text = getMessageText(message);
+                const jsonMatch = text.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    const data = JSON.parse(jsonMatch[0]) as Record<string, unknown>;
+                    if (data.clauses && Array.isArray(data.clauses)) {
+                        onUpdateBlueprint({
+                            ...blueprintRef.current,
+                            clauses: data.clauses as Blueprint["clauses"],
+                        });
+                    }
+                }
+            } catch (parseErr) {
+                console.error("Failed to parse blueprint update from response", parseErr);
+            }
         },
     });
 
-    // Track loading state based on status
-    const isLoading = status === 'submitted' || status === 'streaming';
+    // Track loading state
+    const isLoading = status === "submitted" || status === "streaming";
+
+    // Track streaming text to parse structured sections in real time
+    useEffect(() => {
+        if (!isLoading) return;
+
+        const lastMsg = messages[messages.length - 1];
+        if (lastMsg && lastMsg.role === "assistant") {
+            const currentText = getMessageText(lastMsg);
+            if (currentText !== accumulatedTextRef.current) {
+                accumulatedTextRef.current = currentText;
+                const newState = parseStreamingState(currentText);
+                setStreamingState(newState);
+                onStreamingStateChange?.(newState);
+            }
+        }
+    }, [messages, isLoading, onStreamingStateChange]);
 
     // Handle input changes
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,42 +499,21 @@ export default function BlueprintChat({ blueprint, onUpdateBlueprint, embedded =
     };
 
     // Handle form submission
-    const handleSubmit = async (e: React.FormEvent) => {
+    const handleSubmit = useCallback(async (e: React.FormEvent) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
 
         const messageContent = input;
-        setInput(""); // Clear input immediately for better UX
+        setInput("");
+        accumulatedTextRef.current = "";
 
-        // Send the message
-        const response = await sendMessage(messageContent);
+        await sendMessage({ text: messageContent });
+    }, [input, isLoading, sendMessage]);
 
-        // Process response for blueprint updates
-        try {
-            if (response?.content) {
-                const content = typeof response.content === 'string'
-                    ? response.content
-                    : JSON.stringify(response.content);
-
-                // Look for JSON block in the response
-                const jsonMatch = content.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    const data = JSON.parse(jsonMatch[0]);
-                    if (data.clauses) {
-                        onUpdateBlueprint(data as Blueprint);
-                    }
-                }
-            }
-        } catch (parseErr) {
-            console.error("Failed to parse blueprint update", parseErr);
-        }
-    };
-
-    // React to suggested input changes from parent
+    // React to suggested input changes
     useEffect(() => {
         if (suggestedInput?.text) {
             setInput(suggestedInput.text);
-            // Auto-focus
             if (inputRef.current) {
                 inputRef.current.focus();
             }
@@ -251,9 +527,11 @@ export default function BlueprintChat({ blueprint, onUpdateBlueprint, embedded =
         handleSubmit,
         setInput,
         isLoading,
+        error,
         inputRef,
         embedded,
-        onClose: () => setIsOpen(false)
+        onClose: () => setIsOpen(false),
+        streamingState,
     };
 
     if (embedded) {
@@ -262,7 +540,7 @@ export default function BlueprintChat({ blueprint, onUpdateBlueprint, embedded =
 
     return (
         <>
-            {/* Floating Chat Button (IDE Style) */}
+            {/* Floating Chat Button */}
             <motion.div
                 initial={{ scale: 0, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
@@ -271,14 +549,15 @@ export default function BlueprintChat({ blueprint, onUpdateBlueprint, embedded =
                 <Button
                     onClick={() => setIsOpen(!isOpen)}
                     size="lg"
-                    className={`rounded-full h-14 w-14 shadow-xl transition-all duration-300 ${isOpen ? "bg-destructive hover:bg-destructive/90 rotate-90" : "bg-primary hover:bg-primary/90"
-                        }`}
+                    className={`rounded-full h-14 w-14 shadow-xl transition-all duration-300 ${
+                        isOpen ? "bg-destructive hover:bg-destructive/90 rotate-90" : "bg-primary hover:bg-primary/90"
+                    }`}
                 >
                     {isOpen ? <X className="h-6 w-6 text-white" /> : <MessageSquare className="h-6 w-6 text-white" />}
                 </Button>
             </motion.div>
 
-            {/* Chat Interface Window */}
+            {/* Floating Chat Window */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div

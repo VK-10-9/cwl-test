@@ -145,7 +145,10 @@ export const generateRequestSchema = z.object({
   documentType: z.enum(DOCUMENT_TYPES),
   orgA: organisationSchema,
   orgB: organisationSchema.optional(),
-  formData: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
+  formData: z.record(
+    z.string(),
+    z.union([z.string(), z.number(), z.boolean()]).catch("")
+  ),
 });
 
 export const blueprintClauseSchema = z.object({
@@ -171,12 +174,46 @@ export const iterateRequestSchema = z.object({
 
 export const exportRequestSchema = z.object({
   blueprint: blueprintSchema,
-  formData: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
+  formData: z.record(
+    z.string(),
+    z.union([z.string(), z.number(), z.boolean()]).catch("")
+  ),
   fullText: z.string().optional(),
   format: z.enum(["pdf", "docx"]),
 });
 
 export const previewSchema = z.object({
   blueprint: blueprintSchema,
-  formData: z.record(z.string(), z.union([z.string(), z.number(), z.boolean()])),
+  formData: z.record(
+    z.string(),
+    z.union([z.string(), z.number(), z.boolean()]).catch("")
+  ),
 });
+
+// ─── Agent Types ─────────────────────────────────────────────────────────────
+
+export type AgentTaskStatus = "completed" | "in-progress" | "pending" | "failed";
+
+export interface AgentSubtask {
+  id: string;
+  title: string;
+  description: string;
+  status: AgentTaskStatus;
+  tools?: string[];
+}
+
+export interface AgentTask {
+  id: string;
+  title: string;
+  description: string;
+  status: AgentTaskStatus;
+  subtasks: AgentSubtask[];
+}
+
+/** Structured sections parsed from agentic AI responses */
+export type AgentMessageSection =
+  | { type: "thinking"; content: string }
+  | { type: "tool_call"; tool: string; input: string; result?: string }
+  | { type: "analysis"; content: string }
+  | { type: "text"; content: string }
+  | { type: "blueprint_update"; clauses: BlueprintClause[]; message: string };

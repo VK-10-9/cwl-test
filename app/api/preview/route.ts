@@ -10,7 +10,8 @@ export async function POST(request: NextRequest) {
         const parsed = previewSchema.safeParse(body);
 
         if (!parsed.success) {
-            return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+            console.error("Preview validation errors:", JSON.stringify(parsed.error.issues, null, 2));
+            return NextResponse.json({ error: "Invalid request", details: parsed.error.issues }, { status: 400 });
         }
 
         const { blueprint, formData: rawFormData } = parsed.data;

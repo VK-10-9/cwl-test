@@ -36,7 +36,7 @@ export default function DocumentAppSection() {
                         <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-indigo-600/10 rounded-full blur-[100px] pointer-events-none"></div>
 
                         <div className="relative z-10">
-                            <DocumentSelector selected={selectedType} onSelect={handleSelect} />
+                            <DocumentSelector />
 
                             <div className={`mt-16 flex justify-center transition-all duration-500 transform ${selectedType ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
                                 <LiquidButton

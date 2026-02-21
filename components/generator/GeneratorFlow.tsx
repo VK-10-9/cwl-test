@@ -6,7 +6,7 @@ import DetailsForm from "./steps/DetailsForm";
 import BlueprintReview from "./steps/BlueprintReview";
 import DocumentEditor from "./steps/DocumentEditor";
 import type { DocumentType, Blueprint, WorkflowStage } from "@/types";
-import { CheckCircle2 } from "lucide-react";
+import { CheckCircle2, ClipboardList, Search, FileCheck, X } from "lucide-react";
 
 interface GeneratorFlowProps {
     docType: DocumentType;
@@ -62,7 +62,7 @@ function reducer(state: State, action: Action): State {
             );
             return { ...state, blueprint: { ...state.blueprint, clauses: updatedClauses } };
         case "SET_DOCUMENT": return { ...state, isLoading: false, fullText: action.payload, stage: "preview" };
-        case "SET_ERROR": return { ...state, isLoading: false, isExporting: false, error: action.payload };
+        case "SET_ERROR": return { ...state, isLoading: false, isExporting: false, error: action.payload || null };
         case "START_EXPORT": return { ...state, isExporting: true, error: null };
         case "END_EXPORT": return { ...state, isExporting: false };
         case "GO_BACK":
@@ -106,9 +106,9 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
         localStorage.setItem(`docfuge_state_${docType}`, JSON.stringify(stateToSave));
     }, [state.stage, state.blueprint, state.formData, state.fullText, docType]);
 
-    // Helper to format data for API consumption
-    const getFormattedData = () => {
-        return {
+    // Helper to format data for API consumption — strips undefined/null values
+    const getFormattedData = (): Record<string, string | number | boolean> => {
+        const raw: Record<string, unknown> = {
             ...(state.formData ?? {}),
             "Party A Name": state.formData?.partyA_name ?? state.formData?.partyA ?? "",
             "Party A Address": state.formData?.partyA_address ?? "",
@@ -118,6 +118,17 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
             "Party B Signatory": state.formData?.partyB_signatory ?? "",
             "Effective Date": state.formData?.effectiveDate ?? "",
         };
+        // Strip out undefined/null values — Zod requires string | number | boolean
+        const cleaned: Record<string, string | number | boolean> = {};
+        for (const [key, value] of Object.entries(raw)) {
+            if (value === undefined || value === null) continue;
+            if (typeof value === "string" || typeof value === "number" || typeof value === "boolean") {
+                cleaned[key] = value;
+            } else {
+                cleaned[key] = String(value);
+            }
+        }
+        return cleaned;
     };
 
     const handleFormSubmit = async (data: FormData) => {
@@ -227,35 +238,69 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
         dispatch({ type: "SET_STATE", payload: { blueprint } });
     };
 
-    const steps = [{ id: "form", label: "Details" }, { id: "blueprint", label: "Review" }, { id: "preview", label: "Done" }];
+    const steps = [
+        { id: "form", label: "Details", icon: ClipboardList },
+        { id: "blueprint", label: "Review", icon: Search },
+        { id: "preview", label: "Done", icon: FileCheck },
+    ];
     const currentStepIndex = steps.findIndex(s => s.id === state.stage);
 
     return (
         <div className="w-full max-w-6xl mx-auto px-4 py-8">
             {/* Progress Bar */}
-            <div className="flex justify-between max-w-lg mx-auto mb-12 relative animate-fade-in">
-                <div className="absolute top-1/2 left-0 w-full h-1 bg-muted -z-10 -translate-y-1/2 rounded-full" />
-                <div className="absolute top-1/2 left-0 h-1 bg-primary -z-10 -translate-y-1/2 rounded-full transition-all duration-500" style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }} />
+            <div className="flex justify-between max-w-md mx-auto mb-12 relative animate-fade-in">
+                <div className="absolute top-4 left-0 w-full h-0.5 bg-muted -z-10 rounded-full" />
+                <div
+                    className="absolute top-4 left-0 h-0.5 bg-primary -z-10 rounded-full transition-all duration-700 ease-out"
+                    style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
+                />
 
                 {steps.map((step, idx) => {
                     const isCompleted = idx < currentStepIndex;
                     const isActive = idx === currentStepIndex;
+                    const Icon = step.icon;
                     return (
-                        <div key={step.id} className="flex flex-col items-center gap-2 bg-background p-2 rounded-xl">
-                            <div className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all ${isActive || isCompleted ? 'border-primary bg-primary text-primary-foreground' : 'border-muted text-muted-foreground bg-background'}`}>
-                                {isCompleted ? <CheckCircle2 size={16} /> : idx + 1}
+                        <div key={step.id} className="flex flex-col items-center gap-2 bg-background px-3 py-1 rounded-xl">
+                            <div
+                                className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                                    isCompleted
+                                        ? 'border-primary bg-primary text-primary-foreground scale-90'
+                                        : isActive
+                                            ? 'border-primary bg-primary/15 text-primary ring-4 ring-primary/10'
+                                            : 'border-muted text-muted-foreground bg-background'
+                                }`}
+                            >
+                                {isCompleted ? <CheckCircle2 size={14} /> : <Icon size={14} />}
                             </div>
-                            <span className={`text-xs font-bold uppercase ${isActive ? 'text-primary' : 'text-muted-foreground'}`}>{step.label}</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-primary' : isCompleted ? 'text-muted-foreground' : 'text-muted-foreground/60'}`}>
+                                {step.label}
+                            </span>
                         </div>
                     );
                 })}
             </div>
 
-            {state.error && (
-                <div className="mb-6 p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm text-center">
-                    ⚠️ {state.error}
-                </div>
-            )}
+            {/* Dismissable Error Banner */}
+            <AnimatePresence>
+                {state.error && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10, height: 0 }}
+                        animate={{ opacity: 1, y: 0, height: "auto" }}
+                        exit={{ opacity: 0, y: -10, height: 0 }}
+                        className="mb-6"
+                    >
+                        <div className="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm flex items-center justify-between gap-3">
+                            <span className="flex-1">{state.error}</span>
+                            <button
+                                onClick={() => dispatch({ type: "SET_ERROR", payload: "" })}
+                                className="p-1 rounded hover:bg-destructive/20 transition-colors shrink-0"
+                            >
+                                <X className="h-4 w-4" />
+                            </button>
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             <AnimatePresence mode="wait">
                 {state.stage === "form" && (

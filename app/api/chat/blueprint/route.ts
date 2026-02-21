@@ -1,6 +1,6 @@
 import { Groq } from "groq-sdk";
 import { buildIterationPrompt } from "@/lib/prompts";
-import { DocumentType, DOCUMENT_TYPES, blueprintSchema } from "@/types";
+import { DocumentType, DOCUMENT_TYPES } from "@/types";
 import { z } from "zod";
 
 // Validate env at startup — fail loudly, not silently
@@ -14,13 +14,25 @@ const groq = new Groq({
 
 const MODEL = "meta-llama/llama-4-scout-17b-16e-instruct";
 
-// Input validation schema
+// Input validation schema — inline blueprint shape to avoid import-ordering issues
 const chatRequestSchema = z.object({
     messages: z.array(z.object({
         role: z.enum(["user", "assistant", "system"]),
         content: z.string(),
     })).min(1, "At least one message is required"),
-    currentBlueprint: blueprintSchema,
+    currentBlueprint: z.object({
+        title: z.string().optional(),
+        documentType: z.enum(DOCUMENT_TYPES),
+        clauses: z.array(z.object({
+            id: z.string(),
+            title: z.string(),
+            description: z.string(),
+            content: z.string().optional(),
+            included: z.boolean(),
+            risk: z.enum(["low", "medium", "high"]),
+        })),
+        summary: z.string(),
+    }),
     documentType: z.enum(DOCUMENT_TYPES).optional(),
 });
 
