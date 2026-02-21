@@ -246,12 +246,12 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
     const currentStepIndex = steps.findIndex(s => s.id === state.stage);
 
     return (
-        <div className="w-full max-w-6xl mx-auto px-4 py-8">
+        <div className="w-full max-w-5xl mx-auto px-2 sm:px-4 py-4">
             {/* Progress Bar */}
-            <div className="flex justify-between max-w-md mx-auto mb-12 relative animate-fade-in">
-                <div className="absolute top-4 left-0 w-full h-0.5 bg-muted -z-10 rounded-full" />
+            <div className="flex justify-between max-w-sm mx-auto mb-10 relative animate-fade-in">
+                <div className="absolute top-4 left-0 w-full h-px bg-border -z-10" />
                 <div
-                    className="absolute top-4 left-0 h-0.5 bg-primary -z-10 rounded-full transition-all duration-700 ease-out"
+                    className="absolute top-4 left-0 h-px bg-foreground/60 -z-10 transition-all duration-700 ease-out"
                     style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
                 />
 
@@ -260,19 +260,19 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                     const isActive = idx === currentStepIndex;
                     const Icon = step.icon;
                     return (
-                        <div key={step.id} className="flex flex-col items-center gap-2 bg-background px-3 py-1 rounded-xl">
+                        <div key={step.id} className="flex flex-col items-center gap-2 bg-background px-3 py-0.5 rounded-lg">
                             <div
-                                className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-300 ${
+                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-300 ${
                                     isCompleted
-                                        ? 'border-primary bg-primary text-primary-foreground scale-90'
+                                        ? 'bg-foreground text-background shadow-sm'
                                         : isActive
-                                            ? 'border-primary bg-primary/15 text-primary ring-4 ring-primary/10'
-                                            : 'border-muted text-muted-foreground bg-background'
+                                            ? 'bg-foreground/10 text-foreground border border-foreground/20'
+                                            : 'bg-muted text-muted-foreground/40 border border-border'
                                 }`}
                             >
                                 {isCompleted ? <CheckCircle2 size={14} /> : <Icon size={14} />}
                             </div>
-                            <span className={`text-[10px] font-bold uppercase tracking-wider ${isActive ? 'text-primary' : isCompleted ? 'text-muted-foreground' : 'text-muted-foreground/60'}`}>
+                            <span className={`text-[10px] font-medium tracking-wider uppercase ${isActive ? 'text-foreground' : isCompleted ? 'text-muted-foreground' : 'text-muted-foreground/40'}`}>
                                 {step.label}
                             </span>
                         </div>

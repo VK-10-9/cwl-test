@@ -66,10 +66,10 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
             common.partyA_type = "company";
             common.partyA_address = "123 Tech Park, Whitefield, Bangalore, KA 560066";
             common.partyA_signatory = "Rajesh Kumar";
-            common.partyB_name = "John Doe";
+            common.partyB_name = "Vikram Mehta";
             common.partyB_type = "individual";
             common.partyB_address = "456 Palm Grove, Indiranagar, Bangalore, KA 560038";
-            common.partyB_signatory = "John Doe";
+            common.partyB_signatory = "Vikram Mehta";
         }
 
         const perType: Record<string, Record<string, string | boolean>> = {
@@ -83,11 +83,16 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                 includeNonCompete: true,
                 includeNonSolicit: true,
                 includeIPAssignment: true,
+                includeNonCircumvent: false,
+                includeIndemnity: true,
+                includeDataProtection: true,
+                includeTradeSecrets: true,
+                includeAuditRights: false,
             },
             mou: {
                 mouType: "joint-venture",
                 relationshipContext: "corp-corp",
-                jurisdiction: "India",
+                jurisdiction: "Bangalore",
                 startDate: new Date().toISOString().split("T")[0],
                 duration: "2-years",
                 renewalTerms: "auto-renew",
@@ -97,7 +102,7 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                 responsibilitiesA: "Provide technical infrastructure, engineering resources (3 full-time developers), and cloud hosting. Lead product development and technical architecture.",
                 responsibilitiesB: "Contribute domain expertise, clinical data access, regulatory guidance, and on-ground coordination with healthcare facilities.",
                 keyPersonnelA: "Dr. Rajesh Kumar (CTO), Anita Singh (Lead Engineer)",
-                keyPersonnelB: "Dr. Meera Patel (Medical Director), John Doe (Project Coordinator)",
+                keyPersonnelB: "Dr. Meera Patel (Medical Director), Vikram Mehta (Project Coordinator)",
                 includeConfidentiality: true,
                 includeNonCompete: false,
                 includeIPClause: true,
@@ -112,79 +117,333 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                 exclusivity: "exclusive-area",
                 publicationRights: "academic-allowed",
             },
-            "request-letter": {
-                senderName: "Dr. Rajesh Kumar",
-                senderDesignation: "Head of Department, Computer Science",
-                senderDepartment: "Department of Computer Science, Acme University",
-                senderContact: "rajesh.kumar@acmeuniv.edu\n+91-9876543210\n123 Tech Park, Whitefield, Bangalore",
-                recipientName: "The Dean, Academic Affairs",
-                recipientOrganisation: "Indian Institute of Technology, Delhi",
-                recipientAddress: "IIT Campus, Hauz Khas, New Delhi 110016",
-                letterDate: new Date().toISOString().split("T")[0],
-                subject: "Request for Permission to Conduct Research Survey on Campus",
-                requestType: "permission",
-                salutation: "respected",
-                openingParagraph: "I am writing to formally request permission to conduct a research survey among final-year B.Tech students at your esteemed institution. Our department is undertaking a study on placement preparedness and industry skill gaps.",
-                requestDetails: "We wish to conduct an anonymous, voluntary online survey over a 2-week window targeting approximately 500 final-year students across all engineering departments. The survey consists of 25 questions and takes approximately 10 minutes to complete.",
-                justification: "This research will contribute to improving industry-academia alignment and help educational institutions better prepare students for the workforce. The findings will be shared with your institution.",
-                urgency: "standard",
-                closing: "thank-consideration",
-                signOff: "sincerely",
-                offerToDiscuss: true,
+            "offer-letter": {
+                candidateName: "Priya Sharma",
+                candidateAddress: "456 Palm Grove, Indiranagar, Bangalore 560038",
+                designation: "Senior Software Engineer",
+                department: "Engineering",
+                reportingTo: "Rajesh Kumar, VP Engineering",
+                joiningDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+                ctcAnnual: "₹18,00,000",
+                ctcBreakdown: "Basic: ₹7,50,000 | HRA: ₹3,00,000 | Special Allowance: ₹4,50,000 | PF (Employer): ₹1,80,000 | Gratuity: ₹1,20,000",
+                employmentType: "full-time",
+                probationPeriod: "6-months",
+                noticePeriod: "2-months",
+                workLocation: "Bangalore (Hybrid — 3 days office, 2 WFH)",
+                offerValidUntil: new Date(Date.now() + 14 * 86400000).toISOString().split("T")[0],
+                includeEsop: true,
+                includeRelocation: false,
+                includeJoiningBonus: true,
+                joiningBonusAmount: "₹1,00,000",
+                additionalTerms: "Offer is subject to successful background verification and submission of academic credentials.",
             },
-            "internship-cert": {
-                certificateTitle: "internship",
-                internName: "Priya Sharma",
-                internId: "INT-2026-042",
-                internEmail: "priya.sharma@example.com",
-                institution: "Indian Institute of Technology, Delhi",
-                degreeProgram: "B.Tech Computer Science",
-                yearOfStudy: "3",
-                internshipType: "full-time",
-                department: "Engineering — Web Platform Team",
-                role: "Full Stack Developer Intern",
-                startDate: "2025-06-01",
-                endDate: "2025-12-01",
-                duration: "6 months",
-                projectTitle: "Real-time Notification Microservice",
-                projectDescription: "Designed and implemented a scalable real-time notification microservice using Node.js and WebSockets. Contributed to 3 production releases including a dashboard redesign using React and TypeScript.",
-                skillsDeveloped: "React, TypeScript, Node.js, WebSockets, PostgreSQL, Docker, CI/CD with GitHub Actions",
-                responsibilities: "Built frontend components, wrote unit tests, participated in code reviews, and led a sprint demo presentation.",
-                performance: "outstanding",
-                attendance: "excellent",
-                teamwork: "excellent",
-                technicalSkills: "excellent",
-                comments: "Priya demonstrated exceptional initiative and code quality. She independently built a real-time notification system that is now in production. Highly recommended for future roles.",
-                stipendPaid: "yes",
-                stipendAmount: "₹25,000 per month",
-                issueDate: new Date().toISOString().split("T")[0],
-                certificateLanguage: "english",
-                signatoryName: "Rajesh Kumar",
-                signatoryDesignation: "VP of Engineering",
-                signatoryDepartment: "Engineering",
+            "appointment-letter": {
+                employeeName: "Vikram Mehta",
+                employeeAddress: "789 Lake View Apartments, Koramangala, Bangalore 560034",
+                designation: "Product Manager",
+                department: "Product",
+                dateOfJoining: new Date().toISOString().split("T")[0],
+                ctcAnnual: "₹24,00,000",
+                ctcBreakdown: "Basic: ₹10,00,000 | HRA: ₹4,00,000 | Special Allowance: ₹5,60,000 | PF (Employer): ₹2,40,000 | Gratuity: ₹2,00,000",
+                probationPeriod: "6-months",
+                noticePeriod: "2-months",
+                workLocation: "Bangalore, Karnataka",
+                workingHours: "9:30 AM – 6:30 PM, Monday to Friday",
+                leavePolicy: "24 Paid Leaves + 12 Public Holidays + 5 Sick Leaves",
+                includeNDA: true,
+                includeNonCompete: false,
+                includeIPAssignment: true,
+                includeCodeOfConduct: true,
+                additionalTerms: "Medical insurance coverage for self and family (₹5L cover). Annual performance bonus of up to 15% of CTC.",
             },
-            "sponsorship-letter": {
-                eventName: "TechConf India 2026",
-                eventType: "tech-conference",
-                eventDate: "2026-03-15",
-                eventVenue: "Bengaluru International Exhibition Centre, Bangalore",
-                eventDescription: "TechConf India is an annual technology conference bringing together 2000+ developers, startup founders, and industry leaders for 2 days of talks, workshops, and networking.",
-                expectedAttendance: "2000+ participants",
-                organizerName: "Acme Corp Pvt Ltd",
-                sponsorshipType: "gold",
-                sponsorshipAmount: "₹2,50,000",
-                brandVisibility: "Logo on main stage banner, event website, all digital communications, event merchandise (t-shirts, bags), and social media posts (10+ mentions).",
-                boothSpace: "10x10 feet premium booth in expo hall",
-                speakingOpportunity: "keynote",
-                networkingAccess: true,
-                sponsorshipDeadline: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
-                paymentTerms: "50-50",
-                contactPerson: "Amit Verma",
-                contactDesignation: "Sponsorship Coordinator",
-                contactEmail: "sponsor@techconfindia.com",
-                contactPhone: "+91-9876543210",
-                letterType: "request",
-                letterTone: "formal",
+            "relieving-letter": {
+                employeeName: "Anita Singh",
+                employeeId: "EMP-2022-018",
+                designation: "Senior Backend Engineer",
+                department: "Engineering",
+                dateOfJoining: "2022-03-15",
+                lastWorkingDate: new Date().toISOString().split("T")[0],
+                resignationDate: new Date(Date.now() - 60 * 86400000).toISOString().split("T")[0],
+                exitReason: "resignation",
+                noticePeriodServed: "full",
+                clearanceStatus: "cleared",
+                conductRemark: "excellent",
+                includeExpCert: true,
+                includeNDAReminder: true,
+            },
+            "payment-reminder": {
+                recipientName: "Zenith Solutions Pvt Ltd",
+                recipientAddress: "42 MG Road, Connaught Place, New Delhi 110001",
+                contactPerson: "Mr. Rahul Verma, Accounts Payable",
+                invoiceNumber: "INV-2025-0042",
+                invoiceDate: new Date(Date.now() - 45 * 86400000).toISOString().split("T")[0],
+                invoiceAmount: "₹3,50,000",
+                originalDueDate: new Date(Date.now() - 15 * 86400000).toISOString().split("T")[0],
+                reminderLevel: "second",
+                paymentMethod: "NEFT to Account: 50200012345678, IFSC: HDFC0001234, Payee: Acme Corp Pvt Ltd",
+                serviceDescription: "Web development services for Project Phoenix (Phase 2) — delivered on 15-Jan-2025. Includes UI redesign, API integration, and QA testing.",
+                includeInterest: true,
+                interestRate: "18%",
+                includeLegalNotice: false,
+            },
+            "esop-grant": {
+                employeeName: "Priya Sharma",
+                employeeId: "EMP-2023-042",
+                designation: "Lead Engineer",
+                grantDate: new Date().toISOString().split("T")[0],
+                numberOfOptions: "10,000",
+                exercisePrice: "₹10",
+                currentFMV: "₹250",
+                vestingSchedule: "4y-1c-monthly",
+                exerciseWindow: "90-days",
+                esopPlanName: "Acme Corp ESOP 2024",
+                boardResolutionDate: "2024-06-15",
+                includeAcceleration: true,
+                includeTaxNote: true,
+                additionalTerms: "Options are subject to the terms and conditions of the Acme Corp ESOP 2024 plan document.",
+            },
+            "share-allotment": {
+                allotteeName: "Seed Ventures LLP",
+                allotteeAddress: "101 Venture Tower, Bandra Kurla Complex, Mumbai 400051",
+                allotteeType: "angel",
+                numberOfShares: "50,000",
+                shareType: "ccps",
+                faceValue: "₹10",
+                premiumPerShare: "₹490",
+                totalConsideration: "₹25,00,000",
+                allotmentDate: new Date().toISOString().split("T")[0],
+                boardResolutionDate: new Date(Date.now() - 7 * 86400000).toISOString().split("T")[0],
+                shareholdingPost: "5.2%",
+                paymentReceived: "full",
+                includeROCFiling: true,
+                includeShareCert: true,
+            },
+            "legal-notice": {
+                partyB_name: "Zenith Solutions Pvt Ltd",
+                partyB_signatory: "Rahul Verma, Director",
+                partyB_address: "42 MG Road, Connaught Place, New Delhi 110001",
+                noticeType: "recovery",
+                jurisdiction: "Bangalore",
+                factualBackground: "On 01-Mar-2025, the Sender entered into a Software Development Agreement with the Recipient for development of a mobile application. The total contract value was ₹15,00,000, of which ₹10,00,000 has been paid. The remaining ₹5,00,000 was due on 01-Jun-2025 upon delivery of the completed application. The application was delivered and accepted on 28-May-2025, but payment has not been received despite multiple follow-ups.",
+                grievance: "The Recipient has failed to pay the remaining ₹5,00,000 despite accepting the deliverables and multiple reminders via email (dated 05-Jun, 15-Jun, and 25-Jun-2025). This constitutes a breach of the payment terms under Clause 5 of the Agreement.",
+                demandedRelief: "Payment of ₹5,00,000 (outstanding amount) plus ₹45,000 as interest at 18% p.a. from the due date, within 15 days of receipt of this notice.",
+                responseDeadline: "15",
+                amountClaimed: "₹5,45,000",
+                relevantDocuments: "1. Software Development Agreement dated 01-Mar-2025\n2. Delivery acceptance email dated 28-May-2025\n3. Invoice INV-2025-038 dated 01-Jun-2025\n4. Follow-up emails (3 nos.)",
+                includeConsequences: true,
+                sendVia: "rpad",
+            },
+            "breach-notice": {
+                partyB_name: "CloudHost India Pvt Ltd",
+                partyB_signatory: "Amit Patel, CEO",
+                partyB_address: "55 Tech Hub, HITEC City, Hyderabad 500081",
+                contractTitle: "Cloud Hosting & Managed Services Agreement",
+                contractDate: "2024-06-01",
+                breachType: "sla-breach",
+                breachDescription: "The Service Provider has failed to maintain the guaranteed 99.9% uptime SLA for 3 consecutive months (April, May, June 2025). Actual uptime was 96.2%, 97.1%, and 95.8% respectively, resulting in significant business disruption and lost revenue.",
+                contractClauseRef: "Clause 4.2 (Service Level Agreement) and Clause 4.5 (Uptime Guarantee)",
+                curePeriod: "15",
+                damagesAmount: "₹8,00,000",
+                previousReminders: "Email escalation to account manager on 15-Apr-2025, formal complaint to CTO on 01-May-2025, meeting on 15-May-2025 with verbal assurance of resolution.",
+                includeTermination: true,
+                includeDamagesClaim: true,
+                includeLegalProceedings: true,
+            },
+            loi: {
+                partyB_name: "Seed Ventures LLP",
+                partyB_signatory: "Meera Patel, Managing Partner",
+                partyB_address: "101 Venture Tower, Bandra Kurla Complex, Mumbai 400051",
+                loiType: "investment",
+                dealSummary: "Seed Ventures intends to invest ₹2,00,00,000 (Two Crores) in Acme Corp Pvt Ltd at a pre-money valuation of ₹10,00,00,000 (Ten Crores), for approximately 16.67% equity on a fully diluted basis, via Compulsorily Convertible Preference Shares (CCPS).",
+                keyTerms: "Investment: ₹2 Cr | Valuation: ₹10 Cr pre-money | Instrument: CCPS | Board Seat: 1 observer seat | Anti-dilution: Broad-based weighted average | Liquidation Preference: 1x non-participating",
+                exclusivityPeriod: "60-days",
+                dueDiligencePeriod: "30-days",
+                bindingStatus: "non-binding",
+                targetClosingDate: new Date(Date.now() + 90 * 86400000).toISOString().split("T")[0],
+                conditionsPrecedent: "Satisfactory due diligence, board approvals from both parties, execution of SHA/SSA, and regulatory clearances if applicable.",
+                jurisdiction: "Bangalore",
+                includeConfidentiality: true,
+                includeBreakFee: false,
+            },
+            "vendor-onboarding": {
+                partyB_name: "PixelCraft Design Studio",
+                partyB_signatory: "Neha Gupta, Founder",
+                partyB_address: "34 Design Lane, HSR Layout, Bangalore 560102",
+                vendorType: "marketing",
+                scopeOfWork: "Complete brand identity redesign including logo, brand guidelines, website UI/UX design (10 pages), social media templates (20 variants), and pitch deck template. 3 rounds of revisions included.",
+                contractValue: "₹4,50,000",
+                paymentTerms: "milestone",
+                contractDuration: "3-months",
+                slaRequirements: "First draft within 10 working days. Revision turnaround: 5 working days. Weekly progress calls every Monday.",
+                jurisdiction: "Bangalore",
+                includeNDA: true,
+                includeIPClause: true,
+                includeInsurance: false,
+                includeGSTCompliance: true,
+                complianceDocuments: "GST Certificate, PAN Card, Bank Account Details, Portfolio/Past Work References",
+            },
+            "startup-india": {
+                companyName: "Acme Technologies Pvt Ltd",
+                cin: "U72200KA2023PTC175432",
+                dateOfIncorporation: "2023-04-15",
+                registeredAddress: "123 Tech Park, Whitefield, Bangalore, Karnataka 560066",
+                natureOfBusiness: "AI-powered legal document automation platform using large language models to democratize access to legal services for Indian startups and SMEs. Novel approach: two-stage generation (blueprint → full document) with clause-level risk assessment and an India-specific legal knowledge base.",
+                turnover: "₹45,00,000",
+                numberOfEmployees: "12",
+                founderName: "Rajesh Kumar, CEO & Co-Founder",
+                letterPurpose: "dpiit-recognition",
+                includeFinancials: true,
+                includePitchDeck: true,
+            },
+            "gst-bank-letter": {
+                companyName: "Acme Technologies Pvt Ltd",
+                cin: "U72200KA2023PTC175432",
+                pan: "AABCA1234F",
+                registeredAddress: "123 Tech Park, Whitefield, Bangalore, Karnataka 560066",
+                bankName: "HDFC Bank, Koramangala Branch, Bangalore",
+                authorizedSignatory: "Rajesh Kumar, Director",
+                directorsList: "1. Rajesh Kumar (DIN: 12345678) — CEO & Director\n2. Priya Sharma (DIN: 87654321) — CTO & Director",
+                natureOfBusiness: "Software Development & SaaS Services (SAC: 998314)",
+                expectedTurnover: "₹1,20,00,000",
+                letterPurpose: "current-account",
+                enclosedDocuments: "1. Certificate of Incorporation\n2. PAN Card\n3. MOA & AOA\n4. Board Resolution (dated 20-Apr-2023)\n5. Address Proof (Rent Agreement + NOC)\n6. KYC of Directors (Aadhaar + PAN)",
+            },
+            "co-founder-agreement": {
+                partyB_name: "Priya Sharma",
+                partyB_signatory: "Priya Sharma",
+                partyB_address: "456 Palm Grove, Indiranagar, Bangalore 560038",
+                startupName: "Acme Technologies Pvt Ltd",
+                cin: "U72200KA2023PTC175432",
+                businessDescription: "AI-powered legal document automation platform using large language models to democratize access to legal services for Indian startups and SMEs.",
+                equitySplit: "Founder A (Rajesh Kumar): 55%, Founder B (Priya Sharma): 45%",
+                vestingSchedule: "4y-1c-monthly",
+                roleFounderA: "CEO — Business strategy, fundraising, investor relations, partnerships, hiring, and go-to-market execution.",
+                roleFounderB: "CTO — Product development, engineering, technical architecture, AI/ML pipeline, and DevOps infrastructure.",
+                salaryTerms: "No salary until Series A. Post-Series A: ₹1,50,000/month each, subject to board approval.",
+                decisionMaking: "domain",
+                deadlockResolution: "mediation-arbitration",
+                nonCompetePeriod: "12-months",
+                exitTriggers: "Voluntary exit (90 days notice), termination for cause (immediate), death/disability (buyback at FMV), mutual agreement",
+                includeIPAssignment: true,
+                includeAntiDilution: true,
+                includeExpensePolicy: true,
+                jurisdiction: "Bangalore",
+            },
+            "board-resolution": {
+                resolutionPurpose: "esop",
+                meetingType: "board",
+                meetingDate: new Date().toISOString().split("T")[0],
+                meetingTime: "11:00 AM IST",
+                meetingVenue: "Registered Office — 123 Tech Park, Whitefield, Bangalore 560066",
+                directorsPresent: "1. Rajesh Kumar (DIN: 12345678) — Chairperson & CEO\n2. Priya Sharma (DIN: 87654321) — CTO & Director\n3. Meera Patel (DIN: 11223344) — Independent Director",
+                quorumConfirmation: true,
+                resolutionText: "RESOLVED THAT the Company hereby approves creation of an Employee Stock Option Pool (ESOP Pool) comprising 10% of the fully diluted share capital of the Company, i.e., 1,00,000 equity shares of face value ₹10 each, to be granted to eligible employees, directors, and consultants of the Company as per the ESOP Plan 2025.",
+                authorizedPerson: "Rajesh Kumar, CEO & Director",
+                additionalNotes: "The ESOP Plan 2025 shall be administered by the Board or a Compensation Committee appointed by the Board.",
+                includeROCFiling: true,
+            },
+            "termination-letter": {
+                employeeName: "Amit Verma",
+                employeeId: "EMP-2023-027",
+                designation: "Marketing Manager",
+                department: "Marketing",
+                dateOfJoining: "2023-06-01",
+                terminationReason: "performance",
+                terminationDate: new Date(Date.now() + 30 * 86400000).toISOString().split("T")[0],
+                noticePeriodStatus: "full-notice",
+                noticePeriodDays: "30",
+                settlementDetails: "Pending salary for the current month, earned leave encashment (12 days), and pro-rata bonus. Gratuity not applicable (tenure < 5 years).",
+                assetReturnList: "MacBook Pro (Asset ID: LPT-042), Company ID Card, Building Access Card, Company Email Account, Marketing Tool Licenses (HubSpot, Canva)",
+                includeNDAReminder: true,
+                includeNonDisparagement: true,
+                includeAppealRight: true,
+            },
+            "consultancy-agreement": {
+                partyB_name: "Siddharth Rao",
+                partyB_signatory: "Siddharth Rao",
+                partyB_address: "78 Tech Residency, Koramangala, Bangalore 560034",
+                consultantType: "individual",
+                scopeOfWork: "Design and implement a scalable microservices architecture for the ClauseWala backend. Deliverables: (1) Architecture design document, (2) API specifications, (3) Core service implementation (Auth, Document, AI Gateway), (4) CI/CD pipeline setup, (5) Load testing report. 2 rounds of revisions included.",
+                engagementDuration: "3-months",
+                consultancyFee: "₹3,00,000 (₹1,00,000/month)",
+                paymentTerms: "monthly",
+                tdsRate: "10-194j",
+                workLocation: "Remote (weekly sync calls on Monday)",
+                noticePeriod: "15-days",
+                includeIPAssignment: true,
+                includeNDA: true,
+                includeNonSolicit: true,
+                includeNonCompete: false,
+                includeIndemnity: true,
+                additionalTerms: "Consultant will use company-provided GitHub organization for all code. Weekly progress updates via Slack. Access to AWS staging environment will be provided.",
+            },
+            "service-agreement": {
+                partyB_name: "CloudNine Hosting Pvt Ltd",
+                partyB_signatory: "Amit Patel, CEO",
+                partyB_address: "55 Tech Hub, HITEC City, Hyderabad 500081",
+                serviceType: "saas",
+                serviceDescription: "Cloud hosting and managed infrastructure services for the ClauseWala platform, including: (1) Production environment on AWS Mumbai region, (2) Auto-scaling compute (2-8 instances), (3) Managed PostgreSQL database with daily backups, (4) CDN for static assets, (5) 24/7 monitoring and incident response, (6) Monthly security patching.",
+                pricingModel: "monthly",
+                contractValue: "₹75,000/month",
+                paymentTerms: "net-30",
+                contractDuration: "12-months",
+                slaUptime: "99.9",
+                slaResponseTime: "P1 (Critical): 30 min, P2 (High): 2 hours, P3 (Medium): 8 hours, P4 (Low): 24 hours",
+                liabilityCap: "12-month-fees",
+                includeDataProtection: true,
+                includeIPClause: true,
+                includeConfidentiality: true,
+                includeForceMajeure: true,
+                includeIndemnity: true,
+                disputeResolution: "arbitration",
+            },
+            "ip-assignment": {
+                partyB_name: "Rajesh Kumar",
+                partyB_signatory: "Rajesh Kumar",
+                partyB_address: "123 Tech Park, Whitefield, Bangalore 560066",
+                assignorType: "founder",
+                ipDescription: "Complete source code, architecture, UI/UX designs, AI prompt library, clause database, and all documentation for the ClauseWala legal document automation platform — initially developed by the Assignor prior to company incorporation.",
+                ipType: "comprehensive",
+                creationContext: "pre-incorporation",
+                consideration: "₹1 (nominal) + 55% equity stake in Acme Technologies Pvt Ltd as per Co-Founder Agreement dated 15-Apr-2023",
+                includeSourceCode: true,
+                includeMoralRightsWaiver: true,
+                includeWarranties: true,
+                includeFurtherAssurance: true,
+                includeNonAssertion: true,
+                jurisdiction: "Bangalore",
+            },
+            "experience-letter": {
+                employeeName: "Anita Singh",
+                employeeId: "EMP-2022-018",
+                designation: "Senior Backend Engineer",
+                department: "Engineering",
+                dateOfJoining: "2022-03-15",
+                lastWorkingDate: new Date().toISOString().split("T")[0],
+                designationsHeld: "1. Software Engineer (Mar 2022 – Feb 2023)\n2. Senior Software Engineer (Mar 2023 – Nov 2024)\n3. Senior Backend Engineer (Dec 2024 – Present)",
+                keyResponsibilities: "Led backend development for the AI document generation pipeline. Designed and implemented microservices architecture handling 10,000+ document generations/month. Mentored 3 junior engineers. Owned CI/CD pipeline and production deployments. Key contributor to the clause library and risk assessment engine.",
+                performanceRemark: "excellent",
+                includeProjects: true,
+                includeSkills: true,
+                includeWishNote: true,
+            },
+            "internship-letter": {
+                internName: "Arjun Patel",
+                internAddress: "B-12, Harmony Apartments, Aundh, Pune 411007",
+                collegeName: "College of Engineering, Pune (COEP)",
+                designation: "Software Engineering Intern",
+                department: "Engineering — Backend Team",
+                projectDescription: "Build a RESTful API layer for the ClauseWala template management system. Expected deliverables: (1) CRUD endpoints for templates and clauses, (2) Search and filtering with Elasticsearch, (3) Unit tests with >80% coverage, (4) API documentation using Swagger/OpenAPI.",
+                startDate: new Date(Date.now() + 14 * 86400000).toISOString().split("T")[0],
+                duration: "3-months",
+                stipend: "₹25,000",
+                workLocation: "Bangalore (Hybrid — 3 days office, 2 days remote)",
+                reportingTo: "Priya Sharma, CTO",
+                workingHours: "10:00 AM – 6:00 PM, Monday to Friday",
+                ppoEligible: "yes-performance",
+                includeNDA: true,
+                includeIPClause: true,
+                includeCertificate: true,
             },
         };
 
@@ -195,15 +454,16 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
     };
 
     return (
-        <Card className="w-full max-w-2xl mx-auto animate-fade-in bg-card border-border shadow-lg" suppressHydrationWarning>
-            <CardHeader className="pb-6">
-                <div className="flex items-center gap-3 mb-1">
-                    <div className="h-10 w-10 rounded-lg bg-primary/15 border border-primary/20 flex items-center justify-center">
-                        <FileText className="h-5 w-5 text-primary" />
+        <>
+        <Card className="w-full max-w-2xl mx-auto animate-fade-in bg-card border-border" suppressHydrationWarning>
+            <CardHeader className="pb-5">
+                <div className="flex items-center gap-3 mb-0.5">
+                    <div className="h-9 w-9 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center">
+                        <FileText className="h-4 w-4 text-foreground/70" />
                     </div>
                     <div>
-                        <CardTitle className="text-xl">Drafting {template.label}</CardTitle>
-                        <CardDescription className="mt-0.5">
+                        <CardTitle className="text-lg font-semibold tracking-tight">Drafting {template.label}</CardTitle>
+                        <CardDescription className="mt-0.5 text-[13px]">
                             {template.description}
                         </CardDescription>
                     </div>
@@ -214,11 +474,11 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
 
                     {/* Section 1: Party A */}
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2.5 border-b border-border/50 pb-2">
-                            <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center">
-                                <Building2 className="h-3.5 w-3.5 text-primary" />
+                        <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
+                            <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
+                                <Building2 className="h-3.5 w-3.5 text-foreground/60" />
                             </div>
-                            <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">
+                            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
                                 Party A (You)
                             </h3>
                         </div>
@@ -252,11 +512,11 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                     {/* Section 2: Party B */}
                     {template.isTwoParty && (
                         <div className="space-y-4">
-                            <div className="flex items-center gap-2.5 border-b border-border/50 pb-2">
-                                <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center">
-                                    <Users className="h-3.5 w-3.5 text-primary" />
+                            <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
+                                <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
+                                    <Users className="h-3.5 w-3.5 text-foreground/60" />
                                 </div>
-                                <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">
+                                <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
                                     Party B (Other Side)
                                 </h3>
                             </div>
@@ -290,11 +550,11 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
 
                     {/* Section 3: Document Details */}
                     <div className="space-y-4">
-                        <div className="flex items-center gap-2.5 border-b border-border/50 pb-2">
-                            <div className="h-6 w-6 rounded-md bg-primary/10 flex items-center justify-center">
-                                <Sparkles className="h-3.5 w-3.5 text-primary" />
+                        <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
+                            <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
+                                <Sparkles className="h-3.5 w-3.5 text-foreground/60" />
                             </div>
-                            <h3 className="text-sm font-semibold text-primary uppercase tracking-wider">
+                            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
                                 Agreement Details
                             </h3>
                         </div>
@@ -319,13 +579,13 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                     </div>
 
                 </CardContent>
-                <CardFooter className="flex justify-between items-center pt-6 border-t border-border/40 gap-4">
+                <CardFooter className="flex justify-between items-center pt-5 border-t border-border/60 gap-4">
                     <div className="flex items-center gap-3">
                         <Button
                             type="button"
                             variant="outline"
                             onClick={fillDummyData}
-                            className="text-xs gap-1.5"
+                            className="text-xs gap-1.5 border-border/60 text-muted-foreground hover:text-foreground"
                         >
                             <Sparkles className="h-3 w-3" />
                             Fill Dummy Data
@@ -337,25 +597,26 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                         )}
                     </div>
 
-                    <LiquidButton type="submit" disabled={isLoading} size="lg" className="min-w-[220px]">
+                    <LiquidButton type="submit" disabled={isLoading} size="lg" className="min-w-[200px]">
                         {isLoading ? (
                             <span className="flex items-center gap-2">
                                 <Loader2 className="h-4 w-4 animate-spin" />
                                 Analyzing...
                             </span>
                         ) : (
-                            "Generate Blueprint →"
+                            <span className="text-sm">Generate Blueprint →</span>
                         )}
                     </LiquidButton>
                 </CardFooter>
             </form>
-
-            {/* AI Form Assistant Bot */}
-            <FormAssistant
-                docType={docType}
-                currentFormData={currentFormData}
-                onApplyFields={handleBotApplyFields}
-            />
         </Card>
+
+        {/* AI Form Assistant — floating widget, non-blocking */}
+        <FormAssistant
+            docType={docType}
+            currentFormData={currentFormData}
+            onApplyFields={handleBotApplyFields}
+        />
+        </>
     );
 }

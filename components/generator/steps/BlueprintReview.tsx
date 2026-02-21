@@ -69,12 +69,12 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
             {blueprint.summary && (
                 <div className="bg-card border border-border rounded-xl p-5">
                     <div className="flex items-start gap-3">
-                        <div className="h-8 w-8 rounded-lg bg-primary/15 border border-primary/20 flex items-center justify-center shrink-0 mt-0.5">
-                            <FileText className="h-4 w-4 text-primary" />
+                        <div className="h-8 w-8 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center shrink-0 mt-0.5">
+                            <FileText className="h-4 w-4 text-foreground/70" />
                         </div>
                         <div>
-                            <h3 className="text-sm font-bold text-foreground mb-1.5 uppercase tracking-wide">Document Summary</h3>
-                            <p className="text-sm text-muted-foreground leading-relaxed font-mono">{blueprint.summary}</p>
+                            <h3 className="text-[11px] font-semibold text-muted-foreground mb-1.5 uppercase tracking-[0.15em]">Document Summary</h3>
+                            <p className="text-sm text-muted-foreground leading-relaxed">{blueprint.summary}</p>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
 
             {/* Risk Score Meter */}
             <div className="bg-card border border-border rounded-xl p-5">
-                <h4 className="text-xs font-mono text-muted-foreground mb-3 uppercase tracking-wider">Risk Score</h4>
+                <h4 className="text-[11px] font-mono text-muted-foreground/60 mb-3 uppercase tracking-[0.15em]">Risk Score</h4>
                 <div className="flex items-center gap-4">
                     <div className="flex-1 h-3 bg-muted/50 rounded-full overflow-hidden">
                         <motion.div
@@ -122,7 +122,7 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
             {/* Clause Preview List (compact) */}
             <div className="bg-card border border-border rounded-xl overflow-hidden">
                 <div className="px-4 py-3 border-b border-border">
-                    <h4 className="text-xs font-mono text-muted-foreground uppercase tracking-wider">Clause Breakdown</h4>
+                    <h4 className="text-[11px] font-mono text-muted-foreground/60 uppercase tracking-[0.15em]">Clause Breakdown</h4>
                 </div>
                 <div className="divide-y divide-border max-h-[280px] overflow-y-auto">
                     {(blueprint.clauses || []).map((clause, i) => {
@@ -151,9 +151,9 @@ function OverviewStep({ blueprint }: { blueprint: Blueprint }) {
 function StatCard({ label, value, icon, color }: { label: string; value: number; icon: React.ReactNode; color: string }) {
     return (
         <div className="bg-card border border-border rounded-xl p-4 flex flex-col items-center text-center">
-            <div className={`mb-2 ${color}`}>{icon}</div>
-            <span className="text-2xl font-bold tabular-nums">{value}</span>
-            <span className="text-[10px] text-muted-foreground font-mono uppercase tracking-wider mt-1">{label}</span>
+            <div className={`mb-2 opacity-60 ${color}`}>{icon}</div>
+            <span className="text-2xl font-bold tabular-nums tracking-tight">{value}</span>
+            <span className="text-[10px] text-muted-foreground/60 font-mono uppercase tracking-[0.15em] mt-1">{label}</span>
         </div>
     );
 }
@@ -221,25 +221,25 @@ function ClauseSelectionStep({
                         `Analyze ALL ${included.length} included clauses and improve their risk factors. There are currently ${highCount} high-risk and ${medCount} medium-risk clauses. For each clause: (1) identify specific weaknesses, (2) suggest concrete improvements to reduce risk, (3) rewrite descriptions with better protective language. Return the complete updated clause list with improved risk levels where possible.`
                     );
                 }}
-                className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-primary/20 bg-gradient-to-r from-primary/5 via-primary/10 to-primary/5 hover:from-primary/10 hover:via-primary/15 hover:to-primary/10 hover:border-primary/40 transition-all duration-300"
+                className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-foreground/15 bg-card hover:bg-accent/50 transition-all duration-300"
             >
-                <div className="h-9 w-9 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-                    <Wand2 className="h-4 w-4 text-primary" />
+                <div className="h-8 w-8 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center shrink-0 group-hover:bg-foreground/[0.08] transition-all">
+                    <Wand2 className="h-4 w-4 text-foreground/60 group-hover:text-foreground transition-colors" />
                 </div>
                 <div className="flex-1 text-left">
-                    <p className="text-xs font-mono font-bold text-primary">IMPROVE ALL RISK FACTORS</p>
-                    <p className="text-[10px] text-muted-foreground font-mono mt-0.5">
-                        AI will analyze every clause and suggest improvements to reduce risk exposure
+                    <p className="text-[11px] font-semibold text-foreground tracking-tight">Improve All Risk Factors</p>
+                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                        AI analyzes every clause and suggests improvements
                     </p>
                 </div>
-                <ArrowRight className="h-4 w-4 text-primary/50 group-hover:text-primary group-hover:translate-x-0.5 transition-all" />
+                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all" />
             </button>
 
             {/* Instruction hint */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-primary/5 border border-primary/10 rounded-lg">
-                <Info className="h-3.5 w-3.5 text-primary shrink-0" />
-                <p className="text-[11px] text-muted-foreground font-mono">
-                    Toggle clauses on/off, or use the chat/wand icons to discuss or improve individual clauses with the AI.
+            <div className="flex items-center gap-2 px-3 py-2 bg-muted/40 border border-border/40 rounded-lg">
+                <Info className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
+                <p className="text-[11px] text-muted-foreground/60">
+                    Toggle clauses on/off, or use the icons to discuss or improve individual clauses with the AI.
                 </p>
             </div>
 
@@ -254,21 +254,21 @@ function ClauseSelectionStep({
                             key={clause.id}
                             className={`transition-all duration-300 relative overflow-hidden group ${
                                 clause.included
-                                    ? "border-primary/20 bg-primary/5 hover:border-primary/40"
-                                    : "border-border opacity-50 bg-muted/30 hover:opacity-70"
+                                    ? "border-border hover:border-foreground/12 bg-card hover:shadow-[0_4px_20px_rgb(0,0,0,0.03)]"
+                                    : "border-border/60 opacity-40 bg-muted/20 hover:opacity-60"
                             }`}
                         >
                             {clause.included && (
-                                <div className="absolute inset-0 bg-gradient-to-r from-primary/5 to-transparent pointer-events-none" />
+                                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-foreground/10" />
                             )}
 
                             <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10 w-full">
                                 <div className="space-y-1 w-full pr-12">
-                                    <CardTitle className="text-base font-mono flex items-center gap-2 flex-wrap">
-                                        <span className="text-primary/50 text-xs font-normal">
+                                    <CardTitle className="text-[14px] flex items-center gap-2 flex-wrap tracking-tight">
+                                        <span className="text-muted-foreground/30 text-xs font-mono">
                                             {String(realIndex + 1).padStart(2, "0")}
                                         </span>
-                                        <span className="mr-2">{clause.title}</span>
+                                        <span className="font-semibold mr-2">{clause.title}</span>
                                         {clause.risk === "high" && (
                                             <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-red-200 bg-red-50 text-red-600 font-mono uppercase tracking-wider">
                                                 <Shield className="h-2.5 w-2.5" /> HIGH_RISK
@@ -772,7 +772,7 @@ function ReviewStepper({
     const currentIndex = REVIEW_STEPS.findIndex((s) => s.id === currentStep);
 
     return (
-        <div className="flex items-center gap-1 w-full overflow-x-auto py-1">
+        <div className="flex items-center gap-0.5 w-full overflow-x-auto py-1">
             {REVIEW_STEPS.map((step, idx) => {
                 const isActive = step.id === currentStep;
                 const isCompleted = completedSteps.has(step.id);
@@ -785,34 +785,32 @@ function ReviewStepper({
                             onClick={() => onStepClick(step.id)}
                             className={`flex items-center gap-2 px-3 py-2 rounded-lg text-left w-full transition-all duration-200 group ${
                                 isActive
-                                    ? "bg-primary/10 border border-primary/30"
+                                    ? "bg-foreground/[0.06]"
                                     : isCompleted || isPast
-                                        ? "hover:bg-muted/40 border border-transparent"
-                                        : "hover:bg-muted/20 border border-transparent opacity-60"
+                                        ? "hover:bg-muted/40"
+                                        : "hover:bg-muted/20 opacity-50"
                             }`}
                         >
-                            <div className={`h-6 w-6 rounded-full flex items-center justify-center shrink-0 text-[10px] font-bold transition-all ${
+                            <div className={`h-5 w-5 rounded-full flex items-center justify-center shrink-0 text-[10px] transition-all ${
                                 isActive
-                                    ? "bg-primary text-primary-foreground ring-2 ring-primary/20"
+                                    ? "bg-foreground text-background"
                                     : isCompleted
-                                        ? "bg-green-50 text-green-600"
-                                        : isPast
-                                            ? "bg-muted text-muted-foreground"
-                                            : "bg-muted/50 text-muted-foreground/50"
+                                        ? "bg-green-100 text-green-600"
+                                        : "bg-muted text-muted-foreground/50"
                             }`}>
-                                {isCompleted ? <Check className="h-3 w-3" /> : <Icon className="h-3 w-3" />}
+                                {isCompleted ? <Check className="h-2.5 w-2.5" /> : <Icon className="h-2.5 w-2.5" />}
                             </div>
                             <div className="min-w-0 hidden sm:block">
-                                <p className={`text-[10px] font-mono truncate ${
-                                    isActive ? "text-primary font-bold" : isCompleted ? "text-foreground" : "text-muted-foreground"
+                                <p className={`text-[11px] truncate tracking-tight ${
+                                    isActive ? "text-foreground font-medium" : isCompleted ? "text-foreground/70" : "text-muted-foreground/50"
                                 }`}>
                                     {step.shortLabel}
                                 </p>
                             </div>
                         </button>
                         {idx < REVIEW_STEPS.length - 1 && (
-                            <ChevronRight className={`h-3 w-3 shrink-0 mx-0.5 ${
-                                isPast || isCompleted ? "text-primary/40" : "text-border"
+                            <ChevronRight className={`h-3 w-3 shrink-0 mx-0 ${
+                                isPast || isCompleted ? "text-foreground/20" : "text-border/50"
                             }`} />
                         )}
                     </div>
@@ -886,27 +884,27 @@ export default function BlueprintReview({
     return (
         <div className="flex flex-col h-[calc(100vh-200px)] gap-3 animate-fade-in w-full max-w-5xl mx-auto">
             {/* Top Header */}
-            <div className="flex items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border shadow-sm shrink-0">
+            <div className="flex items-center justify-between gap-3 bg-background/80 backdrop-blur-xl p-3 rounded-xl border border-border/60 shadow-sm shrink-0">
                 <div className="flex items-center gap-3">
                     <Button
                         variant="ghost"
                         size="icon"
                         onClick={goPrev}
-                        className="h-8 w-8 border border-input bg-background shadow-sm hover:bg-accent"
+                        className="h-8 w-8 border border-border/60 bg-background hover:bg-accent"
                     >
                         <ArrowLeft className="h-4 w-4" />
                     </Button>
                     <div>
-                        <h2 className="text-sm font-bold flex items-center gap-2 font-mono">
-                            <span className="text-primary">&#9889;</span> BLUEPRINT REVIEW
+                        <h2 className="text-[13px] font-semibold flex items-center gap-2 tracking-tight">
+                            Blueprint Review
                         </h2>
                         <div className="flex items-center gap-2 mt-0.5">
-                            <span className="text-[10px] text-muted-foreground font-mono px-1.5 py-0.5 rounded bg-muted border border-border">
-                                {stats.included}/{stats.total} ACTIVE
+                            <span className="text-[10px] text-muted-foreground/60 font-mono">
+                                {stats.included}/{stats.total} clauses
                             </span>
                             {stats.high > 0 && (
-                                <span className="text-[10px] text-red-600 font-mono px-1.5 py-0.5 rounded bg-red-50 border border-red-200 flex items-center gap-1">
-                                    <TriangleAlert className="h-2.5 w-2.5" /> {stats.high} HIGH
+                                <span className="text-[10px] text-red-600/80 font-mono flex items-center gap-1">
+                                    <TriangleAlert className="h-2.5 w-2.5" /> {stats.high} high risk
                                 </span>
                             )}
                         </div>
@@ -914,13 +912,13 @@ export default function BlueprintReview({
                 </div>
 
                 {/* Step indicator (compact) */}
-                <span className="text-[10px] text-muted-foreground font-mono hidden sm:block">
-                    STEP {currentIndex + 1} / {REVIEW_STEPS.length}
+                <span className="text-[10px] text-muted-foreground/40 font-mono hidden sm:block">
+                    {currentIndex + 1}/{REVIEW_STEPS.length}
                 </span>
             </div>
 
             {/* Step Navigation Bar */}
-            <div className="bg-card border border-border rounded-xl px-2 py-1 shrink-0">
+            <div className="bg-card border border-border/60 rounded-xl px-2 py-1 shrink-0">
                 <ReviewStepper
                     currentStep={currentStep}
                     onStepClick={goToStep}
@@ -982,7 +980,7 @@ export default function BlueprintReview({
             </div>
 
             {/* Bottom Navigation Bar */}
-            <div className="flex items-center justify-between bg-card p-3 rounded-xl border border-border shadow-sm shrink-0">
+            <div className="flex items-center justify-between bg-background/80 backdrop-blur-xl p-3 rounded-xl border border-border/60 shadow-sm shrink-0">
                 <Button
                     variant="ghost"
                     size="sm"

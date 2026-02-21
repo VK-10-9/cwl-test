@@ -1,10 +1,59 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AuthProvider from "@/components/AuthProvider";
 
 export const metadata: Metadata = {
-  title: "DocuForge AI — AI-Powered Document Automation",
+  metadataBase: new URL("https://clausewala.com"),
+  title: {
+    default: "ClauseWala. — Contracts. Simplified.",
+    template: "%s — ClauseWala.",
+  },
   description:
-    "Generate professionally formatted legal documents in seconds. NDA, MOU, Request Letters, Certificates and more — powered by AI.",
+    "AI-powered legal documents for Indian startups. Draft NDAs, MOUs, offer letters, co-founder agreements and 18 more — clause by clause, export-ready.",
+  keywords: [
+    "legal documents India",
+    "NDA generator India",
+    "startup contracts",
+    "AI legal drafting",
+    "ClauseWala",
+    "Indian contract generator",
+    "MOU template India",
+    "offer letter generator",
+    "ESOP grant letter",
+    "co-founder agreement",
+  ],
+  authors: [{ name: "ClauseWala" }],
+  creator: "ClauseWala",
+  icons: {
+    icon: "/brand/logo-mark.png",
+    apple: "/brand/logo-mark.png",
+  },
+  openGraph: {
+    type: "website",
+    locale: "en_IN",
+    url: "https://clausewala.com",
+    siteName: "ClauseWala.",
+    title: "ClauseWala. — Contracts. Simplified.",
+    description: "AI-powered legal documents for Indian startups. Draft contracts in minutes, not days.",
+    images: [
+      {
+        url: "/brand/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "ClauseWala — Contracts. Simplified.",
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "ClauseWala. — Contracts. Simplified.",
+    description: "AI-powered legal documents for Indian startups. Draft contracts in minutes, not days.",
+    images: ["/brand/og-image.png"],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
@@ -22,7 +71,9 @@ export default function RootLayout({
         />
       </head>
       <body>
-        {children}
+        <AuthProvider>
+          {children}
+        </AuthProvider>
       </body>
     </html>
   );

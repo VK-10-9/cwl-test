@@ -17,17 +17,17 @@ export default async function GeneratePage({ params }: GeneratePageProps) {
         <div className="min-h-screen bg-background relative">
             <Navbar />
 
-            <main className="relative z-10 pt-24 pb-20 container mx-auto px-4">
-                <div className="text-center mb-8 animate-fade-in">
-                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-card border border-border text-xs font-mono text-primary mb-4">
+            <main className="relative z-10 pt-28 md:pt-32 pb-24 max-w-5xl mx-auto px-6 sm:px-8">
+                <div className="text-center mb-10 animate-fade-in">
+                    <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-muted/60 border border-border/60 text-[11px] font-mono text-muted-foreground mb-5">
                         <span>{icon}</span>
-                        <span className="uppercase tracking-wider">{docType.replace("-", " ")}</span>
+                        <span className="uppercase tracking-[0.15em]">{docType.replace("-", " ")}</span>
                     </div>
-                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight mb-2">
-                        Drafting <span className="text-primary">{label}</span>
+                    <h1 className="text-2xl md:text-3xl font-semibold tracking-tight mb-2">
+                        Drafting <span className="text-foreground">{label}</span>
                     </h1>
-                    <p className="text-muted-foreground text-sm max-w-lg mx-auto">
-                        Complete the steps below to generate your document. Our AI will create a structured blueprint for your review.
+                    <p className="text-muted-foreground text-[13px] max-w-sm mx-auto leading-relaxed">
+                        Complete the steps below to generate your document.
                     </p>
                 </div>
 

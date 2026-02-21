@@ -51,7 +51,7 @@ function buildFormAssistSystemPrompt(docType: DocumentType, currentFormData?: Re
             .join("\n") || "(none filled yet)"}`
         : "\n**Currently Filled Fields:** (none filled yet)";
 
-    return `You are a helpful form-filling assistant for DocuForge AI, a legal document generation platform.
+    return `You are a helpful form-filling assistant for ClauseWala., an AI-powered legal document generation platform.
 
 **Your Role:** Help the user fill out a ${typeLabel} form by understanding their situation and suggesting appropriate field values. You are conversational, smart, and efficient.
 

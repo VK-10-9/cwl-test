@@ -36,16 +36,20 @@ export const ndaTemplate: DocumentTemplate = {
         // 2. Key Terms
         {
             name: "jurisdiction",
-            label: "Governing Law / Jurisdiction",
+            label: "Jurisdiction (Courts at)",
             type: "select",
             required: true,
             options: [
-                { label: "India", value: "India" },
-                { label: "United States (Delaware)", value: "US-DE" },
-                { label: "United States (California)", value: "US-CA" },
-                { label: "United Kingdom", value: "UK" },
-                { label: "European Union", value: "EU" },
+                { label: "Mumbai", value: "Mumbai" },
+                { label: "Delhi", value: "Delhi" },
+                { label: "Bangalore", value: "Bangalore" },
+                { label: "Chennai", value: "Chennai" },
+                { label: "Hyderabad", value: "Hyderabad" },
+                { label: "Kolkata", value: "Kolkata" },
+                { label: "Pune", value: "Pune" },
+                { label: "Ahmedabad", value: "Ahmedabad" },
             ],
+            description: "City whose courts will have jurisdiction. Governed by laws of India.",
         },
         {
             name: "duration",
@@ -108,6 +112,41 @@ export const ndaTemplate: DocumentTemplate = {
             required: false,
             description: "Ensure all work/inventions created belong to the Disclosing Party (vital for employees/contractors).",
         },
+        {
+            name: "includeNonCircumvent",
+            label: "Include Non-Circumvention?",
+            type: "checkbox",
+            required: false,
+            description: "Prevents bypassing the business relationship to deal directly with introduced contacts.",
+        },
+        {
+            name: "includeIndemnity",
+            label: "Include Indemnity Clause?",
+            type: "checkbox",
+            required: false,
+            description: "Receiving party indemnifies for losses arising from breach.",
+        },
+        {
+            name: "includeDataProtection",
+            label: "Include Data Protection Clause?",
+            type: "checkbox",
+            required: false,
+            description: "Required if personal data or SPDI is shared (IT Act, 2000 / DPDP Act, 2023).",
+        },
+        {
+            name: "includeTradeSecrets",
+            label: "Include Trade Secrets Clause?",
+            type: "checkbox",
+            required: false,
+            description: "Perpetual protection for trade secrets (source code, formulas, processes).",
+        },
+        {
+            name: "includeAuditRights",
+            label: "Include Audit Rights?",
+            type: "checkbox",
+            required: false,
+            description: "Right to audit the receiving party's compliance (enterprise NDAs).",
+        },
 
         // 4. Specifics
         {
@@ -128,12 +167,33 @@ export const ndaTemplate: DocumentTemplate = {
         },
     ],
     defaultClauses: [
-        "Definitions (Confidential Information)",
-        " Obligations of Receiving Party",
-        "Exceptions to Confidential Information",
-        "Term and Termination",
-        "Return or Destruction of Materials",
-        "Remedies (Injunctions)",
-        "Governing Law and Jurisdiction",
+        // Core Structural (1-4)
+        "Title and Effective Date",
+        "Parties Clause",
+        "Recitals / Background",
+        "Purpose Clause",
+        // Confidentiality Framework (5-7)
+        "Definition of Confidential Information",
+        "Exclusions from Confidential Information",
+        "Obligations of Receiving Party",
+        // Term & Survival (8-10)
+        "Term of Agreement",
+        "Survival of Confidentiality Obligations",
+        "Termination",
+        // Protective & Enforcement (11-13)
+        "Return or Destruction of Information",
+        "Remedies",
+        // Dispute & Legal (14-16)
+        "Governing Law",
+        // IP (21)
+        "No License",
+        // Structural & Safety (24-30)
+        "Severability",
+        "Entire Agreement",
+        "Amendment",
+        "Waiver",
+        "Assignment",
+        "Notices",
+        "Counterparts and Electronic Signatures",
     ],
 };

@@ -1,23 +1,27 @@
 import DocumentSelector from "@/components/DocumentSelector";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function SelectionPage() {
     return (
         <div className="min-h-screen bg-background relative selection:bg-primary/20">
             <Navbar />
 
-            <main className="container mx-auto px-4 pt-32 pb-20 relative z-10">
-                <div className="text-center mb-16 animate-fade-in">
-                    <h1 className="text-4xl md:text-6xl font-extrabold tracking-tight mb-6 text-foreground">
-                        What would you like to draft?
+            <main className="max-w-5xl mx-auto px-6 sm:px-8 pt-28 md:pt-36 pb-24 relative z-10">
+                <div className="text-center mb-14 animate-fade-in">
+                    <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground/60 mb-4">Start Drafting</p>
+                    <h1 className="text-3xl md:text-4xl font-bold tracking-tight leading-tight mb-4 text-foreground">
+                        Choose your contract type
                     </h1>
-                    <p className="text-muted-foreground text-lg max-w-2xl mx-auto leading-relaxed">
-                        Select a template below to begin the AI-powered drafting process.
+                    <p className="text-muted-foreground text-[15px] max-w-lg mx-auto leading-relaxed">
+                        Select a template and ClauseWala will walk you through the details, generate a clause blueprint, and produce a ready-to-sign document.
                     </p>
                 </div>
 
                 <DocumentSelector />
             </main>
+
+            <Footer />
         </div>
     );
 }

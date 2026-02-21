@@ -1,25 +1,39 @@
+import Image from "next/image";
+import Link from "next/link";
+
 export default function Footer() {
     return (
-        <footer className="relative z-10 w-full py-10 px-4 sm:px-6 lg:px-8 border-t border-border">
-            <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
+        <footer className="relative z-10 w-full py-10 px-6 sm:px-8 border-t border-border">
+            <div className="max-w-5xl mx-auto flex flex-col md:flex-row justify-between items-center gap-6">
 
                 {/* Brand */}
-                <div className="flex items-center gap-2.5">
-                    <div className="w-7 h-7 rounded-md bg-primary flex items-center justify-center font-bold text-primary-foreground text-sm">D</div>
-                    <span className="text-base font-semibold text-foreground tracking-tight">DocuForge AI</span>
-                </div>
+                <Link href="/" className="flex items-center gap-2">
+                    <Image
+                        src="/brand/logo-mark.png"
+                        alt="CW"
+                        width={28}
+                        height={28}
+                        unoptimized
+                        className="shrink-0"
+                    />
+                    <span className="text-[15px] font-semibold text-foreground tracking-tight">
+                        ClauseWala<span className="text-emerald-500">.</span>
+                    </span>
+                </Link>
 
                 {/* Links */}
-                <div className="flex gap-8 text-sm text-muted-foreground">
-                    <a href="#" className="hover:text-foreground transition-colors">Privacy</a>
-                    <a href="#" className="hover:text-foreground transition-colors">Terms</a>
-                    <a href="#" className="hover:text-foreground transition-colors">Contact</a>
+                <div className="flex flex-wrap justify-center gap-x-8 gap-y-2 text-[13px] text-muted-foreground/60">
+                    <Link href="/about" className="hover:text-foreground transition-colors duration-200">About</Link>
+                    <Link href="/pricing" className="hover:text-foreground transition-colors duration-200">Pricing</Link>
+                    <Link href="/contact" className="hover:text-foreground transition-colors duration-200">Contact</Link>
+                    <Link href="/privacy" className="hover:text-foreground transition-colors duration-200">Privacy</Link>
+                    <Link href="/terms" className="hover:text-foreground transition-colors duration-200">Terms</Link>
                 </div>
 
                 {/* Copyright */}
-                <div className="text-xs text-muted-foreground/50 font-mono uppercase tracking-widest">
-                    © {new Date().getFullYear()} DocuForge Inc.
-                </div>
+                <p className="text-[11px] text-muted-foreground/30 font-mono tracking-wider">
+                    &copy; {new Date().getFullYear()} ClauseWala
+                </p>
             </div>
         </footer>
     );

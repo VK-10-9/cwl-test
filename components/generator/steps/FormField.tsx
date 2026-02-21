@@ -28,16 +28,16 @@ export function FormField({ field, register, control, errors, prefix = "" }: For
 
     return (
         <div className="space-y-2 group">
-            <Label htmlFor={fieldName} className={cn("flex items-center gap-2 text-sm font-medium transition-colors", error ? "text-destructive" : "text-foreground/90")}>
+            <Label htmlFor={fieldName} className={cn("flex items-center gap-2 text-sm font-medium transition-colors", error ? "text-destructive" : "text-foreground/80")}>
                 {field.label}
-                {isRequired && <span className="text-destructive text-lg leading-none">*</span>}
+                {isRequired && <span className="text-destructive/60 text-lg leading-none">*</span>}
                 {field.description && !['checkbox'].includes(field.type) && (
-                    <Info className="w-3.5 h-3.5 text-muted-foreground/50 group-hover:text-primary transition-colors" />
+                    <Info className="w-3.5 h-3.5 text-muted-foreground/30" />
                 )}
             </Label>
 
             {field.description && !['checkbox'].includes(field.type) && (
-                <div className="text-xs text-muted-foreground/80 bg-muted/50 p-2.5 rounded-md border border-border flex gap-2">
+                <div className="text-[11px] text-muted-foreground/60 bg-muted/30 p-2.5 rounded-md border border-border/40">
                     {field.description}
                 </div>
             )}
@@ -49,7 +49,7 @@ export function FormField({ field, register, control, errors, prefix = "" }: For
                     rules={{ required: isRequired }}
                     render={({ field: { onChange, value } }) => (
                         <Select onValueChange={onChange} value={value || ""}>
-                            <SelectTrigger className={cn("w-full bg-background/50", error && "border-destructive ring-destructive")}>
+                            <SelectTrigger className={cn("w-full bg-card", error && "border-destructive ring-destructive")}>
                                 <SelectValue placeholder="Select an option" />
                             </SelectTrigger>
                             <SelectContent>
@@ -68,7 +68,7 @@ export function FormField({ field, register, control, errors, prefix = "" }: For
                     {...register(fieldName, { required: isRequired })}
                     placeholder={field.placeholder}
                     className={cn(
-                        "flex min-h-[80px] w-full rounded-md border bg-background/50 px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
+                        "flex min-h-[80px] w-full rounded-md border bg-card px-3 py-2 text-sm ring-offset-background placeholder:text-muted-foreground/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50",
                         error ? "border-destructive focus-visible:ring-destructive" : "border-input"
                     )}
                 />
@@ -79,8 +79,8 @@ export function FormField({ field, register, control, errors, prefix = "" }: For
                     defaultValue={false}
                     render={({ field: { onChange, value } }) => (
                         <div className={cn(
-                            "flex flex-row items-start space-x-3 space-y-0 rounded-md border bg-background/50 p-4 shadow-sm transition-all hover:bg-background/80 hover:border-primary/30",
-                            error ? "border-destructive" : "border-input"
+                            "flex flex-row items-start space-x-3 space-y-0 rounded-lg border bg-card p-4 transition-all duration-200 hover:border-foreground/12",
+                            error ? "border-destructive" : "border-border"
                         )}>
                             <input
                                 id={fieldName}
@@ -148,7 +148,7 @@ export function FormField({ field, register, control, errors, prefix = "" }: For
                     {...register(fieldName, { required: isRequired })}
                     type={field.type || "text"}
                     placeholder={field.placeholder}
-                    className={cn("bg-background/50", error && "border-destructive focus-visible:ring-destructive")}
+                    className={cn("bg-card", error && "border-destructive focus-visible:ring-destructive")}
                 />
             )}
             {error && <span className="text-destructive text-xs block mt-1">{String(error.message || "Required")}</span>}

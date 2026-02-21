@@ -3,62 +3,63 @@
 import Link from "next/link";
 import { WebGLShader } from "@/components/ui/web-gl-shader";
 import { LiquidButton } from '@/components/ui/liquid-glass-button';
+import { ArrowDown } from "lucide-react";
 
 export default function HeroDemo() {
     return (
-        <div className="relative flex w-full min-h-screen flex-col items-center justify-center overflow-hidden bg-background selection:bg-primary/20">
+        <div className="relative flex w-full min-h-[100svh] flex-col items-center justify-center overflow-hidden bg-background selection:bg-primary/20">
             <WebGLShader />
 
             {/* Content Container */}
-            <div className="relative z-10 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col items-center justify-center min-h-screen">
+            <div className="relative z-10 w-full max-w-4xl mx-auto px-6 sm:px-8 flex flex-col items-center justify-center min-h-[100svh]">
 
-                <main className="relative py-20 flex flex-col items-center text-center">
+                <main className="flex flex-col items-center text-center">
                     {/* Status Badge */}
-                    <div className="mb-8 flex items-center justify-center gap-3 bg-card px-5 py-2.5 rounded-full border border-border animate-fade-in cursor-default select-none">
-                        <span className="relative flex h-2.5 w-2.5 items-center justify-center">
-                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-primary opacity-60"></span>
-                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-primary"></span>
+                    <div className="mb-8 flex items-center justify-center gap-2.5 px-4 py-1.5 rounded-full border border-border/60 bg-background/60 backdrop-blur-sm animate-fade-in cursor-default select-none">
+                        <span className="relative flex h-1.5 w-1.5 items-center justify-center">
+                            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-500 opacity-60"></span>
+                            <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500"></span>
                         </span>
-                        <p className="text-[10px] md:text-xs text-primary font-semibold tracking-widest uppercase">v1.0 Public Beta</p>
+                        <p className="text-[10px] md:text-[11px] text-muted-foreground font-medium tracking-[0.2em] uppercase">Contracts. Simplified.</p>
                     </div>
 
                     {/* Main Headline */}
-                    <h1 className="mb-6 text-foreground text-5xl md:text-7xl lg:text-8xl font-extrabold tracking-tighter leading-tight">
-                        Legal Drafting <br />
-                        <span className="text-primary">
-                            Reimagined
+                    <h1 className="mb-6 text-foreground animate-fade-in-up" style={{ animationDelay: "0.1s", animationFillMode: "backwards" }}>
+                        <span className="block text-[clamp(2.5rem,7.5vw,5.5rem)] font-extrabold tracking-[-0.04em] leading-[0.9]">
+                            Draft Contracts
+                        </span>
+                        <span className="block text-[clamp(2.5rem,7.5vw,5.5rem)] font-extrabold tracking-[-0.04em] leading-[0.9] text-gradient-subtle mt-1">
+                            Not Headaches
                         </span>
                     </h1>
 
                     {/* Subtitle */}
-                    <p className="text-muted-foreground text-lg md:text-xl max-w-2xl mb-12 font-light leading-relaxed mx-auto">
-                        Generate complex legal documents in seconds from a simple conversation.
-                        <br className="hidden md:block" />
-                        Powered by advanced AI for precision and speed.
+                    <p className="text-muted-foreground text-base md:text-[17px] max-w-lg mb-12 font-normal leading-relaxed mx-auto animate-fade-in-up" style={{ animationDelay: "0.2s", animationFillMode: "backwards" }}>
+                        ClauseWala turns plain English into legally sound Indian contracts.<br className="hidden sm:block" />
+                        NDAs, MOUs, letters &mdash; drafted, reviewed, and exported in minutes.
                     </p>
 
-                    {/* CTA Button */}
-                    <div className="flex justify-center">
+                    {/* CTA Buttons */}
+                    <div className="flex items-center gap-4 animate-fade-in-up" style={{ animationDelay: "0.3s", animationFillMode: "backwards" }}>
                         <Link href="/generate">
                             <LiquidButton
-                                className="text-primary-foreground bg-primary hover:bg-primary/90 px-8 py-6 text-lg"
+                                className="text-primary-foreground bg-primary hover:bg-primary/90 px-8 py-5 text-[15px] font-medium"
                                 size={'xl'}
                                 variant="default"
                             >
-                                Start Drafting Now
+                                Draft Your First Contract
                             </LiquidButton>
                         </Link>
-                    </div>
-
-                    {/* Footer Tech Stack/Credits */}
-                    <div className="absolute bottom-10 left-0 right-0 flex justify-center gap-8 text-[10px] md:text-xs text-muted-foreground/30 font-mono uppercase tracking-[0.2em] pointer-events-none">
-                        <span>Next.js 16</span>
-                        <span>•</span>
-                        <span>Three.js</span>
-                        <span>•</span>
-                        <span>Tailwind v4</span>
+                        <Link href="/#features" className="text-[13px] text-muted-foreground hover:text-foreground transition-colors font-medium px-4 py-2.5">
+                            See How It Works
+                        </Link>
                     </div>
                 </main>
+
+                {/* Scroll Indicator */}
+                <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-30">
+                    <ArrowDown className="w-4 h-4 text-muted-foreground" />
+                </div>
             </div>
         </div>
     )

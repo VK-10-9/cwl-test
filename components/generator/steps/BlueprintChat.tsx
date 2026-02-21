@@ -258,7 +258,7 @@ function ChatInterface({
                         <Bot className="h-4 w-4 text-primary" />
                     </div>
                     <div>
-                        <h3 className="font-mono text-xs font-bold text-primary tracking-wider">DOCUFORGE_AGENT</h3>
+                        <h3 className="font-mono text-xs font-bold text-primary tracking-wider">CW_AGENT</h3>
                         <p className="text-[10px] text-muted-foreground flex items-center gap-1 font-mono">
                             <span className={`w-1.5 h-1.5 rounded-full ${isLoading ? "bg-blue-500 animate-pulse" : "bg-green-500"}`} />
                             {isLoading ? "PROCESSING" : "READY"}

@@ -21,30 +21,29 @@ export default function DocumentAppSection() {
     };
 
     return (
-        <section id="documents" className="relative z-10 py-32 px-4 sm:px-6 lg:px-8">
-            <div className="max-w-7xl mx-auto">
-                <h2 className="text-4xl md:text-6xl font-bold text-center text-foreground mb-8 tracking-tighter">
-                    Start <span className="text-primary">Creating</span>
-                </h2>
-                <p className="text-muted-foreground text-center max-w-2xl mx-auto mb-16 text-lg">
-                    Select a template below to begin the generation process.
-                </p>
+        <section id="documents" className="relative z-10 py-24 md:py-32 px-6 sm:px-8">
+            <div className="max-w-5xl mx-auto">
+                <div className="text-center mb-14">
+                    <p className="text-[11px] font-mono uppercase tracking-[0.2em] text-muted-foreground/60 mb-4">Choose a Contract</p>
+                    <h2 className="text-3xl md:text-4xl font-bold text-foreground tracking-tight leading-tight">
+                        What do you need drafted?
+                    </h2>
+                    <p className="text-muted-foreground max-w-lg mx-auto mt-4 text-[15px] leading-relaxed">
+                        Pick a document type. ClauseWala auto-selects the right clauses, governing laws, and formatting for Indian jurisdiction.
+                    </p>
+                </div>
 
-                <div className="bg-card rounded-2xl border border-border p-8 md:p-12">
-                    <div className="relative z-10">
-                        <DocumentSelector />
+                <DocumentSelector />
 
-                        <div className={`mt-16 flex justify-center transition-all duration-500 transform ${selectedType ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-8 pointer-events-none'}`}>
-                            <LiquidButton
-                                onClick={handleContinue}
-                                className="text-primary-foreground bg-primary hover:bg-primary/90 px-10 py-6 text-xl"
-                                size={'xl'}
-                                variant="default"
-                            >
-                                Generate {selectedType ? selectedType.toUpperCase().replace('-', ' ') : 'Document'}
-                            </LiquidButton>
-                        </div>
-                    </div>
+                <div className={`mt-10 flex justify-center transition-all duration-500 transform ${selectedType ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-4 pointer-events-none'}`}>
+                    <LiquidButton
+                        onClick={handleContinue}
+                        className="text-primary-foreground bg-primary hover:bg-primary/90 px-8 py-4 text-[15px] font-medium"
+                        size={'xl'}
+                        variant="default"
+                    >
+                        Generate {selectedType ? selectedType.toUpperCase().replace('-', ' ') : 'Document'} &rarr;
+                    </LiquidButton>
                 </div>
             </div>
         </section>
