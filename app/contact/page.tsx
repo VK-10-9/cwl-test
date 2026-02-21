@@ -29,8 +29,8 @@ export default function ContactPage() {
                             </div>
                             <h3 className="text-[15px] font-semibold tracking-tight mb-1">General Enquiries</h3>
                             <p className="text-[13px] text-muted-foreground mb-4">For questions about ClauseWala, partnerships, or press.</p>
-                            <a href="mailto:hello@clausewala.com" className="text-[13px] font-medium text-foreground underline underline-offset-4 hover:no-underline">
-                                hello@clausewala.com
+                            <a href="mailto:clausewala@vishwadev.tech" className="text-[13px] font-medium text-foreground underline underline-offset-4 hover:no-underline">
+                                clausewala@vishwadev.tech
                             </a>
                         </div>
 
@@ -41,8 +41,8 @@ export default function ContactPage() {
                             </div>
                             <h3 className="text-[15px] font-semibold tracking-tight mb-1">Support & Feedback</h3>
                             <p className="text-[13px] text-muted-foreground mb-4">Found a bug or have a feature request? Let us know.</p>
-                            <a href="mailto:support@clausewala.com" className="text-[13px] font-medium text-foreground underline underline-offset-4 hover:no-underline">
-                                support@clausewala.com
+                            <a href="mailto:clausewala@vishwadev.tech" className="text-[13px] font-medium text-foreground underline underline-offset-4 hover:no-underline">
+                                clausewala@vishwadev.tech
                             </a>
                         </div>
                     </div>

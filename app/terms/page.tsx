@@ -133,7 +133,7 @@ export default function TermsPage() {
                         <Section title="13. Contact">
                             <p>For questions about these terms:</p>
                             <ul>
-                                <li>Email: <strong>legal@clausewala.com</strong></li>
+                                <li>Email: <strong>clausewala@vishwadev.tech</strong></li>
                             </ul>
                         </Section>
                     </div>

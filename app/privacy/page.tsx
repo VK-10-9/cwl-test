@@ -94,7 +94,7 @@ export default function PrivacyPage() {
                                 <li>Request deletion of your data</li>
                                 <li>Withdraw consent at any time</li>
                             </ul>
-                            <p>To exercise these rights, contact us at <strong>privacy@clausewala.com</strong>.</p>
+                            <p>To exercise these rights, contact us at <strong>clausewala@vishwadev.tech</strong>.</p>
                         </Section>
 
                         <Section title="8. Cookies">
@@ -115,7 +115,7 @@ export default function PrivacyPage() {
                         <Section title="10. Contact Us">
                             <p>For privacy-related queries:</p>
                             <ul>
-                                <li>Email: <strong>privacy@clausewala.com</strong></li>
+                                <li>Email: <strong>clausewala@vishwadev.tech</strong></li>
                                 <li>Address: India</li>
                             </ul>
                         </Section>
