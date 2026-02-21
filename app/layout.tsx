@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import AuthProvider from "@/components/AuthProvider";
 import DocumentStoreProvider from "@/components/DocumentStoreProvider";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://clausewala.com"),
@@ -77,6 +78,7 @@ export default function RootLayout({
             {children}
           </DocumentStoreProvider>
         </AuthProvider>
+        <Analytics />
       </body>
     </html>
   );
