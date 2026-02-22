@@ -8,6 +8,7 @@ import DocumentEditor from "./steps/DocumentEditor";
 import type { DocumentType, Blueprint, WorkflowStage } from "@/types";
 import { DOCUMENT_TYPE_LABELS } from "@/types";
 import { useDocumentStore } from "@/components/DocumentStoreProvider";
+import { useAuth } from "@/components/AuthProvider";
 import { CheckCircle2, ClipboardList, Search, FileCheck, X } from "lucide-react";
 
 interface GeneratorFlowProps {
@@ -21,6 +22,7 @@ type State = {
     blueprint: Blueprint | null;
     formData: FormData | null;
     fullText: string | null;
+    reportId: string | null;
     isLoading: boolean;
     isExporting: boolean;
     error: string | null;
@@ -31,6 +33,7 @@ const initialState: State = {
     blueprint: null,
     formData: null,
     fullText: null,
+    reportId: null,
     isLoading: false,
     isExporting: false,
     error: null,
@@ -80,6 +83,7 @@ function reducer(state: State, action: Action): State {
 export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
     const [state, dispatch] = useReducer(reducer, initialState);
     const { saveDocument, updateDocument } = useDocumentStore();
+    const { user } = useAuth();
     const docIdRef = useRef<string | null>(null);
 
     // Hydrate state from localStorage on mount
@@ -105,10 +109,11 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
             stage: state.stage,
             blueprint: state.blueprint,
             formData: state.formData,
-            fullText: state.fullText
+            fullText: state.fullText,
+            reportId: state.reportId
         };
         localStorage.setItem(`docfuge_state_${docType}`, JSON.stringify(stateToSave));
-    }, [state.stage, state.blueprint, state.formData, state.fullText, docType]);
+    }, [state.stage, state.blueprint, state.formData, state.fullText, state.reportId, docType]);
 
     // Helper to format data for API consumption — strips undefined/null values
     const getFormattedData = (): Record<string, string | number | boolean> => {
@@ -154,6 +159,7 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                         address: data.partyB_address,
                         signatoryName: data.partyB_signatory,
                     },
+                    userEmail: user?.email,
                     formData: data,
                 }),
             });
@@ -164,6 +170,8 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                 type: "SET_BLUEPRINT",
                 payload: { blueprint, formData: data }
             });
+
+            dispatch({ type: "SET_STATE", payload: { reportId: json.reportId ?? null } });
 
             // Save to document store
             const title = blueprint.title || DOCUMENT_TYPE_LABELS[docType] || docType;
@@ -222,6 +230,8 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                 body: JSON.stringify({
                     blueprint: state.blueprint,
                     formData,
+                    reportId: state.reportId || undefined,
+                    userEmail: user?.email,
                     fullText: state.fullText,
                     format
                 }),

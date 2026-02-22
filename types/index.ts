@@ -267,6 +267,7 @@ export const generateRequestSchema = z.object({
   documentType: z.enum(DOCUMENT_TYPES),
   orgA: organisationSchema,
   orgB: organisationSchema.optional(),
+  userEmail: z.string().email().optional(),
   formData: z.record(
     z.string(),
     z.union([z.string(), z.number(), z.boolean()]).catch("")
@@ -300,6 +301,8 @@ export const exportRequestSchema = z.object({
     z.string(),
     z.union([z.string(), z.number(), z.boolean()]).catch("")
   ),
+  reportId: z.string().optional(),
+  userEmail: z.string().email().optional(),
   fullText: z.string().optional(),
   format: z.enum(["pdf", "docx"]),
 });

@@ -1,6 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { redis } from "@/lib/redis";
 import { z } from "zod";
+import {
+  isSupabaseConfigured,
+  listUserProfiles,
+  upsertUserProfile,
+} from "@/lib/supabase-server";
 
 const userSchema = z.object({
   name: z.string().min(1),
@@ -10,6 +14,13 @@ const userSchema = z.object({
 
 export async function POST(req: NextRequest) {
   try {
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json(
+        { error: "Supabase is not configured on the server." },
+        { status: 500 }
+      );
+    }
+
     const body = await req.json();
     const parsed = userSchema.safeParse(body);
 
@@ -19,16 +30,7 @@ export async function POST(req: NextRequest) {
 
     const { name, email, picture } = parsed.data;
 
-    // Store user in a hash keyed by email
-    await redis.hset(`user:${email}`, {
-      name,
-      email,
-      picture: picture || "",
-      lastLogin: new Date().toISOString(),
-    });
-
-    // Also add to a set of all user emails for easy listing
-    await redis.sadd("users:emails", email);
+    await upsertUserProfile({ name, email, picture });
 
     return NextResponse.json({ ok: true });
   } catch (error) {
@@ -40,13 +42,14 @@ export async function POST(req: NextRequest) {
 // GET: List all stored users (for admin/debug)
 export async function GET() {
   try {
-    const emails = await redis.smembers("users:emails");
-    const users = await Promise.all(
-      emails.map(async (email) => {
-        const data = await redis.hgetall(`user:${email}`);
-        return data;
-      })
-    );
+    if (!isSupabaseConfigured()) {
+      return NextResponse.json(
+        { error: "Supabase is not configured on the server." },
+        { status: 500 }
+      );
+    }
+
+    const users = await listUserProfiles();
 
     return NextResponse.json({ count: users.length, users });
   } catch (error) {
