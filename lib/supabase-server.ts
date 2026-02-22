@@ -35,7 +35,7 @@ interface ReportCreateInput {
   mediumRiskCount: number;
   lowRiskCount: number;
   formData?: Record<string, string | number | boolean>;
-  blueprint?: JsonValue;
+  blueprint?: unknown;
 }
 
 interface ReportUpdateInput {
@@ -193,4 +193,3 @@ export async function listGeneratedReports(userEmail?: string): Promise<
     { method: "GET" }
   );
 }
-
