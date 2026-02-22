@@ -5,6 +5,15 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Privacy Policy",
     description: "Learn how ClauseWala collects, uses, and protects your personal data under the DPDP Act 2023 and Indian privacy law.",
+    alternates: {
+        canonical: "/privacy",
+    },
+    openGraph: {
+        title: "ClauseWala Privacy Policy",
+        description: "Learn how ClauseWala handles data and privacy.",
+        url: "/privacy",
+        type: "website",
+    },
 };
 
 export default function PrivacyPage() {

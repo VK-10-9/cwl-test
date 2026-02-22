@@ -1,14 +1,17 @@
 import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
+  const baseUrl = "https://clausewala.vishwadev.tech";
+
   return {
     rules: [
       {
         userAgent: "*",
-        allow: "/",
-        disallow: ["/api/", "/dashboard/", "/demo/"],
+        allow: ["/", "/about", "/pricing", "/contact", "/privacy", "/terms"],
+        disallow: ["/api/", "/dashboard/", "/generate/", "/signin", "/demo/", "/hero"],
       },
     ],
-    sitemap: "https://clausewala.vishwadev.tech/sitemap.xml",
+    sitemap: `${baseUrl}/sitemap.xml`,
+    host: baseUrl,
   };
 }

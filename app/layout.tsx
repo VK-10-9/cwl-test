@@ -7,11 +7,11 @@ import { Analytics } from "@vercel/analytics/next";
 export const metadata: Metadata = {
   metadataBase: new URL("https://clausewala.vishwadev.tech"),
   title: {
-    default: "ClauseWala. — AI Legal Documents for Indian Startups",
+    default: "ClauseWala. - AI Legal Documents for Indian Startups",
     template: "%s | ClauseWala.",
   },
   description:
-    "Draft legally sound Indian contracts in minutes. NDAs, MOUs, offer letters, co-founder agreements, ESOP grants and 16 more — AI-powered, clause-by-clause reviewed, export as PDF or DOCX. Free during public beta.",
+    "Draft legally sound Indian contracts in minutes. NDAs, MOUs, offer letters, co-founder agreements, ESOP grants and more - AI-powered, clause-by-clause reviewed, export as PDF or DOCX. Free during public beta.",
   keywords: [
     "legal documents India",
     "NDA generator India",
@@ -52,21 +52,23 @@ export const metadata: Metadata = {
     locale: "en_IN",
     url: "https://clausewala.vishwadev.tech",
     siteName: "ClauseWala.",
-    title: "ClauseWala. — AI Legal Documents for Indian Startups",
-    description: "Draft legally sound Indian contracts in minutes — NDAs, MOUs, offer letters, co-founder agreements and more. AI-powered, free during public beta.",
+    title: "ClauseWala. - AI Legal Documents for Indian Startups",
+    description:
+      "Draft legally sound Indian contracts in minutes - NDAs, MOUs, offer letters, co-founder agreements and more. AI-powered, free during public beta.",
     images: [
       {
         url: "/brand/og-image.png",
         width: 1200,
         height: 630,
-        alt: "ClauseWala — AI Legal Documents for Indian Startups",
+        alt: "ClauseWala - AI Legal Documents for Indian Startups",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "ClauseWala. — AI Legal Documents for Indian Startups",
-    description: "Draft legally sound Indian contracts in minutes — NDAs, MOUs, offer letters, co-founder agreements and more. AI-powered, free during public beta.",
+    title: "ClauseWala. - AI Legal Documents for Indian Startups",
+    description:
+      "Draft legally sound Indian contracts in minutes - NDAs, MOUs, offer letters, co-founder agreements and more. AI-powered, free during public beta.",
     images: ["/brand/og-image.png"],
   },
   robots: {
@@ -94,11 +96,12 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
           rel="stylesheet"
         />
-        {/* JSON-LD Structured Data */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -132,9 +135,7 @@ export default function RootLayout({
       </head>
       <body>
         <AuthProvider>
-          <DocumentStoreProvider>
-            {children}
-          </DocumentStoreProvider>
+          <DocumentStoreProvider>{children}</DocumentStoreProvider>
         </AuthProvider>
         <Analytics />
       </body>

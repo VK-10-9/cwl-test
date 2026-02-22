@@ -4,7 +4,16 @@ import type { Metadata } from "next";
 
 export const metadata: Metadata = {
     title: "Terms of Service",
-    description: "Terms and conditions for using ClauseWala’s AI-powered legal document generation platform for Indian startups.",
+    description: "Terms and conditions for using ClauseWala's AI-powered legal document generation platform for Indian startups.",
+    alternates: {
+        canonical: "/terms",
+    },
+    openGraph: {
+        title: "ClauseWala Terms of Service",
+        description: "Terms and conditions for using ClauseWala.",
+        url: "/terms",
+        type: "website",
+    },
 };
 
 export default function TermsPage() {
@@ -155,3 +164,4 @@ function Section({ title, children }: { title: string; children: React.ReactNode
         </section>
     );
 }
+

@@ -1,6 +1,5 @@
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import Image from "next/image";
 import Link from "next/link";
 import { FileText, Shield, Zap, Scale } from "lucide-react";
 import type { Metadata } from "next";
@@ -8,6 +7,15 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "About",
     description: "ClauseWala is an AI-powered legal document platform built for Indian startups. 22 templates, India-specific clauses, free during public beta.",
+    alternates: {
+        canonical: "/about",
+    },
+    openGraph: {
+        title: "About ClauseWala",
+        description: "Learn how ClauseWala helps Indian startups draft legal documents with AI.",
+        url: "/about",
+        type: "website",
+    },
 };
 
 const stats = [

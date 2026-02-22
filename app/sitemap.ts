@@ -2,57 +2,21 @@ import type { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = "https://clausewala.vishwadev.tech";
-
-  const staticPages = [
-    "",
-    "/about",
-    "/pricing",
-    "/contact",
-    "/privacy",
-    "/terms",
-    "/generate",
-    "/signin",
-  ];
-
-  const docTypes = [
-    "nda",
-    "mou",
-    "consultancy-agreement",
-    "service-agreement",
-    "offer-letter",
-    "appointment-letter",
-    "relieving-letter",
-    "termination-letter",
-    "experience-letter",
-    "internship-letter",
-    "payment-reminder",
-    "esop-grant",
-    "share-allotment",
-    "legal-notice",
-    "breach-notice",
-    "ip-assignment",
-    "loi",
-    "vendor-onboarding",
-    "co-founder-agreement",
-    "startup-india",
-    "gst-bank-letter",
-    "board-resolution",
-  ];
-
   const now = new Date().toISOString();
 
-  return [
-    ...staticPages.map((path) => ({
-      url: `${baseUrl}${path}`,
-      lastModified: now,
-      changeFrequency: "weekly" as const,
-      priority: path === "" ? 1.0 : path === "/generate" ? 0.9 : 0.7,
-    })),
-    ...docTypes.map((type) => ({
-      url: `${baseUrl}/generate/${type}`,
-      lastModified: now,
-      changeFrequency: "monthly" as const,
-      priority: 0.8,
-    })),
+  const publicPages = [
+    { path: "", priority: 1.0, changeFrequency: "weekly" as const },
+    { path: "/about", priority: 0.7, changeFrequency: "monthly" as const },
+    { path: "/pricing", priority: 0.8, changeFrequency: "weekly" as const },
+    { path: "/contact", priority: 0.6, changeFrequency: "monthly" as const },
+    { path: "/privacy", priority: 0.4, changeFrequency: "yearly" as const },
+    { path: "/terms", priority: 0.4, changeFrequency: "yearly" as const },
   ];
+
+  return publicPages.map((page) => ({
+    url: `${baseUrl}${page.path}`,
+    lastModified: now,
+    changeFrequency: page.changeFrequency,
+    priority: page.priority,
+  }));
 }

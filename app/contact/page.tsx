@@ -6,6 +6,15 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
     title: "Contact",
     description: "Get in touch with ClauseWala for support, feedback, or partnership enquiries. We respond within 24 hours.",
+    alternates: {
+        canonical: "/contact",
+    },
+    openGraph: {
+        title: "Contact ClauseWala",
+        description: "Contact ClauseWala for support, feedback, and partnerships.",
+        url: "/contact",
+        type: "website",
+    },
 };
 
 export default function ContactPage() {
