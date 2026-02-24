@@ -155,25 +155,46 @@ function getSuggestionChips(docType: DocumentType): string[] {
         nda: ["NDA for my employee", "Mutual NDA between two companies", "NDA for a contractor"],
         mou: ["MOU for a joint venture", "Research collaboration MOU", "MOU with a government body"],
         "consultancy-agreement": ["Hire a freelance developer", "Engage a marketing consultant", "Advisory retainer agreement"],
-        "service-agreement": ["SaaS subscription agreement", "IT services contract", "Managed services SLA"],
+        "service-agreement": ["IT services contract", "Managed services SLA"],
+        "saas-agreement": ["SaaS subscription for 100 users", "Enterprise SaaS terms", "Monthly SaaS subscription"],
+        "software-license": ["Single user software license", "Perpetual software license", "Site-wide license term"],
+        "white-label-agreement": ["White-label my app for a partner", "Tech rebranding agreement", "SaaS white-label terms"],
+        "maintenance-agreement": ["Annual maintenance for software", "Monthly IT support AMC", "SLA for software bug fixes"],
         "offer-letter": ["Offer letter for a senior dev", "CTC ₹18L offer with ESOPs", "Offer for a remote hire"],
         "appointment-letter": ["Appointment with probation clause", "Full-time appointment letter", "CTC breakdown appointment"],
         "relieving-letter": ["Relieving for resigned employee", "Relieving after probation exit", "Relieving with no-dues clearance"],
         "termination-letter": ["Terminate for PIP failure", "Misconduct termination letter", "Redundancy / layoff letter"],
         "experience-letter": ["Experience cert for 3-year employee", "Include projects section", "Senior engineer experience letter"],
         "internship-letter": ["Summer intern offer ₹25K stipend", "Internship with PPO eligibility", "Remote internship offer"],
+        "posh-policy": ["POSH policy for startup", "Zero tolerance harassment policy", "ICC committee details"],
+        "ethics-code": ["Employee code of conduct", "Corporate ethics handbook", "Workplace behavior rules"],
+        "fnf-settlement": ["Final settlement for manager", "F&F waiver and release", "Exit dues calculation"],
         "payment-reminder": ["First payment reminder ₹2.5L", "Final notice before legal action", "Overdue invoice follow-up"],
         "esop-grant": ["ESOP grant for CTO", "4-year vesting ESOP letter", "ESOP with cliff period"],
         "share-allotment": ["Equity allotment to angel investor", "CCPS allotment letter", "Share allotment for seed round"],
-        "legal-notice": ["Cheque bounce notice u/s 138 NI Act", "S.80 CPC notice for recovery", "IP infringement legal notice"],
-        "breach-notice": ["Breach of NDA notice", "SLA breach to vendor", "Non-payment breach notice"],
-        "ip-assignment": ["Founder IP assignment to company", "Contractor work product transfer", "Pre-incorporation IP assignment"],
+        "isafe-note": ["iSAFE for ₹50L seed funding", "iSAFE with 20% discount", "Post-money valuation cap iSAFE"],
+        sha: ["Series A shareholders agreement", "Founder-investor SHA", "Clean SHA for seed round"],
+        "term-sheet": ["Investment term sheet ₹2Cr", "Convertible note term sheet", "Equity financing summary"],
+        "founders-deed": ["Founders' agreement on IP", "Pre-incorporation vesting deed", "Co-founder commitment pact"],
         loi: ["LOI for acquisition", "Non-binding LOI for partnership", "LOI with exclusivity clause"],
         "vendor-onboarding": ["Onboard a SaaS vendor", "Vendor agreement with SLA", "Freelancer vendor onboarding"],
         "co-founder-agreement": ["55-45 equity split agreement", "Co-founder with 4-year vesting", "Two co-founders with domain roles"],
+        "influencer-agreement": ["Instagram influencer collab", "Paid promotion for 3 posts", "Influencer usage rights"],
+        "affiliate-agreement": ["Commission based affiliate terms", "Referral partner agreement", "E-commerce affiliate program"],
+        "sponsorship-agreement": ["Event title sponsorship", "Logo placement agreement", "Corporate sponsor pakcage"],
+        "rent-agreement": ["11-month residential rent", "House rental agreement", "Security deposit terms"],
+        "commercial-lease": ["Office space lease deed", "5-year commercial lease", "CAM and escalation terms"],
+        "leave-license": ["Standard leave & license", "Mumbai flat rental agreement", "Residential L&L terms"],
+        "eviction-notice": ["Notice to vacate for non-payment", "Termination of lease notice", "15-day eviction deadline"],
         "startup-india": ["DPIIT recognition letter", "Angel tax exemption application", "Startup India self-certification"],
         "gst-bank-letter": ["Current account opening letter", "GST registration letter to bank", "Bank NOC request letter"],
         "board-resolution": ["ESOP pool approval resolution", "Bank account authorization", "Share allotment board resolution"],
+        "legal-notice": ["Cheque bounce notice u/s 138 NI Act", "S.80 CPC notice for recovery", "IP infringement legal notice"],
+        "breach-notice": ["Breach of NDA notice", "SLA breach to vendor", "Non-payment breach notice"],
+        "ip-assignment": ["Founder IP assignment to company", "Contractor work product transfer", "Pre-incorporation IP assignment"],
+        gpa: ["GPA for authorized signatory", "General power of attorney", "Legal representation GPA"],
+        "data-breach-notice": ["Notify users of data breach", "DPDP Act compliance notice", "Security incident notification"],
+        "section-138-notice": ["Cheque bounce legal notice", "Payment demand under NI Act", "Final 15-day warning"],
     };
     return [...(perType[docType] || []), ...common];
 }
@@ -328,11 +349,10 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
             initial={{ opacity: 0, y: 16, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
-            className={`fixed z-50 flex flex-col bg-white border border-border/80 rounded-2xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 ${
-                isExpanded
+            className={`fixed z-50 flex flex-col bg-white border border-border/80 rounded-2xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 ${isExpanded
                     ? "bottom-4 right-4 left-4 top-4 sm:left-auto sm:w-[560px] sm:top-4"
                     : "bottom-6 right-6 w-[360px] max-h-[min(520px,calc(100vh-6rem))]"
-            }`}
+                }`}
             style={isExpanded ? undefined : { height: "520px" }}
         >
             {/* Header */}
@@ -403,11 +423,10 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                                     <Bot className="h-3 w-3 text-background" />
                                 </div>
                             )}
-                            <div className={`max-w-[85%] space-y-1 ${
-                                msg.role === "user"
+                            <div className={`max-w-[85%] space-y-1 ${msg.role === "user"
                                     ? "bg-foreground text-background rounded-xl rounded-br-sm px-3 py-2"
                                     : "bg-white border border-neutral-200 shadow-sm rounded-xl rounded-bl-sm px-3 py-2"
-                            }`}>
+                                }`}>
                                 {msg.role === "assistant" && msg.content ? (
                                     renderMessageContent(msg.content, appliedFields, handleApplyFields)
                                 ) : msg.role === "assistant" && !msg.content && isStreaming ? (
