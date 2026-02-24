@@ -30,351 +30,49 @@ LOW risk (standard — good practice but not legally critical):
 // ─── Doc-Type Specific Guidance ──────────────────────────────────────────────
 
 const DOC_TYPE_GUIDANCE: Record<DocumentType, string> = {
-    nda: `
-**NDA-Specific Rules (India-Centric, 35-Clause Library):**
-
-**Legal Framework:** Indian Contract Act 1872, Arbitration and Conciliation Act 1996, IT Act 2000, Copyright Act 1957, Companies Act 2013, DPDP Act 2023, SPDI Rules 2011, Specific Relief Act 1963.
-
-**CLAUSE CATEGORIES (generate clauses from ALL relevant categories):**
-1. CORE STRUCTURAL (1–4): Title, Parties, Recitals, Purpose — ALWAYS include, HIGH risk for Parties and Purpose.
-2. CONFIDENTIALITY (5–7): Definition of CI, Exclusions, Obligations — ALWAYS include, ALL HIGH risk.
-3. TERM & SURVIVAL (8–10): Term, Survival, Termination — ALWAYS include, Survival is HIGH risk.
-4. PROTECTIVE (11–13): Return/Destruction, Remedies (injunctive relief), Indemnity — 11-12 mandatory, 13 contextual.
-5. DISPUTE & LEGAL (14–16): Governing Law, Jurisdiction or Arbitration — 14 mandatory, 15-16 conditional on disputeResolution.
-6. BUSINESS PROTECTION (17–19): Non-Compete, Non-Solicitation, Non-Circumvention — ALL conditional on form toggles.
-7. IP (20–21): IP Assignment, No License — 20 conditional on includeIPAssignment, 21 mandatory.
-8. DATA & COMPLIANCE (22–23): Data Protection (DPDP/IT Act), Trade Secrets — contextual.
-9. STRUCTURAL SAFETY (24–30): Severability, Entire Agreement, Amendment, Waiver, Assignment, Notices, E-Signatures — ALWAYS include, LOW risk.
-10. ADVANCED/ENTERPRISE (31–35): Residual Knowledge, Audit Rights, Limitation of Liability, Force Majeure, Independent Contractor — contextual.
-
-**DISCLOSURE TYPE RULES:**
-- If disclosureType is "Mutual", ALL obligations must be reciprocal (both parties are Disclosing AND Receiving).
-- If disclosureType is "Unilateral", obligations fall on the Receiving Party only.
-
-**CRITICAL RISK RULES:**
-- Definition of "Confidential Information" is the MOST CRITICAL clause — mark as HIGH risk.
-- Non-compete clauses are generally unenforceable post-employment in India (S.27, Indian Contract Act) — flag this.
-- ALWAYS include: Return/Destruction of Materials, Survival period, Remedies (injunctive relief).
-
-**CONDITIONAL CLAUSE TOGGLES:**
-- includeNonCompete → Non-Compete (S.27 enforceability notice required)
-- includeNonSolicit → Non-Solicitation
-- includeIPAssignment → IP Assignment with moral rights waiver (Copyright Act S.57)
-- includeNonCircumvent → Non-Circumvention (for business/investor relationships)
-- includeIndemnity → Indemnity clause (S.124-125, Indian Contract Act)
-- includeDataProtection → Data Protection (DPDP Act 2023, IT Act S.43A)
-- includeTradeSecrets → Trade Secrets (perpetual obligations)
-- includeAuditRights → Audit Rights (enterprise/regulatory compliance)
-`,
-    mou: `
-**MOU-Specific Rules:**
-- MOUs are generally non-binding in India unless they contain binding operative clauses.
-- ALWAYS clearly state whether the MOU is binding or non-binding in the preamble — HIGH risk if ambiguous.
-- Roles and Responsibilities clause is HIGH risk — vague responsibilities cause disputes.
-- Financial arrangements must be specific (amounts, timelines, payment methods) — HIGH risk if vague.
-- Include IP ownership clause if collaboration produces any work product.
-- Termination clause must include notice period, cure period, and consequences.
-- Dispute resolution is MEDIUM risk — specify arbitration or mediation before litigation.
-- For government MOUs, reference relevant procurement or partnership regulations.
-`,
-    "offer-letter": `
-**Offer Letter-Specific Rules (Indian Startup Context):**
-- This is a PRE-APPOINTMENT document — it's an offer, not the final appointment.
-- CTC breakdown must follow Indian payroll norms: Basic, HRA, Special Allowance, PF (employer + employee), Gratuity.
-- Basic salary should be minimum 40-50% of CTC for optimal PF/Gratuity calculation.
-- Probation period clause is MEDIUM risk — must clearly state confirmation process.
-- Notice period during probation is typically shorter (15 days vs. 1-3 months post-confirmation).
-- Mention that appointment letter will follow on joining — this is standard practice.
-- If ESOP is mentioned, state it's subject to ESOP plan terms (don't detail full vesting here).
-- Offer validity deadline is HIGH risk — must be specific (date, not "soon").
-- Reference background verification requirement upfront.
-- Don't include detailed policies — just reference that company policies apply.
-`,
-    "appointment-letter": `
-**Appointment Letter-Specific Rules (Indian Labour Law Compliance):**
-- This is the DEFINITIVE employment document — must be comprehensive and legally compliant.
-- CTC breakdown is HIGH risk — must be accurate and match offer letter.
-- Applicable laws: Industrial Disputes Act 1947, Shops & Establishments Act (state-specific), Employees' PF Act 1952, Payment of Gratuity Act 1972, Payment of Bonus Act 1965.
-- Probation clause must specify: duration, notice during probation, conditions for confirmation.
-- Notice period: Must be clear and reasonable. During probation typically 15-30 days.
-- IP Assignment clause is HIGH risk for startups — all work product must belong to company.
-- Confidentiality clause should survive termination.
-- Non-compete: Note S.27 Indian Contract Act — post-employment non-compete is unenforceable. During-employment restraints are valid.
-- Reference company policies (leave, code of conduct) rather than embedding full text.
-- Mandatory: PF, ESI (if applicable), Gratuity, Professional Tax deduction notices.
-`,
-    "relieving-letter": `
-**Relieving Letter-Specific Rules:**
-- This is an ATTESTATION document — must be issued on the last working date or within 2 days.
-- Factual accuracy is paramount — incorrect dates or designation can cause legal issues.
-- Must clearly state: employee name, designation, date of joining, last working date.
-- Resignation acceptance must be confirmed — reference resignation date.
-- Notice period status: Whether served in full, bought out, or waived.
-- Clearance: State whether all dues are settled or "subject to final settlement."
-- Conduct remark: Keep it positive or neutral. Avoid anything that could be seen as defamatory.
-- If combining with experience certificate: Add detailed role, responsibilities, and performance.
-- Post-employment NDA reminder: If NDA was signed, reference ongoing obligations.
-- Signatory: Must be authorized — typically HR Head or Director. Include designation.
-`,
-    "payment-reminder": `
-**Payment Reminder-Specific Rules (Indian Commercial Context):**
-- Tone escalation is critical: First = friendly, Second = firm, Final = legal warning.
-- ALWAYS reference specific invoice number, date, amount, and services — vague reminders are ignored.
-- First reminder: Professional, assume oversight.
-- Second reminder: Reference previous communication, state urgency, mention potential consequences.
-- Final notice: Reference contractual late payment terms, applicable interest (S.3, Interest Act 1978), and warn about legal proceedings.
-- For cheque bounce: Reference S.138 Negotiable Instruments Act — 30 days statutory notice MANDATORY.
-- Include clear payment instructions (bank details, UPI) — make it easy to pay.
-- If late payment interest applies: Calculate and state the accrued amount.
-- Reference the underlying contract/PO for legitimacy.
-- MSME vendors: Reference MSMED Act 2006 provisions for delayed payments (S.15-16).
-`,
-    "esop-grant": `
-**ESOP Grant Letter-Specific Rules (Indian Startup ESOP Framework):**
-- Legal framework: Companies Act 2013 (S.62(1)(b), Rule 12 of Companies (Share Capital) Rules 2014).
-- Board resolution approving ESOP pool is a PREREQUISITE — reference resolution date.
-- Vesting schedule is the MOST CRITICAL section — must be crystal clear.
-- Standard startup vesting: 4 years, 1-year cliff, monthly/quarterly thereafter.
-- Exercise price: For startups, often at face value (₹10) or at a discount to FMV.
-- Tax implications (HIGH risk — employees MUST understand):
-  - Perquisite tax at exercise: FMV minus Exercise Price (S.17(2), Income Tax Act).
-  - Capital gains at sale: Sale price minus FMV at exercise.
-  - Startup exemption: S.80-IAC eligible startups can defer perquisite tax 5 years or until exit (whichever is earlier).
-- Exercise window post-termination: Critical for departing employees — 90 days is standard.
-- Accelerated vesting: Single trigger (acquisition) vs. double trigger (acquisition + termination).
-- Transfer restrictions: Options are non-transferable. Shares post-exercise may have ROFR.
-- Reference the master ESOP plan for detailed terms — grant letter is a summary.
-`,
-    "share-allotment": `
-**Share Allotment Letter-Specific Rules (Companies Act 2013 Compliance):**
-- Legal framework: Companies Act 2013 (S.39, S.42, S.56, S.62), Companies (Share Capital) Rules 2014.
-- Board resolution is MANDATORY — reference resolution date and number.
-- For private placements: S.42 compliance required (offer letter, PAS-4 filing).
-- Form PAS-3 (Return of Allotment): Must be filed with MCA within 15 days of allotment.
-- Share certificate: Must be issued within 2 months of allotment (S.56(4)).
-- For CCPS/CCD: Specify conversion terms, anti-dilution protection, and liquidation preference if applicable.
-- Sweat equity: Must comply with S.54 and Rule 8 — valuation by registered valuer required.
-- ESOP exercise: Reference original ESOP grant, exercise form, and payment confirmation.
-- Pre-emption rights (ROFR): Common in shareholder agreements — check and reference.
-- Stamp duty: Applicable on share certificates (varies by state).
-- Securities premium: Ensure premium is properly accounted in Securities Premium Account.
-`,
-    "legal-notice": `
-**Legal Notice-Specific Rules (Indian Legal Framework):**
-- Legal notices must be sent through a registered advocate for maximum impact — include advocate details.
-- For S.80 CPC (government bodies): 60 days notice is MANDATORY before filing suit. Non-compliance = suit dismissed.
-- For S.138 NI Act (cheque bounce): 30 days notice is MANDATORY after dishonour.
-- Factual background must be PRECISE — dates, amounts, reference numbers.
-- Demand must be SPECIFIC — exact amount, exact action, exact deadline.
-- Always reference specific legal provisions that support your claim.
-- Consequences must be stated: civil suit, criminal complaint, arbitration, specific performance.
-- Mode of sending: Registered Post with AD (acknowledgement due) is standard — proves delivery.
-- "Under instructions from my client" — standard opening when sent through advocate.
-- Reservation of all rights — standard closing. Never waive future claims.
-- Keep the tone firm but professional — avoid threats or personal attacks.
-`,
-    "breach-notice": `
-**Breach Notice-Specific Rules:**
-- A breach notice is a CONTRACTUAL REMEDY — it triggers the cure period defined in the contract.
-- Reference the EXACT clause number(s) violated — vague references weaken the notice.
-- Describe the breach factually: what obligation was breached, when, how.
-- Cure period: Must match the contractual cure period. If contract specifies 30 days, don't demand 7.
-- Consequences of failure to cure: Termination rights, damages claims, suspension of obligations.
-- Previous communications: Reference all prior attempts to resolve — shows good faith.
-- Material breach vs. minor breach: Material breach allows termination; minor breach allows damages claim.
-- If contract has liquidated damages clause: Reference the specific contractual penalty.
-- Don't claim damages you can't prove — be realistic.
-- Reservation of rights: Sending a breach notice doesn't waive the right to terminate or sue.
-`,
-    loi: `
-**Letter of Intent-Specific Rules (Indian Deal-Making Context):**
-- Most LOIs are NON-BINDING except for confidentiality, exclusivity, and governing law clauses.
-- CLEARLY mark which clauses are binding and which are non-binding — ambiguity is HIGH risk.
-- Deal terms: Must be specific enough to form the basis of definitive agreements (SHA, SPA, SSA).
-- For investment LOIs: Include valuation, instrument (equity/CCPS/CCD), board seats, investor rights overview.
-- Exclusivity period: Standard is 30-60 days. Binding clause — prevent the target from shopping the deal.
-- Due diligence: Specify scope, timeline, and who bears costs.
-- Conditions precedent: List clearly — satisfactory DD, board approvals, regulatory clearances (SEBI, CCI, RBI).
-- Break fee: Optional but powerful — compensates for opportunity cost if deal falls through.
-- Expiry: LOIs must have a clear expiry date (typically 30-90 days).
-- For M&A: Reference that definitive agreement (SPA/SHA) will supersede the LOI.
-- Startup-specific: Angel investors may use LOI as a "term sheet light" — ensure it captures key terms.
-`,
-    "vendor-onboarding": `
-**Vendor Onboarding Letter-Specific Rules:**
-- This functions as a mini-contract — it should be comprehensive enough to govern the engagement.
-- Scope of work is HIGH risk — vague SOW leads to disputes. Be specific about deliverables, timelines, milestones.
-- Payment terms: Tie to deliverables or milestones where possible. Include invoice process.
-- GST compliance: Require valid GSTIN-based invoices for Input Tax Credit claiming (S.16, CGST Act 2017).
-- TDS: Reference TDS obligations (S.194C/194J/194H IT Act) — deducted at source.
-- IP assignment: ALL deliverables must belong to the company — critical for startups.
-- Confidentiality: Essential for all vendors handling sensitive data or code.
-- SLA: Define measurable metrics — response time, uptime, quality standards.
-- Termination: Include both convenience termination (30 days notice) and for-cause termination.
-- Indemnification: Vendor should indemnify for IP infringement, data breaches, and non-compliance.
-- For freelancers: Clearly establish independent contractor status (not employment) to avoid PF/ESI obligations.
-`,
-    "startup-india": `
-**Startup India Letter-Specific Rules (DPIIT & Regulatory Context):**
-- Startup India recognition is granted by DPIIT (Department for Promotion of Industry and Internal Trade).
-- Eligibility: Entity < 10 years old, turnover < ₹100 Cr in any FY, working towards innovation/development/improvement.
-- Entity must be incorporated as Pvt Ltd, LLP, or Partnership Firm (sole proprietorships don't qualify).
-- For DPIIT recognition: Include CIN/LLPIN, nature of innovation, and how it's differentiated from existing products/services.
-- Tax benefits (S.80-IAC): 3 consecutive years of tax holiday out of first 10 years. Requires Inter-Ministerial Board certification.
-- Angel tax exemption (S.56(2)(viib)): DPIIT-recognized startups with aggregate paid-up share capital < ₹25 Cr are exempt.
-- Self-certification under Labour & Environment laws: Valid for 3 years from incorporation.
-- Fund of Funds (SIDBI): Available through SEBI-registered VCs that receive FoF allocation.
-- Include proper declarations: Not formed by splitting up existing business, not involved in restricted sectors.
-- Reference required documents: Certificate of Incorporation, PAN, Audited Financials, Business Plan/Pitch.
-`,
-    "gst-bank-letter": `
-**GST / Bank Letter-Specific Rules (Indian Regulatory Compliance):**
-- For GST Registration: Provide PAN, address proof, photo of premises, board resolution, signatory authorization.
-- GST registration is mandatory if annual turnover > ₹20L (₹10L for NE states) or if doing inter-state supply.
-- For Current Account Opening: Banks require KYC docs — Certificate of Incorporation, MOA/AOA, PAN, Board Resolution appointing authorized signatory.
-- RBI guidelines: Companies with turnover < ₹50 Cr — one current account. Above ₹50 Cr — cash credit facility required.
-- Address proof for GST: Rent agreement + NOC from landlord (if rented), or ownership proof.
-- Board resolution: Required for authorizing bank/GST operations — include resolution date and signatory details.
-- For MSME registration (Udyam): Can be self-declared online at udyamregistration.gov.in.
-- HSN/SAC codes: Include if known — helps with correct GST rate classification.
-- All declarations should include "under penalty of perjury" or equivalent legal affirmation.
-- Reference all enclosed documents at the end of the letter.
-`,
-    "co-founder-agreement": `
-**Co-Founder Agreement-Specific Rules (Indian Startup Context):**
-- This is the MOST CRITICAL document for any multi-founder startup — disputes between co-founders kill more startups than market failure.
-- Legal framework: Indian Contract Act 1872, Companies Act 2013, Indian Partnership Act 1932 (if partnership).
-- Equity split is HIGH risk — must be clearly documented with rationale. Avoid 50-50 splits (deadlock risk).
-- REVERSE VESTING is essential: Even though founders already "own" shares, a vesting schedule ensures departing founders don't walk away with full equity. Typically 4 years, 1-year cliff.
-- Buyback mechanism: Define what happens to unvested shares — company buyback at face value or FMV? ROFR?
-- IP Assignment is HIGH risk: ALL pre-existing IP and future IP created by founders MUST be assigned to the company entity. Without this, investors will walk.
-- Decision-making must be clearly defined: Board-level vs. operational. Define "reserved matters" requiring unanimous consent (fundraising, equity changes, key hires, pivots, asset sales).
-- Deadlock resolution: Critical for 50-50 or 2-founder companies. Mediation → Arbitration → Shotgun clause.
-- Non-compete during association is enforceable. Post-exit non-compete: Note S.27, Indian Contract Act — generally unenforceable but include with reasonableness caveat.
-- Good leaver vs. Bad leaver: Good leaver (death, disability, mutual agreement) keeps vested equity. Bad leaver (breach, misconduct, competing) forfeits at face value.
-- Drag-along / Tag-along: Include for investor fundraising readiness.
-- ROFR (Right of First Refusal): Founders cannot sell shares without offering to other founders first.
-`,
-    "board-resolution": `
-**Board Resolution-Specific Rules (Companies Act 2013 Compliance):**
-- Legal framework: Companies Act 2013 (S.173-175, S.179, S.188), Companies (Meetings of Board) Rules 2014.
-- Quorum: Minimum 2 directors or 1/3rd of total directors, whichever is higher (S.174).
-- Circular resolution (S.175): Can be passed without meeting if approved by majority of directors entitled to vote. NOT valid for certain matters (related party transactions, loans, investments in other bodies corporate).
-- Board meetings: Minimum 4 per year, gap not exceeding 120 days (S.173).
-- Video conference: Allowed for board meetings (Rule 3, Companies (Meetings) Rules 2014). Some matters require physical presence.
-- Minutes must be recorded within 30 days (S.118). Maintained at registered office.
-- For bank-related resolutions: Include authorized signatory details, specimen signature requirements, and transaction limits.
-- For ESOP resolutions: Must comply with S.62(1)(b), define ESOP pool %, exercise price basis, and vesting terms.
-- For share allotment: Reference S.42 (private placement) or S.62 (preferential allotment). Include Form PAS-3 filing requirement.
-- For director changes: File Form DIR-12 within 30 days (S.170).
-- Resolution types: Ordinary Resolution (simple majority) vs. Special Resolution (75% majority). Some matters are board-level only.
-- ALWAYS include: Company name, CIN, registered office, meeting details, quorum confirmation, resolution text with "RESOLVED THAT" format, authorization clause.
-`,
-    "termination-letter": `
-**Termination Letter-Specific Rules (Indian Labour Law):**
-- Legal framework: Industrial Disputes Act 1947 (for workmen), Shops & Establishments Act (state-specific), Indian Contract Act 1872.
-- Termination must be for documented cause — arbitrary termination exposes the company to wrongful termination claims.
-- Performance-based: Must reference prior PIP (Performance Improvement Plan), review dates, and specific failures. Without documentation, termination is challengeable.
-- Misconduct: Must follow principles of natural justice — show cause notice, opportunity to be heard, enquiry (if applicable), and then termination order.
-- Probation failure: Simpler process — reference appointment letter terms, state performance gaps, and terminate with notice.
-- Redundancy: Retrenchment provisions apply for "workmen" under ID Act — last-in-first-out, retrenchment compensation (15 days' average pay per year of service).
-- Notice period: Must match appointment letter terms. Pay-in-lieu allowed if contractually provided.
-- Final settlement: Must include pending salary, earned leave encashment, proportionate bonus, gratuity (if eligible — 5 years continuous service under Payment of Gratuity Act 1972).
-- Gratuity: Mandatory after 5 years — 15 days' last drawn salary for each year of service (S.4, Payment of Gratuity Act 1972).
-- Company property return: Laptop, access cards, data, documents — provide specific list.
-- Post-employment obligations: Reference existing NDA, IP assignment, non-disparagement.
-- Right to appeal: Good practice — state internal grievance mechanism.
-- Tone: Firm but respectful. Never include personal remarks or unprofessional language.
-`,
-    "consultancy-agreement": `
-**Consultancy Agreement-Specific Rules (Indian Contract & Tax Law):**
-- Legal framework: Indian Contract Act 1872, Income Tax Act 1961 (S.194C/194J), GST provisions.
-- CRITICAL distinction: Consultant is an INDEPENDENT CONTRACTOR, not an employee. If misclassified, company faces PF/ESI liability, labour law compliance, and tax penalties.
-- Indicators of independent contractor: Controls own schedule, uses own tools, works for multiple clients, bears own expenses, no recurring salary.
-- Scope of work is HIGH risk — vague SOW leads to scope creep and disputes. Define deliverables, milestones, acceptance criteria.
-- TDS compliance is MANDATORY:
-  - S.194J: 10% TDS on professional/technical services (for individuals exceeding ₹30,000/year).
-  - S.194C: 1% (individual/HUF) or 2% (company/firm) on contractor payments exceeding ₹30,000 per payment or ₹1,00,000/year aggregate.
-- GST: If consultant's turnover > ₹20L, they must issue GST invoice. Reverse charge may apply for specified services.
-- IP Assignment is CRITICAL for startups — all deliverables (code, designs, documents) must be assigned to the company. Work-for-hire doctrine in India is narrow (Copyright Act S.17(c) only covers employer-employee).
-- Confidentiality: Must survive termination. Define what's confidential — code, business plans, client data, strategies.
-- Non-solicitation: Enforceable during and for reasonable period after engagement.
-- Non-compete during engagement: Enforceable. Post-engagement: Likely unenforceable (S.27, Indian Contract Act) but include with narrow scope.
-- Termination: Include both convenience (with notice) and for-cause (immediate) termination rights for both parties.
-- Payment on termination: Pro-rata for work completed, within 30 days of final invoice.
-`,
-    "service-agreement": `
-**Service Agreement-Specific Rules (Indian Commercial Law):**
-- Legal framework: Indian Contract Act 1872, IT Act 2000 (for digital services), DPDP Act 2023 (data handling), Consumer Protection Act 2019.
-- This functions as the PRIMARY commercial agreement for SaaS, IT services, and managed services companies.
-- Service Description must be EXHAUSTIVE — include features, scope, exclusions, service hours, and support tiers. Ambiguity here is the #1 source of disputes.
-- SLA (Service Level Agreement) is HIGH risk for service/SaaS companies:
-  - Define measurable metrics: uptime %, response time, resolution time, performance benchmarks.
-  - Include SLA credits: Specify compensation for SLA failures (e.g., pro-rata service credits, not cash refunds).
-  - Exclusions: Planned maintenance, force majeure, customer-caused issues.
-- Pricing & Payment:
-  - For SaaS: Clearly state subscription period, auto-renewal terms, price increase mechanism.
-  - GST: Must be charged separately on invoices. Include SAC code for service classification.
-  - Late payment interest: Include contractual rate (typically 1.5% per month).
-- Data Protection (CRITICAL for SaaS):
-  - Reference DPDP Act 2023 (Digital Personal Data Protection) — applicable if processing Indian personal data.
-  - IT Act S.43A + SPDI Rules 2011 — "reasonable security practices" for sensitive data.
-  - Data ownership: Customer retains ownership of their data. Service provider is a "data processor."
-  - Data portability and deletion: Customer can export data and request deletion on termination.
-- Limitation of liability: Standard is capped at total fees paid in last 12 months. NEVER accept unlimited liability.
-  - Carve-outs: Breach of confidentiality, IP infringement, willful misconduct — typically subject to higher cap or uncapped.
-- IP clause: Pre-existing IP retained by creator. Custom deliverables assigned to customer. Platform/SaaS IP remains with provider.
-- Termination: Include both convenience (30-60 days notice) and for cause. Data migration period (30-90 days) after termination.
-`,
-    "ip-assignment": `
-**IP Assignment Agreement-Specific Rules (Indian IP Law):**
-- Legal framework: Copyright Act 1957, Patents Act 1970, Trademarks Act 1999, Trade Secrets (common law + IT Act 2000), Indian Contract Act 1872.
-- This is arguably the MOST IMPORTANT agreement for early-stage startups — without it, the company doesn't actually own its core IP.
-- Pre-incorporation IP: Founders often build the initial product before incorporating. This IP MUST be formally assigned post-incorporation. Without this, investors will not invest.
-- Copyright assignment: Must be in writing (S.19, Copyright Act 1957). Must specify work, rights, duration, territory, and consideration.
-- Work-for-hire: Under Indian law (S.17(c), Copyright Act), employer owns copyright ONLY for works created under a "contract of service" (employment). Works by contractors/freelancers require explicit assignment.
-- Moral rights (S.57, Copyright Act): Author's right to attribution and to prevent distortion. CANNOT be fully waived in India — but can be contractually managed (e.g., author agrees not to exercise moral rights).
-- Patent assignment: Must be registered with the Patent Office (S.68, Patents Act 1970). Assignment must be in writing.
-- Consideration: Essential for valid assignment under Indian Contract Act. Can be nominal (₹1) but must exist. Equity/ESOP can constitute consideration.
-- Warranties: Assignor must warrant: (a) IP is original, (b) no third-party claims, (c) no existing licenses/encumbrances, (d) full authority to assign.
-- Further assurance: Assignor commits to executing any future documents needed to perfect the transfer (e.g., patent filings, copyright registrations).
-- Non-assertion: Assignor agrees not to assert any retained rights against the company.
-- Source code handover: For software IP — include all source code, repositories, documentation, access credentials, and build instructions.
-- Due diligence: Investors WILL check IP ownership chain. A clean IP assignment is table stakes for fundraising.
-`,
-    "experience-letter": `
-**Experience Letter-Specific Rules:**
-- This is an ATTESTATION document — issued to departing employees confirming their employment history.
-- Must be issued on company letterhead with proper formatting.
-- Format: "To Whom It May Concern" — designed for future employers and third parties.
-- Factual accuracy is paramount — incorrect dates, designation, or tenure can cause legal issues for both parties.
-- Must include: Employee's full name, employee ID (if applicable), all designations held, date of joining, last working date.
-- Responsibilities: Should be detailed enough to give future employers a clear picture of the employee's role.
-- Performance remark: Keep positive or neutral. Never include defamatory remarks — exposes company to legal liability.
-- If employee was promoted during tenure: List all designations chronologically with dates.
-- Skills section: Optional but valuable — list domain expertise, tools, leadership capabilities.
-- Projects section: Optional — highlight key contributions without revealing confidential details.
-- Signatory: Must be authorized — typically HR Head, Director, or CEO. Include designation and company stamp.
-- Close with best wishes for future endeavours — standard professional courtesy.
-- This is NOT a relieving letter (which confirms resignation acceptance and clearance). Experience letter focuses on role and performance.
-`,
-    "internship-letter": `
-**Internship Offer Letter-Specific Rules (Indian Startup Context):**
-- Distinction from full-time offer: This is a LIMITED-PERIOD engagement, usually for students or early-career professionals.
-- Stipend is the norm — not salary. Stipends below ₹2,50,000/year are typically not taxable for the intern.
-- For college interns: Reference the academic institution if applicable. Some colleges require a formal internship agreement.
-- Project scope must be SPECIFIC — vague internship offers lead to poor outcomes. Define project, deliverables, learning objectives.
-- Mentor assignment: Every intern should have a named mentor/reporting manager. This is critical for intern experience.
-- Duration: Typically 1-6 months for startups. 2-3 months is standard for summer internships.
-- PPO (Pre-Placement Offer): If eligible, state the criteria clearly — performance evaluation, project completion, team fit.
-- Confidentiality: Required even for interns — they will access company code, data, and strategies.
-- IP assignment: CRITICAL for startups — any code, designs, or work product by interns belongs to the company.
-- Working hours should respect labour laws — generally 8 hours/day, 5-6 days/week.
-- Certificate: Promise of completion certificate is standard and expected.
-- For remote interns: Specify equipment responsibility, communication tools, and availability expectations.
-- Termination: Either party can terminate with 7 days notice. For misconduct, immediate termination.
-- Tone: Welcoming and enthusiastic — but professional. Startups should sell the learning opportunity.
-`,
+    nda: `**NDA-Specific Rules:** Focus on CI definition, return/destruction of materials, and injunctive relief. Post-employment non-compete is unenforceable (S.27).`,
+    mou: `**MOU-Specific Rules:** Clearly state binding/non-binding status. Define roles and financial terms precisely.`,
+    "offer-letter": `**Offer Letter-Specific Rules:** Pre-appointment summary. Include CTC breakdown (Basic, HRA, PF, Gratuity) and probation terms.`,
+    "appointment-letter": `**Appointment Letter-Specific Rules:** Definitive contract. Include full IP assignment and termination grounds. Reference Shops & Establishments Act.`,
+    "relieving-letter": `**Relieving Letter-Specific Rules:** Confirmation of exit and clearance. Factual accuracy on dates and notice period served is key.`,
+    "experience-letter": `**Experience Letter-Specific Rules:** Role and performance attestation. Detail responsibilities and tenure.`,
+    "internship-letter": `**Internship Letter-Specific Rules:** Stipend-based limited engagement. Focus on project scope and learning objectives.`,
+    "payment-reminder": `**Payment Reminder-Specific Rules:** Escalating tone (Friendly -> Firm -> Final). Reference invoice numbers and statutory interest (Interest Act 1978).`,
+    "esop-grant": `**ESOP Grant-Specific Rules:** Vesting schedule (standard 4 years/1 year cliff) and tax implications (S.17(2) IT Act).`,
+    "share-allotment": `**Share Allotment-Specific Rules:** Board-resolution ready. Reference Companies Act 2013 (S.39). Include PAS-3 filing notice.`,
+    "legal-notice": `**Legal Notice-Specific Rules:** Advocate-led formal demand. S.80 CPC for govt, S.138 for cheque bounce.`,
+    "breach-notice": `**Breach Notice-Specific Rules:** Identify specific contractual violations and provide a cure period.`,
+    loi: `**LOI-Specific Rules:** Binding vs non-binding sections. Focus on exclusivity/DD period.`,
+    "vendor-onboarding": `**Vendor Onboarding-Specific Rules:** Scope, payment terms (TDS), and GST compliance (S.16 CGST Act).`,
+    "startup-india": `**Startup India-Specific Rules:** DPIIT recognition criteria. Focus on innovation, scalability, and impact.`,
+    "gst-bank-letter": `**GST/Bank Letter-Specific Rules:** Formal request for account/registration with board resolution reference.`,
+    "co-founder-agreement": `**Co-Founder Agreement-Specific Rules:** Equity split, reverse vesting, and deadlock resolution. IP assignment is critical.`,
+    "board-resolution": `**Board Resolution-Specific Rules:** Formal record of actions. Use 'RESOLVED THAT' format. Reference Companies Act 2013.`,
+    "termination-letter": `**Termination Letter-Specific Rules:** Notice period and grounds. Reference PIP for performance or enquiry for misconduct.`,
+    "consultancy-agreement": `**Consultancy Agreement-Specific Rules:** Independent contractor status, IP assignment, and professional service fees (S.194J).`,
+    "service-agreement": `**Service Agreement-Specific Rules:** Ongoing services, SLA metrics, and aggregated liability caps.`,
+    "ip-assignment": `**IP Assignment-Specific Rules:** Unconditional transfer of IP rights. Reference S.19 Copyright Act. Include moral rights waiver.`,
+    "isafe-note": `**iSAFE Note-Specific Rules:** Convertible equity instrument. No debt/interest. Focus on Valuation Cap and Discount.`,
+    sha: `**SHA-Specific Rules:** Governance agreement. Board seats, veto rights, and exit rights (ROFR, Tag-Along).`,
+    "term-sheet": `**Term Sheet-Specific Rules:** Investment summary. Generally non-binding except for exclusivity/confidentiality.`,
+    "founders-deed": `**Founders' Deed-Specific Rules:** Pre-incorporation IP assignment and long-term reverse vesting.`,
+    "saas-agreement": `**SaaS-Specific Rules:** Cloud service terms, SLA uptime, and data privacy (DPDP Act 2023).`,
+    "rent-agreement": `**Rent Agreement-Specific Rules:** Residential rent. 11-month term common. Security deposit and maintenance terms.`,
+    "commercial-lease": `**Commercial Lease-Specific Rules:** Office rental. CAM charges, escalation, and lock-in periods.`,
+    "influencer-agreement": `**Influencer-Specific Rules:** Deliverables, approval process, and social media usage rights.`,
+    "posh-policy": `**POSH Policy-Specific Rules:** Mandatory framework under ICC Act 2013. Focus on IC composition.`,
+    "section-138-notice": `**Section 138-Specific Rules:** Mandatory notice for cheque bounce. 30 days limit from bank memo.`,
+    "data-breach-notice": `**Data Breach Notice-Specific Rules:** Notification regarding security incident. Compliant with DPDP Act.`,
+    gpa: `**GPA-Specific Rules:** Authorized signatory delegation. Specific acts must be listed.`,
+    "software-license": `**Software License-Specific Rules:** Restrictive usage rights for proprietary software. Define license scope.`,
+    "white-label-agreement": `**White-Label-Specific Rules:** Branding rights, reselling commissions, and tech support split.`,
+    "maintenance-agreement": `**Maintenance-Specific Rules:** Response times (SLAs) and AMC fee schedules.`,
+    "ethics-code": `**Ethics Code-Specific Rules:** Corporate values, conflict of interest, and anti-bribery framework.`,
+    "fnf-settlement": `**F&F Settlement-Specific Rules:** Final waiver. Acknowledge full receipt of dues and waive future claims.`,
+    "leave-license": `**Leave & License-Specific Rules:** License-based occupation. Emphasize no tenancy creation.`,
+    "eviction-notice": `**Eviction Notice-Specific Rules:** Vacate demand citing breach of agreement. Specify deadline.`,
+    "affiliate-agreement": `**Affiliate Agreement-Specific Rules:** Commission rates and referral tracking terms.`,
+    "sponsorship-agreement": `**Sponsorship-Specific Rules:** Promotion, logo placement, and sponsor benefits.`,
 };
 
 // ─── Blueprint Generation Prompt ─────────────────────────────────────────────
@@ -1151,6 +849,210 @@ ${formData.includeIPClause === true || formData.includeIPClause === "true" ? "- 
 ${formData.includeCertificate === true || formData.includeCertificate === "true" ? "- Certificate: Upon successful completion, the company will issue an Internship Completion Certificate detailing the role, duration, and project." : ""}
 - Termination: Either party may terminate with 7 days written notice. Immediate termination for misconduct.
 - End with offer acceptance section — intern must sign and return by [acceptance deadline].
+`;
+
+        case "isafe-note":
+            return `
+**iSAFE NOTE DRAFTING RULES:**
+- Investor: ${orgB?.name || "[Investor Name]"}
+- Company: ${orgA.name}
+- Investment Amount: ₹${formData.investmentAmount || "[Amount]"}
+- Valuation Cap: ₹${formData.valuationCap || "[Cap]"}
+- Discount Rate: ${formData.discountRate || "20"}%
+- Conversion Event: ${formData.conversionEvent || "Equity Financing"}
+- Equity Financing Threshold: ₹${formData.equityFinancingThreshold || "50,00,000"}
+- Format: Professional investment agreement format.
+- Start with a clear title: "INDIA SIMPLE AGREEMENT FOR FUTURE EQUITY (iSAFE)".
+- Section 1 (The Investment): Confirm the Company is a private limited company and the Investor is providing the Purchase Amount.
+- Section 2 (Liquidity Events): Detail conversion logic during M&A or IPO based on the Valuation Cap.
+- Section 3 (Dissolution): Specify that the Investor has priority over common shareholders but is subordinate to debt holders.
+- Section 4 (Reps and Warranties): Include standard "clean" startup warranties.
+- Section 5 (Miscellaneous): Include Governing Law (India), Jurisdiction (${city}), and dispute resolution.
+- IMPORTANT: Clearly state that this instrument is NOT a debt and carries no interest.
+`;
+
+        case "sha":
+            return `
+**SHAREHOLDERS AGREEMENT DRAFTING RULES:**
+- Company: ${orgA.name}
+- Founders: ${formData.foundersNames || "[Founders]"}
+- Investor: ${orgB?.name || "[Investor]"}
+- Board Seats: ${formData.boardSeats || "[Seats]"}
+- Veto Rights: ${formData.vetoRights || "[Rights]"}
+- Exit Rights: Include ROFR, ROFO, Tag-Along, and Drag-Along rights.
+- Board Composition: Specify how many directors each party can appoint.
+- Transfer Restrictions: Shares are non-transferable during lock-in period.
+- Reference Companies Act 2013 and SHAs standard market practice in India.
+`;
+
+        case "term-sheet":
+            return `
+**TERM SHEET DRAFTING RULES:**
+- Pre-Money Valuation: ₹${formData.preMoneyValuation || "[Amount]"}
+- Round Size: ₹${formData.roundSize || "[Amount]"}
+- Instrument: ${formData.instrumentType || "CCPS"}
+- Exclusivity: ${formData.exclusivityPeriod || "30 days"}
+- Binding Clauses: Confidentiality, Exclusivity, and Governing Law.
+- Non-Binding Clauses: Valuation, Board Rights, and other commercial terms.
+`;
+
+        case "founders-deed":
+            return `
+**FOUNDERS' DEED DRAFTING RULES:**
+- Founders: ${formData.foundersNames || "[Names]"}
+- Equity Split: ${formData.equitySplit || "[Split]"}
+- Vesting: ${formData.vestingSchedule || "4 years / 1 year cliff"}
+- Role of Founders: Detail technical/business responsibilities.
+- IP Assignment: All pre-incorporation work belongs to the future company.
+- Reverse Vesting: Essential for long-term commitment.
+`;
+
+        case "saas-agreement":
+            return `
+**SaaS AGREEMENT DRAFTING RULES:**
+- Services: ${formData.serviceDescription || "[Services]"}
+- Subscription Fee: ₹${formData.subscriptionFee || "[Amount]"}
+- SLA: ${formData.slaUptime || "99.9"}% Uptime.
+- Data Privacy: Reference DPDP Act 2023 for customer data.
+- Ownership: Customer owns data; Provider owns the software.
+`;
+
+        case "rent-agreement":
+            return `
+**RENT AGREEMENT DRAFTING RULES:**
+- Property: ${formData.propertyAddress || "[Address]"}
+- Rent: ₹${formData.monthlyRent || "[Amount]"}
+- Deposit: ₹${formData.securityDeposit || "[Amount]"}
+- Term: ${formData.leaseTerm || "11 months"}
+- Notice Period: ${formData.noticePeriod || "1 month"}
+- Standard Indian residential lease terms. Mention fixtures and fittings.
+`;
+
+        case "commercial-lease":
+            return `
+**COMMERCIAL LEASE DRAFTING RULES:**
+- Premises: ${formData.officeAddress || "[Address]"}
+- Rent: ₹${formData.monthlyRent || "[Amount]"}
+- CAM Charges: ₹${formData.camCharges || "0"}
+- Escalation: ${formData.rentEscalation || "5% annual"}
+- Security Deposit: ${formData.securityDepositMonths || "6"} months rent.
+- Registration: Mandatory if term > 11 months.
+`;
+
+        case "influencer-agreement":
+            return `
+**INFLUENCER AGREEMENT DRAFTING RULES:**
+- Campaign: ${formData.campaignTitle || "[Campaign]"}
+- Deliverables: ${formData.deliverables || "[Posts/Videos]"}
+- Fee: ₹${formData.campaignFee || "[Amount]"}
+- Approval: Brand has final approval on all content before posting.
+- Usage Rights: Brand can reuse content for ${formData.usageDuration || "1 year"}.
+`;
+
+        case "posh-policy":
+            return `
+**POSH POLICY DRAFTING RULES:**
+- Company: ${orgA.name}
+- IC Chairperson: ${formData.icChairperson || "[Name]"}
+- IC Members: ${formData.icMembersList || "[Names]"}
+- Mandatory Policy under Sexual Harassment of Women at Workplace Act 2013.
+- Focus on complaint mechanism (IC) and strict timelines for inquiry.
+`;
+
+        case "section-138-notice":
+            return `
+**SECTION 138 NOTICE (CHEQUE BOUNCE) DRAFTING RULES:**
+- Cheque Number: ${formData.chequeNumber || "[Number]"}
+- Amount: ₹${formData.chequeAmount || "[Amount]"}
+- Reason for Dishonour: ${formData.dishonourReason || "Funds Insufficient"}
+- Bank Memo Date: ${formData.memoDate || "[Date]"}
+- Demand: Payment within 15 days of notice receipt.
+- Statutory warning under Negotiable Instruments Act.
+`;
+
+        case "data-breach-notice":
+            return `
+**DATA BREACH NOTICE DRAFTING RULES:**
+- Breach Date: ${formData.breachDate || "[Date]"}
+- Data Involved: ${formData.natureOfData || "[Types of data]"}
+- Actions Taken: ${formData.remedialAction || "[Remedial steps]"}
+- DPDP Act 2023 compliance. Notify users of potential risks and mitigation steps.
+`;
+
+        case "gpa":
+            return `
+**GPA DRAFTING RULES:**
+- Attorney: ${formData.attorneyName || "[Name]"}
+- Scope: ${formData.scopeOfPowers || "[Powers]"}
+- Duration: ${formData.isPerpetual === "true" ? "Perpetual until revoked" : "Specific to task"}
+- Clearly list authorized acts (Banking, Legal, ROC, etc.).
+`;
+
+        case "software-license":
+            return `
+**SOFTWARE LICENSE DRAFTING RULES:**
+- Software: ${formData.softwareName || "[Name]"}
+- License Type: ${formData.licenseType || "Proprietary / Restricted"}
+- Fee: ₹${formData.licenseFee || "[Amount]"}
+- No reverse engineering or unauthorized redistribution.
+`;
+
+        case "white-label-agreement":
+            return `
+**WHITE LABEL AGREEMENT DRAFTING RULES:**
+- Tech: ${formData.techDescription || "[Technology]"}
+- Rights: ${formData.brandingRights || "[Branding permissions]"}
+- Reselling: Multi-tier or direct reselling rights defined.
+- Support: Support obligations split between Provider and Partner.
+`;
+
+        case "maintenance-agreement":
+            return `
+**AMC / MAINTENANCE AGREEMENT DRAFTING RULES:**
+- Scope: ${formData.serviceScope || "[Scope]"}
+- Fee: ₹${formData.maintenanceFee || "[Amount]"} annual.
+- SLA: Response and resolution times for bugs/issues.
+`;
+
+        case "ethics-code":
+            return `
+**CODE OF ETHICS DRAFTING RULES:**
+- Principles: Integrity, Professionalism, and Transparency.
+- Sections: Conflicts of interest, anti-bribery, and asset protection.
+`;
+
+        case "fnf-settlement":
+            return `
+**F&F SETTLEMENT DEED DRAFTING RULES:**
+- Employee: ${formData.employeeName || "[Name]"}
+- Final Dues: ₹${formData.totalDues || "[Amount]"}
+- Waiver: Employee acknowledges full receipt and waives all future claims.
+`;
+
+        case "affiliate-agreement":
+        case "sponsorship-agreement":
+            return `
+**MARKETING / AFFILIATE AGREEMENT DRAFTING RULES:**
+- Campaign: ${formData.campaignType || "Affiliate"}
+- Commission: ${formData.commissionStructure || "[Details]"}
+- Exclusivity: ${formData.isExclusive === "true" ? "Exclusive" : "Non-exclusive"}
+`;
+
+        case "leave-license":
+            return `
+**LEAVE & LICENSE DRAFTING RULES:**
+- Premises: ${formData.premisesDetails || "[Address]"}
+- License Fee: ₹${formData.licenseFee || "[Amount]"}
+- Deposit: ₹${formData.securityDeposit || "[Amount]"}
+- Nature: License to use, not a tenancy. No transfer of interest.
+`;
+
+        case "eviction-notice":
+            return `
+**EVICTION NOTICE DRAFTING RULES:**
+- Reason: ${formData.reasonForEviction || "[Reason]"}
+- Deadline: ${formData.vacateDeadline || "15"} days.
+- Demand to vacate based on breach of lease terms.
 `;
 
         default:
