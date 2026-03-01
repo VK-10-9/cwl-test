@@ -151,7 +151,7 @@ function renderMessageContent(content: string, appliedFields: Set<string>, onApp
 
 function getSuggestionChips(docType: DocumentType): string[] {
     const common = ["Help me fill this form", "What fields are required?"];
-    const perType: Record<DocumentType, string[]> = {
+    const perType: Partial<Record<DocumentType, string[]>> = {
         nda: ["NDA for my employee", "Mutual NDA between two companies", "NDA for a contractor"],
         mou: ["MOU for a joint venture", "Research collaboration MOU", "MOU with a government body"],
         "consultancy-agreement": ["Hire a freelance developer", "Engage a marketing consultant", "Advisory retainer agreement"],
@@ -350,8 +350,8 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
             animate={{ opacity: 1, y: 0, scale: 1 }}
             transition={{ type: "spring", stiffness: 420, damping: 32 }}
             className={`fixed z-50 flex flex-col bg-white border border-border/80 rounded-2xl shadow-[0_8px_40px_-8px_rgba(0,0,0,0.12),0_0_0_1px_rgba(0,0,0,0.03)] overflow-hidden transition-all duration-300 ${isExpanded
-                    ? "bottom-4 right-4 left-4 top-4 sm:left-auto sm:w-[560px] sm:top-4"
-                    : "bottom-6 right-6 w-[360px] max-h-[min(520px,calc(100vh-6rem))]"
+                ? "bottom-4 right-4 left-4 top-4 sm:left-auto sm:w-[560px] sm:top-4"
+                : "bottom-6 right-6 w-[360px] max-h-[min(520px,calc(100vh-6rem))]"
                 }`}
             style={isExpanded ? undefined : { height: "520px" }}
         >
@@ -424,8 +424,8 @@ export default function FormAssistant({ docType, currentFormData, onApplyFields 
                                 </div>
                             )}
                             <div className={`max-w-[85%] space-y-1 ${msg.role === "user"
-                                    ? "bg-foreground text-background rounded-xl rounded-br-sm px-3 py-2"
-                                    : "bg-white border border-neutral-200 shadow-sm rounded-xl rounded-bl-sm px-3 py-2"
+                                ? "bg-foreground text-background rounded-xl rounded-br-sm px-3 py-2"
+                                : "bg-white border border-neutral-200 shadow-sm rounded-xl rounded-bl-sm px-3 py-2"
                                 }`}>
                                 {msg.role === "assistant" && msg.content ? (
                                     renderMessageContent(msg.content, appliedFields, handleApplyFields)

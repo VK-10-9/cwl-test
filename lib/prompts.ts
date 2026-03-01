@@ -29,7 +29,7 @@ LOW risk (standard — good practice but not legally critical):
 
 // ─── Doc-Type Specific Guidance ──────────────────────────────────────────────
 
-const DOC_TYPE_GUIDANCE: Record<DocumentType, string> = {
+const DOC_TYPE_GUIDANCE: Partial<Record<DocumentType, string>> = {
     nda: `**NDA-Specific Rules:** Focus on CI definition, return/destruction of materials, and injunctive relief. Post-employment non-compete is unenforceable (S.27).`,
     mou: `**MOU-Specific Rules:** Clearly state binding/non-binding status. Define roles and financial terms precisely.`,
     "offer-letter": `**Offer Letter-Specific Rules:** Pre-appointment summary. Include CTC breakdown (Basic, HRA, PF, Gratuity) and probation terms.`,
@@ -119,7 +119,7 @@ ${template.defaultClauses.map((c, i) => `${i + 1}. ${c}`).join("\n")}
 
 ${RISK_FRAMEWORK}
 
-${DOC_TYPE_GUIDANCE[documentType]}
+${DOC_TYPE_GUIDANCE[documentType] || ""}
 
 **Instructions:**
 1. Generate a JSON array of clause objects for this ${typeLabel}.
