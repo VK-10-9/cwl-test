@@ -39,6 +39,7 @@ const DOC_TYPE_GUIDANCE: Partial<Record<DocumentType, string>> = {
     "internship-letter": `**Internship Letter-Specific Rules:** Stipend-based limited engagement. Focus on project scope and learning objectives.`,
     "payment-reminder": `**Payment Reminder-Specific Rules:** Escalating tone (Friendly -> Firm -> Final). Reference invoice numbers and statutory interest (Interest Act 1978).`,
     "esop-grant": `**ESOP Grant-Specific Rules:** Vesting schedule (standard 4 years/1 year cliff) and tax implications (S.17(2) IT Act).`,
+    "esop-policy": `**ESOP Policy-Specific Rules:** Ensure compliance with Section 62(1)(b), Companies Act, 2013 and Companies (Share Capital and Debentures) Rules, 2014. Include: Total option pool size, Eligibility criteria, Vesting schedule with minimum 1 year requirement, Maximum vesting period, Exercise period, Lapse conditions, Exit scenarios, Accounting treatment, and Tax treatment (perquisite + capital gains).`,
     "share-allotment": `**Share Allotment-Specific Rules:** Board-resolution ready. Reference Companies Act 2013 (S.39). Include PAS-3 filing notice.`,
     "legal-notice": `**Legal Notice-Specific Rules:** Advocate-led formal demand. S.80 CPC for govt, S.138 for cheque bounce.`,
     "breach-notice": `**Breach Notice-Specific Rules:** Identify specific contractual violations and provide a cure period.`,
@@ -56,6 +57,7 @@ const DOC_TYPE_GUIDANCE: Partial<Record<DocumentType, string>> = {
     sha: `**SHA-Specific Rules:** Governance agreement. Board seats, veto rights, and exit rights (ROFR, Tag-Along).`,
     "term-sheet": `**Term Sheet-Specific Rules:** Investment summary. Generally non-binding except for exclusivity/confidentiality.`,
     "founders-deed": `**Founders' Deed-Specific Rules:** Pre-incorporation IP assignment and long-term reverse vesting.`,
+    "buyback-agreement": `**Buyback Agreement-Specific Rules:** Ensure compliance with Section 68, Companies Act, 2013. Include: Number of shares, Buyback price, Source of funds, Solvency declaration reference, Extinguishment mechanism, and MCA filing compliance.`,
     "saas-agreement": `**SaaS-Specific Rules:** Cloud service terms, SLA uptime, and data privacy (DPDP Act 2023).`,
     "rent-agreement": `**Rent Agreement-Specific Rules:** Residential rent. 11-month term common. Security deposit and maintenance terms.`,
     "commercial-lease": `**Commercial Lease-Specific Rules:** Office rental. CAM charges, escalation, and lock-in periods.`,
@@ -121,6 +123,17 @@ ${RISK_FRAMEWORK}
 
 ${DOC_TYPE_GUIDANCE[documentType] || ""}
 
+**CRITICAL DRAFTING RULES:**
+1. DOCUMENT TYPE LOCK:
+   - Strictly generate the requested agreement type (${typeLabel}).
+   - Do NOT reuse clauses from unrelated agreement types.
+   - If required elements for this type are missing, STOP and state what is required.
+
+2. CORPORATE DOCUMENT STRUCTURE (If Applicable):
+   - Corporate instruments (ESOP, Buyback, SHA) must be structured as company-level documents (not bilateral service contracts).
+   - Include board/shareholder approval references.
+   - Protect vested rights.
+
 **Instructions:**
 1. Generate a JSON array of clause objects for this ${typeLabel}.
 2. Each clause must have these exact fields:
@@ -133,7 +146,7 @@ ${DOC_TYPE_GUIDANCE[documentType] || ""}
    - "included": boolean — true for essential clauses, false for optional ones the user may want to add
    - "risk": "low" | "medium" | "high" — assessed using the RISK FRAMEWORK above, considering THIS specific document's context
 3. Include ALL standard clauses listed above, PLUS additional clauses that are relevant based on the specific details provided (party names, jurisdiction, relationship type, etc.).
-4. For Indian jurisdiction: reference relevant Indian laws where applicable in clause descriptions.
+4. For Indian jurisdiction: reference relevant Indian laws where applicable in clause descriptions (e.g., Companies Act 2013).
 5. Keep descriptions simple and jargon-free — a founder with no legal background should understand every word.
 6. Order clauses logically — from most important/structural to least.
 
@@ -207,39 +220,43 @@ ${docTypeExpansionRules}
 
 1. **Completeness:** Every approved clause must be expanded into full, professional text. Do NOT skip or summarize any clause.
 
-2. **Specificity:** Replace ALL placeholders with actual values from the provided details:
-   - [PARTY_A] → ${orgA.name}
-   - [PARTY_B] → ${orgB?.name || "the Second Party"}
-   - [DATE] → use the provided effective date or "the date of execution"
-   - [CITY] → extract from addresses, default to the jurisdiction city
-   - [DURATION] → use provided values, or state reasonable defaults (e.g., "2 years")
-   - NEVER leave [BRACKET] placeholders in the final output.
+2. **Specificity & NO GENERIC FILLER:** 
+   - Replace ALL placeholders with actual values from the provided details:
+     - [PARTY_A] → ${orgA.name}
+     - [PARTY_B] → ${orgB?.name || "the Second Party"}
+     - [DATE] → use the provided effective date or "the date of execution"
+     - [CITY] → extract from addresses, default to the jurisdiction city
+     - [DURATION] → use provided values, or state reasonable defaults (e.g., "2 years")
+   - NEVER leave [BRACKET] placeholders or vague boilerplate in the final output. Define financial thresholds precisely. Clarify tax responsibility where applicable.
 
-3. **Risk Awareness:** HIGH RISK clauses must be drafted with extra precision:
-   - Use clear, unambiguous language
-   - Include specific remedies for breach
-   - Reference applicable Indian laws where relevant
-   - Add protective sub-clauses (e.g., injunctive relief, indemnification)
+3. **Risk Awareness & INDIAN LAW COMPLIANCE:** 
+   - HIGH RISK clauses must be drafted with extra precision.
+   - Reference correct Indian statutes (Indian Contract Act, 1872; IT Act, 2000; Arbitration Act, 1996; Copyright Act, 1957; Companies Act, 2013; etc.). Ensure non-compete clauses reflect Indian enforceability limitations (S.27).
 
-4. **Legal Accuracy:** 
-   - Reference correct Indian statutes (Indian Contract Act, 1872; IT Act, 2000; Arbitration Act, 1996; Copyright Act, 1957; etc.)
-   - Use proper legal terminology while keeping language accessible
-   - Ensure enforceability under Indian law
+4. **DISPUTE CLAUSE CONSISTENCY:** 
+   - Do not create arbitration + full court jurisdiction conflict. If arbitration is primary, specify the seat and enforcement jurisdiction clearly. The court jurisdiction must be limited to enforcement of arbitral awards and interim relief.
 
-5. **Formatting (Markdown):**
+5. **SHARE / CAPITAL DOCUMENTS REQUIRE (If Applicable):**
+   - Number of shares/options, Consideration, Valuation basis, Compliance mechanism, Transfer mechanics.
+
+6. **Formatting (Markdown):**
    - Start with # DOCUMENT TITLE (centered, uppercase)
    - Use ## for major sections, ### for sub-sections
    - Number clauses sequentially (1. Definitions, 2. Obligations, etc.)
    - Use (a), (b), (c) for sub-clauses within a section
-   - End with a proper signature block with lines for:
-     - Signature: _____________________
-     - Name: 
-     - Designation:
-     - Date:
-   - Use --- horizontal rules to separate major sections
-   - Keep paragraphs justified and well-spaced
+   - End with a proper signature block with lines for signatures, names, designations, and dates.
+   - Use --- horizontal rules to separate major sections.
 
-6. **Tone:** Professional, authoritative, but readable. A founder should be able to read this without a lawyer.
+7. **Tone:** Professional, authoritative, but readable. A founder should be able to read this without a lawyer.
+
+**SELF-VALIDATION STEP:**
+Before delivering the final agreement, verify internally:
+1. Document type alignment logic is correct.
+2. All mandatory clauses for this agreement type are included.
+3. No unrelated commercial clauses are inserted.
+4. Arbitration vs jurisdiction consistency is maintained.
+5. All defined terms are used properly.
+6. Compliant with relevant Indian statutory requirements.
 
 **Output:** Provide ONLY the complete document text in Markdown format. No preamble, no explanation — just the document.`;
 }
