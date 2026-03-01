@@ -34,6 +34,29 @@ export default function DocumentEditor({ fullText, onExport, isExporting, onBack
         }
     };
 
+    const handlePdfExport = async () => {
+        try {
+            // Dynamically import to avoid SSR issues with window/document
+            const html2pdf = (await import('html2pdf.js')).default;
+            const element = document.getElementById("clausewala-document-content");
+            if (!element) return;
+
+            const opt = {
+                margin: 15,
+                filename: 'clausewala-document.pdf',
+                image: { type: 'jpeg' as const, quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' as const }
+            };
+
+            html2pdf().set(opt).from(element).save();
+        } catch (error) {
+            console.error("Failed to generate PDF locally:", error);
+            // Fallback to server export
+            onExport("pdf");
+        }
+    };
+
     return (
         <div className="w-full max-w-4xl mx-auto space-y-4 animate-fade-in relative z-10">
             {/* Toolbar */}
@@ -80,7 +103,7 @@ export default function DocumentEditor({ fullText, onExport, isExporting, onBack
                             DOCX
                         </LiquidButton>
                         <LiquidButton
-                            onClick={() => onExport("pdf")}
+                            onClick={handlePdfExport}
                             disabled={isExporting}
                             size="sm"
                             variant="ghost"
@@ -98,7 +121,7 @@ export default function DocumentEditor({ fullText, onExport, isExporting, onBack
                 {/* Top accent line */}
                 <div className="h-px bg-border" />
 
-                <div className="p-8 md:p-14 min-h-[800px]">
+                <div id="clausewala-document-content" className="p-8 md:p-14 min-h-[800px] bg-white text-black print-friendly-container">
                     <MarkdownRenderer content={fullText} />
                 </div>
 
@@ -115,6 +138,13 @@ export default function DocumentEditor({ fullText, onExport, isExporting, onBack
             </Card>
 
             <div className="h-10" />
+
+            {/* Print Styles for PDF generation */}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                .print-friendly-container h1, .print-friendly-container h2, .print-friendly-container h3 { color: #1F3864 !important; }
+                .print-friendly-container p, .print-friendly-container li { font-size: 14pt !important; line-height: 1.6 !important; }
+            `}} />
         </div>
     );
 }

@@ -10,7 +10,7 @@ import { FormField } from "./FormField";
 import FormAssistant from "./FormAssistant";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { generateFormSchema, generateDefaultValues } from "@/lib/form-schema";
-import { useMemo, useCallback } from "react";
+import { useMemo, useCallback, useState, useEffect } from "react";
 import { Building2, Users, FileText, Loader2, Sparkles } from "lucide-react";
 
 interface DetailsFormProps {
@@ -31,6 +31,28 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
     });
 
     const errorCount = Object.keys(errors).length;
+
+    const [loadingText, setLoadingText] = useState("Analyzing context...");
+
+    useEffect(() => {
+        let interval: NodeJS.Timeout;
+        if (isLoading) {
+            const texts = [
+                "Analyzing agreement type...",
+                "Applying Indian Law guardrails...",
+                "Validating clause structures...",
+                "Generating structural blueprint...",
+                "Finalizing risk assessment..."
+            ];
+            let idx = 0;
+            setLoadingText(texts[0]);
+            interval = setInterval(() => {
+                idx = (idx + 1) % texts.length;
+                setLoadingText(texts[idx]);
+            }, 3000);
+        }
+        return () => clearInterval(interval);
+    }, [isLoading]);
 
     // Live form data for the assistant
     const watchedData = watch();
@@ -447,7 +469,32 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
             },
         };
 
-        const dummyValues = { ...common, ...(perType[docType] || {}) };
+        const dummyValues: Record<string, string | boolean | number> = { ...common, ...(perType[docType] || {}) };
+
+        // Dynamic fallback for any fields in the template that don't have hardcoded dummy data
+        template.fields.forEach(field => {
+            if (dummyValues[field.name] === undefined) {
+                if (field.type === "text" || field.type === "textarea") {
+                    if (field.name.toLowerCase().includes("amount") || field.name.toLowerCase().includes("fee") || field.name.toLowerCase().includes("value") || field.name.toLowerCase().includes("price") || field.name.toLowerCase().includes("salary")) dummyValues[field.name] = "₹5,00,000";
+                    else if (field.name.toLowerCase().includes("date")) dummyValues[field.name] = new Date().toISOString().split("T")[0];
+                    else if (field.name.toLowerCase().includes("duration") || field.name.toLowerCase().includes("period") || field.name.toLowerCase().includes("term") || field.name.toLowerCase().includes("notice")) dummyValues[field.name] = "12 months";
+                    else if (field.name.toLowerCase().includes("address") || field.name.toLowerCase().includes("jurisdiction") || field.name.toLowerCase().includes("location")) dummyValues[field.name] = "Bangalore, India";
+                    else if (field.name.toLowerCase().includes("name") || field.name.toLowerCase().includes("person") || field.name.toLowerCase().includes("signatory")) dummyValues[field.name] = "Siddharth Rao";
+                    else if (field.name.toLowerCase().includes("email")) dummyValues[field.name] = "admin@example.com";
+                    else if (field.options && field.options.length > 0) dummyValues[field.name] = field.options[0].value;
+                    else dummyValues[field.name] = "Standard placeholder text for " + field.label;
+                } else if (field.type === "date") {
+                    dummyValues[field.name] = new Date().toISOString().split("T")[0];
+                } else if (field.type === "number") {
+                    dummyValues[field.name] = 1000;
+                } else if (field.type === "checkbox") {
+                    dummyValues[field.name] = true;
+                } else if (field.type === "select" && field.options && field.options.length > 0) {
+                    dummyValues[field.name] = field.options[0].value;
+                }
+            }
+        });
+
         Object.entries(dummyValues).forEach(([key, value]) => {
             setValue(key, value, { shouldValidate: true, shouldDirty: true });
         });
@@ -455,82 +502,44 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
 
     return (
         <>
-        <Card className="w-full max-w-2xl mx-auto animate-fade-in bg-card border-border" suppressHydrationWarning>
-            <CardHeader className="pb-5">
-                <div className="flex items-center gap-3 mb-0.5">
-                    <div className="h-9 w-9 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center">
-                        <FileText className="h-4 w-4 text-foreground/70" />
-                    </div>
-                    <div>
-                        <CardTitle className="text-lg font-semibold tracking-tight">Drafting {template.label}</CardTitle>
-                        <CardDescription className="mt-0.5 text-[13px]">
-                            {template.description}
-                        </CardDescription>
-                    </div>
-                </div>
-            </CardHeader>
-            <form onSubmit={handleSubmit(onSubmit)}>
-                <CardContent className="space-y-8">
-
-                    {/* Section 1: Party A */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
-                            <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
-                                <Building2 className="h-3.5 w-3.5 text-foreground/60" />
-                            </div>
-                            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
-                                Party A (You)
-                            </h3>
+            <Card className="w-full max-w-2xl mx-auto animate-fade-in bg-card border-border" suppressHydrationWarning>
+                <CardHeader className="pb-5">
+                    <div className="flex items-center gap-3 mb-0.5">
+                        <div className="h-9 w-9 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center">
+                            <FileText className="h-4 w-4 text-foreground/70" />
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <FormField
-                                field={{ name: "name", label: "Full Name / Organisation", placeholder: "e.g. Acme Corp", required: true, type: "text" }}
-                                prefix="partyA"
-                                register={register}
-                                control={control}
-                                errors={errors}
-                            />
-                            <FormField
-                                field={{ name: "signatory", label: "Signatory Name", placeholder: "e.g. Jane Doe", required: true, type: "text" }}
-                                prefix="partyA"
-                                register={register}
-                                control={control}
-                                errors={errors}
-                            />
-                            <div className="md:col-span-2">
+                        <div>
+                            <CardTitle className="text-lg font-semibold tracking-tight">Drafting {template.label}</CardTitle>
+                            <CardDescription className="mt-0.5 text-[13px]">
+                                {template.description}
+                            </CardDescription>
+                        </div>
+                    </div>
+                </CardHeader>
+                <form onSubmit={handleSubmit(onSubmit)}>
+                    <CardContent className="space-y-8">
+
+                        {/* Section 1: Party A */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
+                                <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
+                                    <Building2 className="h-3.5 w-3.5 text-foreground/60" />
+                                </div>
+                                <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
+                                    Party A (You)
+                                </h3>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
-                                    field={{ name: "address", label: "Address", placeholder: "Full legal address", required: false, type: "text" }}
+                                    field={{ name: "name", label: "Full Name / Organisation", placeholder: "e.g. Acme Corp", required: true, type: "text" }}
                                     prefix="partyA"
                                     register={register}
                                     control={control}
                                     errors={errors}
                                 />
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Section 2: Party B */}
-                    {template.isTwoParty && (
-                        <div className="space-y-4">
-                            <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
-                                <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
-                                    <Users className="h-3.5 w-3.5 text-foreground/60" />
-                                </div>
-                                <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
-                                    Party B (Other Side)
-                                </h3>
-                            </div>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <FormField
-                                    field={{ name: "name", label: "Full Name / Organisation", placeholder: "e.g. John Smith", required: true, type: "text" }}
-                                    prefix="partyB"
-                                    register={register}
-                                    control={control}
-                                    errors={errors}
-                                />
-                                <FormField
-                                    field={{ name: "signatory", label: "Signatory Name", placeholder: "e.g. John Smith", required: false, type: "text" }}
-                                    prefix="partyB"
+                                    field={{ name: "signatory", label: "Signatory Name", placeholder: "e.g. Jane Doe", required: true, type: "text" }}
+                                    prefix="partyA"
                                     register={register}
                                     control={control}
                                     errors={errors}
@@ -538,85 +547,123 @@ export default function DetailsForm({ docType, onSubmit, isLoading }: DetailsFor
                                 <div className="md:col-span-2">
                                     <FormField
                                         field={{ name: "address", label: "Address", placeholder: "Full legal address", required: false, type: "text" }}
+                                        prefix="partyA"
+                                        register={register}
+                                        control={control}
+                                        errors={errors}
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Section 2: Party B */}
+                        {template.isTwoParty && (
+                            <div className="space-y-4">
+                                <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
+                                    <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
+                                        <Users className="h-3.5 w-3.5 text-foreground/60" />
+                                    </div>
+                                    <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
+                                        Party B (Other Side)
+                                    </h3>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    <FormField
+                                        field={{ name: "name", label: "Full Name / Organisation", placeholder: "e.g. John Smith", required: true, type: "text" }}
                                         prefix="partyB"
                                         register={register}
                                         control={control}
                                         errors={errors}
                                     />
-                                </div>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* Section 3: Document Details */}
-                    <div className="space-y-4">
-                        <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
-                            <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
-                                <Sparkles className="h-3.5 w-3.5 text-foreground/60" />
-                            </div>
-                            <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
-                                Agreement Details
-                            </h3>
-                        </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                            <FormField
-                                field={{ name: "effectiveDate", label: "Effective Date", type: "date", required: true }}
-                                register={register}
-                                control={control}
-                                errors={errors}
-                            />
-                            {template.fields.map((field: FormFieldDefinition) => (
-                                <div key={field.name} className={field.type === 'textarea' || field.type === 'text' ? 'md:col-span-2' : ''}>
                                     <FormField
-                                        field={field}
+                                        field={{ name: "signatory", label: "Signatory Name", placeholder: "e.g. John Smith", required: false, type: "text" }}
+                                        prefix="partyB"
                                         register={register}
                                         control={control}
                                         errors={errors}
                                     />
+                                    <div className="md:col-span-2">
+                                        <FormField
+                                            field={{ name: "address", label: "Address", placeholder: "Full legal address", required: false, type: "text" }}
+                                            prefix="partyB"
+                                            register={register}
+                                            control={control}
+                                            errors={errors}
+                                        />
+                                    </div>
                                 </div>
-                            ))}
+                            </div>
+                        )}
+
+                        {/* Section 3: Document Details */}
+                        <div className="space-y-4">
+                            <div className="flex items-center gap-2.5 border-b border-border/40 pb-2.5">
+                                <div className="h-6 w-6 rounded-md bg-foreground/[0.05] flex items-center justify-center">
+                                    <Sparkles className="h-3.5 w-3.5 text-foreground/60" />
+                                </div>
+                                <h3 className="text-[11px] font-semibold text-muted-foreground uppercase tracking-[0.15em]">
+                                    Agreement Details
+                                </h3>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <FormField
+                                    field={{ name: "effectiveDate", label: "Effective Date", type: "date", required: true }}
+                                    register={register}
+                                    control={control}
+                                    errors={errors}
+                                />
+                                {template.fields.map((field: FormFieldDefinition) => (
+                                    <div key={field.name} className={field.type === 'textarea' || field.type === 'text' ? 'md:col-span-2' : ''}>
+                                        <FormField
+                                            field={field}
+                                            register={register}
+                                            control={control}
+                                            errors={errors}
+                                        />
+                                    </div>
+                                ))}
+                            </div>
                         </div>
-                    </div>
 
-                </CardContent>
-                <CardFooter className="flex justify-between items-center pt-5 border-t border-border/60 gap-4">
-                    <div className="flex items-center gap-3">
-                        <Button
-                            type="button"
-                            variant="outline"
-                            onClick={fillDummyData}
-                            className="text-xs gap-1.5 border-border/60 text-muted-foreground hover:text-foreground"
-                        >
-                            <Sparkles className="h-3 w-3" />
-                            Fill Dummy Data
-                        </Button>
-                        {errorCount > 0 && (
-                            <span className="text-xs text-destructive font-mono animate-pulse">
-                                {errorCount} field{errorCount > 1 ? "s" : ""} need attention
-                            </span>
-                        )}
-                    </div>
+                    </CardContent>
+                    <CardFooter className="flex justify-between items-center pt-5 border-t border-border/60 gap-4">
+                        <div className="flex items-center gap-3">
+                            <Button
+                                type="button"
+                                variant="outline"
+                                onClick={fillDummyData}
+                                className="text-xs gap-1.5 border-border/60 text-muted-foreground hover:text-foreground"
+                            >
+                                <Sparkles className="h-3 w-3" />
+                                Fill Dummy Data
+                            </Button>
+                            {errorCount > 0 && (
+                                <span className="text-xs text-destructive font-mono animate-pulse">
+                                    {errorCount} field{errorCount > 1 ? "s" : ""} need attention
+                                </span>
+                            )}
+                        </div>
 
-                    <LiquidButton type="submit" disabled={isLoading} size="lg" className="min-w-[200px]">
-                        {isLoading ? (
-                            <span className="flex items-center gap-2">
-                                <Loader2 className="h-4 w-4 animate-spin" />
-                                Analyzing...
-                            </span>
-                        ) : (
-                            <span className="text-sm">Generate Blueprint →</span>
-                        )}
-                    </LiquidButton>
-                </CardFooter>
-            </form>
-        </Card>
+                        <LiquidButton type="submit" disabled={isLoading} size="lg" className="min-w-[200px]">
+                            {isLoading ? (
+                                <span className="flex items-center gap-2">
+                                    <Loader2 className="h-4 w-4 animate-spin" />
+                                    {loadingText}
+                                </span>
+                            ) : (
+                                <span className="text-sm">Generate Blueprint →</span>
+                            )}
+                        </LiquidButton>
+                    </CardFooter>
+                </form>
+            </Card>
 
-        {/* AI Form Assistant — floating widget, non-blocking */}
-        <FormAssistant
-            docType={docType}
-            currentFormData={currentFormData}
-            onApplyFields={handleBotApplyFields}
-        />
+            {/* AI Form Assistant — floating widget, non-blocking */}
+            <FormAssistant
+                docType={docType}
+                currentFormData={currentFormData}
+                onApplyFields={handleBotApplyFields}
+            />
         </>
     );
 }

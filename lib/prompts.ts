@@ -8,23 +8,22 @@ import { STANDARD_CLAUSES, NDA_CLAUSE_LIBRARY } from "@/lib/clause-library";
 const RISK_FRAMEWORK = `
 **Risk Assessment Criteria — follow these STRICTLY when assigning risk levels:**
 
-HIGH risk (critical — omitting this clause exposes the party to serious legal, financial, or reputational damage):
-  - Clauses that define core obligations (e.g., confidentiality, IP ownership, payment terms)
-  - Clauses required by law or regulation for enforceability
-  - Clauses that, if missing, could void the entire agreement
-  - Indemnification, limitation of liability, termination rights
+CRITICAL RULE: You MUST limit "HIGH" risk designations to an absolute maximum of 3 to 5 clauses per document. Reserve "HIGH" ONLY for absolute deal-breakers.
 
-MEDIUM risk (important — omitting weakens protection but doesn't invalidate the document):
-  - Dispute resolution mechanism
-  - Non-compete / non-solicitation
-  - Data protection provisions
-  - Reporting, monitoring, amendment procedures
-  - Notice requirements, force majeure
+HIGH risk (max 3-5 clauses per document — absolute critical, immediate financial/legal ruin if omitted):
+  - Core payment/consideration terms
+  - Fundamental IP ownership/assignment
+  - Primary liability caps or uncapped indemnities
 
-LOW risk (standard — good practice but not legally critical):
-  - Formatting sections (letterhead, signatures, dates)
-  - Boilerplate clauses (severability, waiver, entire agreement)
-  - Cosmetic sections (preamble wording, recitals)
+MEDIUM risk (important operational/legal clauses — most substantive clauses should be here):
+  - Confidentiality, Non-compete, Non-solicit
+  - Termination rights, Dispute resolution, Governing law
+  - Data protection, Warranties, Reporting
+
+LOW risk (standard/boilerplate):
+  - Formatting sections (letterhead, signatures)
+  - Boilerplate (severability, entire agreement, notices, force majeure)
+  - Cosmetic recitals
 `.trim();
 
 // ─── Doc-Type Specific Guidance ──────────────────────────────────────────────
