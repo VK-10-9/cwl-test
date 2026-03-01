@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">ClauseWala</string>
+    <string name="title_activity_main">ClauseWala</string>
+    <string name="package_name">com.clausewala.in</string>
+    <string name="custom_url_scheme">com.clausewala.in</string>
+</resources>
