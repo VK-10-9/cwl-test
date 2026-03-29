@@ -5,9 +5,11 @@ import {
     TextRun,
     HeadingLevel,
     AlignmentType,
+    Footer,
+    Header,
 } from "docx";
 
-export async function generateDocx(text: string): Promise<Buffer> {
+export async function generateDocx(text: string, watermark: boolean = false): Promise<Buffer> {
     const lines = text.split("\n");
     const children: Paragraph[] = [];
 
@@ -130,6 +132,40 @@ export async function generateDocx(text: string): Promise<Buffer> {
                         },
                     },
                 },
+                footers: {
+                    default: new Footer({
+                        children: [
+                            new Paragraph({
+                                alignment: AlignmentType.CENTER,
+                                children: [
+                                    new TextRun({
+                                        text: "Legal Disclaimer: This document is an AI-generated draft provided by ClauseWala and does not constitute final legal advice or a substitute for professional legal review. Users are advised to seek independent review by a qualified Indian advocate before formal execution. ClauseWala assumes no liability for errors or omissions.",
+                                        color: "999999",
+                                        size: 16, // 8pt
+                                        italics: true,
+                                    }),
+                                ],
+                            }),
+                        ],
+                    }),
+                },
+                headers: watermark ? {
+                    default: new Header({
+                        children: [
+                            new Paragraph({
+                                alignment: AlignmentType.CENTER,
+                                children: [
+                                    new TextRun({
+                                        text: "CONFIDENTIAL",
+                                        color: "D3D3D3",
+                                        size: 72,
+                                        bold: true
+                                    })
+                                ]
+                            })
+                        ]
+                    })
+                } : undefined,
                 children,
             },
         ],

@@ -47,6 +47,52 @@ export const rentAgreementTemplate: DocumentTemplate = {
             type: "number",
             required: true,
             placeholder: "e.g. 30"
+        },
+        {
+            name: "state",
+            label: "State/UT of Property",
+            type: "select",
+            required: true,
+            options: [
+                { label: "Maharashtra", value: "Maharashtra" },
+                { label: "Karnataka", value: "Karnataka" },
+                { label: "Tamil Nadu", value: "Tamil Nadu" },
+                { label: "Delhi NCR", value: "Delhi" },
+                { label: "Gujarat", value: "Gujarat" },
+                { label: "Other", value: "Other" }
+            ],
+            description: "Used to determine local sub-registrar jurisdiction and stamp duty context."
+        },
+        {
+            name: "maintenanceBy",
+            label: "Maintenance Paid By",
+            type: "select",
+            required: true,
+            options: [
+                { label: "Tenant (Additional to Rent)", value: "Tenant" },
+                { label: "Landlord (Included in Rent)", value: "Landlord" }
+            ]
+        },
+        {
+            name: "lockInPeriod",
+            label: "Lock-in Period (Months)",
+            type: "number",
+            required: false,
+            placeholder: "e.g. 6"
+        },
+        {
+            name: "witness1Name",
+            label: "Witness 1 Name",
+            type: "text",
+            required: false,
+            placeholder: "Fulll name of Witness 1"
+        },
+        {
+            name: "witness2Name",
+            label: "Witness 2 Name",
+            type: "text",
+            required: false,
+            placeholder: "Fulll name of Witness 2"
         }
     ],
     defaultClauses: [

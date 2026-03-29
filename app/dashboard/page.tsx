@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { DOCUMENT_TYPE_LABELS, DOCUMENT_TYPE_ICONS } from "@/types";
 import type { DocumentType } from "@/types";
+import { ShieldCheck, Fingerprint } from "lucide-react";
 
 function formatDate(iso: string): string {
   const d = new Date(iso);
@@ -33,6 +34,7 @@ function StatusBadge({ status }: { status: SavedDocument["status"] }) {
     draft: "bg-amber-500/10 text-amber-600",
     completed: "bg-primary/10 text-primary/80",
     exported: "bg-blue-500/10 text-blue-600",
+    signed: "bg-emerald-500/10 text-emerald-600",
   };
   return (
     <span className={`text-[11px] font-medium px-2 py-0.5 rounded-full ${styles[status]}`}>
@@ -58,7 +60,14 @@ function DocumentCard({ doc, onDelete }: { doc: SavedDocument; onDelete: (id: st
               <p className="text-[12px] text-muted-foreground mt-0.5">{label}</p>
             </div>
           </div>
-          <StatusBadge status={doc.status} />
+          <div className="flex items-center gap-2">
+            {doc.status === "signed" && (
+              <div className="p-1 rounded bg-emerald-500/10 text-emerald-600" title="Verfied Signature Attached">
+                <ShieldCheck className="w-3 h-3" />
+              </div>
+            )}
+            <StatusBadge status={doc.status} />
+          </div>
         </div>
 
         <div className="flex items-center gap-4 text-[11px] text-muted-foreground/60 mb-4">
@@ -105,6 +114,7 @@ export default function DashboardPage() {
     drafts: documents.filter((d) => d.status === "draft").length,
     completed: documents.filter((d) => d.status === "completed").length,
     exported: documents.filter((d) => d.status === "exported").length,
+    signed: documents.filter((d) => d.status === "signed").length,
   };
 
   return (
@@ -153,6 +163,7 @@ export default function DashboardPage() {
               { label: "Drafts", value: stats.drafts, color: "text-amber-600" },
               { label: "Completed", value: stats.completed, color: "text-primary/80" },
               { label: "Exported", value: stats.exported, color: "text-blue-600" },
+              { label: "Signed", value: stats.signed, color: "text-emerald-500" },
             ].map((stat) => (
               <div key={stat.label} className="rounded-xl border border-border bg-card p-4">
                 <p className="text-[11px] font-medium text-muted-foreground/60 uppercase tracking-wider mb-1">{stat.label}</p>

@@ -423,7 +423,7 @@ export function isEnterpriseDocument(type: DocumentType): boolean {
 
 // ─── Document Status ─────────────────────────────────────────────────────────
 
-export type DocumentStatus = "draft" | "approved" | "exported";
+export type DocumentStatus = "draft" | "approved" | "exported" | "signed";
 
 // ─── Workflow Stage ──────────────────────────────────────────────────────────
 
@@ -468,7 +468,7 @@ export interface GenerateResponse {
 
 export interface IterateRequest { documentId: string; message: string; }
 export interface IterateResponse { blueprint: Blueprint; aiMessage: string; }
-export interface ExportRequest { documentId: string; format: "pdf" | "docx"; }
+export interface ExportRequest { documentId: string; format: "pdf" | "docx"; watermark?: boolean; targetLanguage?: string; }
 
 // ─── Zod Schemas ─────────────────────────────────────────────────────────────
 
@@ -515,6 +515,9 @@ export const exportRequestSchema = z.object({
   userEmail: z.string().email().optional(),
   fullText: z.string().optional(),
   format: z.enum(["pdf", "docx"]),
+  watermark: z.boolean().optional(),
+  targetLanguage: z.string().optional(),
+  consentGiven: z.boolean().optional(),
 });
 
 export const previewSchema = z.object({

@@ -11,7 +11,7 @@ export interface SavedDocument {
   title: string;
   createdAt: string;
   updatedAt: string;
-  status: "draft" | "completed" | "exported";
+  status: "draft" | "completed" | "exported" | "signed";
   formData: Record<string, string | number | boolean>;
   blueprint: Blueprint | null;
   fullText: string | null;

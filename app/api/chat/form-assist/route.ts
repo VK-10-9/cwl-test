@@ -141,9 +141,16 @@ export async function POST(req: Request) {
                             controller.enqueue(encoder.encode(content));
                         }
                     }
-                } catch (streamError) {
+                } catch (streamError: any) {
                     console.error("[chat/form-assist] Stream error:", streamError);
-                    controller.enqueue(encoder.encode("\n\n[Error: AI stream interrupted.]"));
+                    const isRateLimit = streamError?.status === 429 || streamError?.message?.includes("rate limit");
+                    controller.enqueue(
+                        encoder.encode(
+                            isRateLimit 
+                                ? "\n\n[Error: API rate limit exceeded. Please wait a moment and try again.]" 
+                                : "\n\n[Error: AI stream interrupted.]"
+                        )
+                    );
                 } finally {
                     controller.close();
                 }
@@ -156,12 +163,16 @@ export async function POST(req: Request) {
                 "Transfer-Encoding": "chunked",
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error("[chat/form-assist] POST error:", error);
-        const message = error instanceof Error ? error.message : "An unexpected error occurred";
+        const isRateLimit = error?.status === 429 || error?.message?.includes("rate limit");
+        const message = isRateLimit 
+            ? "API rate limit exceeded. Please wait a moment and try again." 
+            : (error instanceof Error ? error.message : "An unexpected error occurred");
+        
         return new Response(
             JSON.stringify({ error: message }),
-            { status: 500, headers: { "Content-Type": "application/json" } }
+            { status: isRateLimit ? 429 : 500, headers: { "Content-Type": "application/json" } }
         );
     }
 }

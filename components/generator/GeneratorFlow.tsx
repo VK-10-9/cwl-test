@@ -219,7 +219,7 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
         }
     };
 
-    const handleExport = async (format: "pdf" | "docx") => {
+    const handleExport = async (format: "pdf" | "docx", watermark: boolean = false, skipDownload: boolean = false, targetLanguage: string = "en", consentGiven: boolean = false) => {
         if (!state.blueprint) return;
         dispatch({ type: "START_EXPORT" });
         try {
@@ -233,22 +233,27 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                     reportId: state.reportId || undefined,
                     userEmail: user?.email,
                     fullText: state.fullText,
-                    format
+                    format,
+                    watermark,
+                    targetLanguage,
+                    consentGiven
                 }),
             });
 
             if (!res.ok) throw new Error("Failed to export document");
 
-            // Handle blob download
-            const blob = await res.blob();
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = `${state.blueprint.title || "document"}.${format}`;
-            document.body.appendChild(a);
-            a.click();
-            window.URL.revokeObjectURL(url);
-            document.body.removeChild(a);
+            if (!skipDownload) {
+                // Handle blob download
+                const blob = await res.blob();
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = `${state.blueprint.title || "document"}.${format}`;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
 
             dispatch({ type: "END_EXPORT" });
 
@@ -258,6 +263,30 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
             }
         } catch (err: unknown) {
             dispatch({ type: "SET_ERROR", payload: err instanceof Error ? err.message : "An unexpected error occurred" });
+        }
+    };
+
+    const handleSign = async (signatureId: string) => {
+        // Update document store
+        if (docIdRef.current) {
+            updateDocument(docIdRef.current, { status: "signed" });
+        }
+        
+        // Optional: Update remote DB status via API
+        if (state.reportId) {
+            try {
+                await fetch("/api/reports/status", {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        reportId: state.reportId,
+                        status: "signed",
+                        metadata: { signatureId, signedAt: new Date().toISOString() }
+                    })
+                });
+            } catch (e) {
+                console.warn("Failed to update remote signature status", e);
+            }
         }
     };
 
@@ -363,6 +392,10 @@ export default function GeneratorFlow({ docType }: GeneratorFlowProps) {
                             onExport={handleExport}
                             isExporting={state.isExporting}
                             onBack={handleBack}
+                            documentType={DOCUMENT_TYPE_LABELS[docType] || docType}
+                            docSlug={docType}
+                            formData={state.formData || undefined}
+                            onSign={handleSign}
                         />
                     </motion.div>
                 )}

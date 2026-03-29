@@ -458,18 +458,29 @@ export default function BlueprintChat({
             // Process response for blueprint updates
             try {
                 const text = getMessageText(message);
-                const jsonMatch = text.match(/\{[\s\S]*\}/);
-                if (jsonMatch) {
-                    const data = JSON.parse(jsonMatch[0]) as Record<string, unknown>;
-                    if (data.clauses && Array.isArray(data.clauses)) {
-                        onUpdateBlueprint({
-                            ...blueprintRef.current,
-                            clauses: data.clauses as Blueprint["clauses"],
-                        });
+                
+                // Models often embed JSON inside markdown or at the end.
+                // We'll search for all potential JSON blocks and try to find the one with clauses.
+                const potentialBlocks = text.match(/\{[\s\S]*\}/g) || [];
+                
+                for (const block of potentialBlocks) {
+                    try {
+                        const data = JSON.parse(block) as Record<string, unknown>;
+                        if (data.clauses && Array.isArray(data.clauses)) {
+                            onUpdateBlueprint({
+                                ...blueprintRef.current,
+                                clauses: data.clauses as Blueprint["clauses"],
+                            });
+                            // Found the valid update block, stop searching
+                            break;
+                        }
+                    } catch {
+                        // Not valid JSON or missing clauses, continue searching
+                        continue;
                     }
                 }
-            } catch (parseErr) {
-                console.error("Failed to parse blueprint update from response", parseErr);
+            } catch (outerErr) {
+                console.error("Critical error in blueprint update parsing:", outerErr);
             }
         },
     });

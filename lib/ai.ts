@@ -24,6 +24,39 @@ const groq = new Groq({
 
 const MODEL = "meta-llama/llama-4-scout-17b-16e-instruct"; // User-requested model
 
+// --- Mock Data for Testing ---
+const MOCK_BLUEPRINT: Blueprint = {
+    title: "Draft Agreement (Mock Mode)",
+    documentType: "nda" as DocumentType,
+    summary: "This is a high-fidelity mock agreement generated to test the ClauseWala UI and hardening features without external API calls.",
+    clauses: [
+        {
+            id: "m_1",
+            title: "Confidentiality Obligations",
+            description: "Standard non-disclosure obligations for both parties.",
+            content: "Each Party shall maintain the Confidential Information of the other Party in strict confidence and shall not disclose it to any third party without prior written consent.",
+            risk: "low",
+            included: true
+        },
+        {
+            id: "m_2",
+            title: "Dispute Resolution",
+            description: "Arbitration clause for Indian jurisdiction.",
+            content: "Any dispute arising out of this Agreement shall be referred to arbitration in accordance with the Arbitration and Conciliation Act, 1996.",
+            risk: "medium",
+            included: true
+        },
+        {
+            id: "m_3",
+            title: "Indemnification",
+            description: "High-risk indemnity clause for verification testing.",
+            content: "The Receiving Party shall indemnify and hold harmless the Disclosing Party from any and all claims, losses, or damages arising out of a breach of this Agreement.",
+            risk: "high",
+            included: true
+        }
+    ]
+};
+
 // --- Helper to enforce JSON output from Groq ---
 async function generateJson<T>(
     systemPrompt: string,
@@ -90,6 +123,16 @@ export async function generateBlueprint(
     orgB: OrganisationData | undefined,
     formData: Record<string, any>
 ): Promise<Blueprint> {
+    // Check for Mock Mode
+    if (process.env.NEXT_PUBLIC_MOCK_MODE === "true") {
+        console.log("[lib/ai] MOCK_MODE: Returning static blueprint");
+        return {
+            ...MOCK_BLUEPRINT,
+            title: `${docType.toUpperCase()} - Draft (Mock)`,
+            documentType: docType as DocumentType
+        };
+    }
+
     const prompt = buildBlueprintPrompt(
         docType as DocumentType,
         orgA,

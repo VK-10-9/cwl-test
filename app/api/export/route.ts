@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { exportRequestSchema, OrganisationData } from "@/types";
 import { expandDocument } from "@/lib/ai";
+import { prepareDocumentForExport } from "@/lib/exporters/translate-before-export";
 import { generatePdf, textToHtml } from "@/lib/exporters/pdf";
 import { generateDocx } from "@/lib/exporters/docx";
 import {
@@ -30,6 +31,8 @@ export async function POST(request: NextRequest) {
             fullText: providedText,
             reportId,
             userEmail,
+            watermark,
+            targetLanguage = "en",
         } = parsed.data;
         const formData = rawFormData as Record<string, string | number | boolean>;
 
@@ -60,18 +63,25 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        if (!fullText) {
+            return NextResponse.json({ error: "No document text to export." }, { status: 400 });
+        }
+
+        // Apply Translation if targetLanguage is not 'en'
+        const finalExportText = await prepareDocumentForExport(fullText, targetLanguage);
+
         // Generate the export file
         let fileBuffer: Buffer;
         let contentType: string;
         let fileName: string;
 
         if (format === "pdf") {
-            const html = textToHtml(fullText);
-            fileBuffer = await generatePdf(html);
+            const html = textToHtml(finalExportText);
+            fileBuffer = await generatePdf(html, watermark, targetLanguage);
             contentType = "text/html";
             fileName = `${blueprint.documentType}-export.html`;
         } else {
-            fileBuffer = await generateDocx(fullText);
+            fileBuffer = await generateDocx(finalExportText, watermark);
             contentType =
                 "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
             fileName = `${blueprint.documentType}-export.docx`;
@@ -80,12 +90,13 @@ export async function POST(request: NextRequest) {
         if (isSupabaseConfigured()) {
             const exportedAt = new Date().toISOString();
             try {
-                if (reportId) {
+                                if (reportId) {
                     await updateGeneratedReport(reportId, {
                         status: "exported",
                         exportFormat: format,
                         fullText,
                         exportedAt,
+                        metadata: { consentGiven: true, consentTimestamp: exportedAt }
                     });
                 } else {
                     const highRiskCount = blueprint.clauses.filter((c) => c.included && c.risk === "high").length;
@@ -102,6 +113,7 @@ export async function POST(request: NextRequest) {
                         lowRiskCount,
                         formData,
                         blueprint,
+                        metadata: { consentGiven: true, consentTimestamp: exportedAt }
                     });
                     if (newReportId) {
                         await updateGeneratedReport(newReportId, {

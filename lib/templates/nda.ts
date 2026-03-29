@@ -168,6 +168,7 @@ export const ndaTemplate: DocumentTemplate = {
     ],
     defaultClauses: [
         // Core Structural (1-4)
+        "Confidentiality & Privilege Notice",
         "Title and Effective Date",
         "Parties Clause",
         "Recitals / Background",

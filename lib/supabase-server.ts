@@ -36,6 +36,7 @@ interface ReportCreateInput {
   lowRiskCount: number;
   formData?: Record<string, string | number | boolean>;
   blueprint?: unknown;
+  metadata?: Record<string, unknown>;
 }
 
 interface ReportUpdateInput {
@@ -43,6 +44,7 @@ interface ReportUpdateInput {
   exportFormat?: "pdf" | "docx";
   fullText?: string;
   exportedAt?: string;
+  metadata?: Record<string, unknown>;
 }
 
 function isConfigured() {
@@ -58,6 +60,11 @@ function requireConfig() {
 }
 
 async function supabaseFetch<T>(path: string, init?: RequestInit): Promise<T> {
+  if (process.env.NEXT_PUBLIC_MOCK_MODE === "true") {
+    console.log("[supabase-server] MOCK_MODE: Skipping fetch for", path);
+    if (path.includes("select=id")) return [{ id: "mock-id-" + Date.now() }] as T;
+    return [] as T;
+  }
   requireConfig();
 
   const res = await fetch(`${SUPABASE_URL}${path}`, {
@@ -143,6 +150,7 @@ export async function createGeneratedReport(input: ReportCreateInput): Promise<s
         low_risk_count: input.lowRiskCount,
         form_data: input.formData || {},
         blueprint: input.blueprint || null,
+        metadata: input.metadata || {},
       }),
     }
   );
@@ -166,6 +174,7 @@ export async function updateGeneratedReport(
         ...(input.exportFormat !== undefined ? { export_format: input.exportFormat } : {}),
         ...(input.fullText !== undefined ? { full_text: input.fullText } : {}),
         ...(input.exportedAt !== undefined ? { exported_at: input.exportedAt } : {}),
+        ...(input.metadata !== undefined ? { metadata: input.metadata } : {}),
       }),
     }
   );

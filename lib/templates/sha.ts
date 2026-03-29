@@ -51,6 +51,7 @@ export const shaTemplate: DocumentTemplate = {
         }
     ],
     defaultClauses: [
+        "Confidentiality & Privilege Notice",
         "Definitions and Interpretation",
         "Board of Directors and Governance",
         "Reserved Matters and Veto Rights",

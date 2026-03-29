@@ -15,6 +15,8 @@ import {
 import Plan from "@/components/ui/agent-plan";
 import BlueprintChat from "./BlueprintChat";
 import { useAgentTasks, updateTasksFromChat, type StreamingAgentState } from "@/lib/useAgentTasks";
+import { getClauseSuggestions, type ClauseSuggestion } from "@/lib/ai/clause-suggestions";
+import { AISuggestionsPanel } from "./AISuggestionsPanel";
 
 // ─── Sub-step definitions ────────────────────────────────────────────────────
 
@@ -167,6 +169,7 @@ function ClauseSelectionStep({
     setSuggestedInput,
     setActiveTab,
     onNavigateToRefine,
+    onAddSuggestion,
 }: {
     blueprint: Blueprint;
     onToggleClause: (id: string) => void;
@@ -174,6 +177,7 @@ function ClauseSelectionStep({
     setSuggestedInput: (v: { text: string; ts: number } | null) => void;
     setActiveTab: (tab: "chat" | "plan") => void;
     onNavigateToRefine: (message: string) => void;
+    onAddSuggestion: (suggestion: ClauseSuggestion) => void;
 }) {
     const [expandedClause, setExpandedClause] = useState<string | null>(null);
     const [filter, setFilter] = useState<"all" | "included" | "excluded">("all");
@@ -185,179 +189,190 @@ function ClauseSelectionStep({
         return clauses;
     }, [blueprint.clauses, filter]);
 
+    const suggestions = useMemo(() => {
+        return getClauseSuggestions(blueprint.documentType, blueprint.clauses || []);
+    }, [blueprint.documentType, blueprint.clauses]);
+
     const stats = getRiskStats(blueprint.clauses || []);
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -12 }}
-            className="space-y-4"
-        >
-            {/* Filter Bar */}
-            <div className="flex items-center gap-2">
-                {(["all", "included", "excluded"] as const).map((f) => (
-                    <button
-                        key={f}
-                        onClick={() => setFilter(f)}
-                        className={`px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider rounded-md border transition-all ${
-                            filter === f
-                                ? "bg-primary/15 text-primary border-primary/30"
-                                : "bg-muted/50 text-muted-foreground border-border hover:border-foreground/30"
-                        }`}
-                    >
-                        {f === "all" ? `ALL (${stats.total})` : f === "included" ? `INCLUDED (${stats.included})` : `EXCLUDED (${stats.excluded})`}
-                    </button>
-                ))}
-            </div>
-
-            {/* Improve All Risk Button */}
-            <button
-                onClick={() => {
-                    const included = (blueprint.clauses || []).filter((c) => c.included);
-                    const highCount = included.filter((c) => c.risk === "high").length;
-                    const medCount = included.filter((c) => c.risk === "medium").length;
-                    onNavigateToRefine(
-                        `Analyze ALL ${included.length} included clauses and improve their risk factors. There are currently ${highCount} high-risk and ${medCount} medium-risk clauses. For each clause: (1) identify specific weaknesses, (2) suggest concrete improvements to reduce risk, (3) rewrite descriptions with better protective language. Return the complete updated clause list with improved risk levels where possible.`
-                    );
-                }}
-                className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-foreground/15 bg-card hover:bg-accent/50 transition-all duration-300"
+        <div className="flex flex-col lg:flex-row gap-8 items-start">
+            <motion.div
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -12 }}
+                className="flex-1 space-y-4 w-full"
             >
-                <div className="h-8 w-8 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center shrink-0 group-hover:bg-foreground/[0.08] transition-all">
-                    <Wand2 className="h-4 w-4 text-foreground/60 group-hover:text-foreground transition-colors" />
-                </div>
-                <div className="flex-1 text-left">
-                    <p className="text-[11px] font-semibold text-foreground tracking-tight">Improve All Risk Factors</p>
-                    <p className="text-[10px] text-muted-foreground/60 mt-0.5">
-                        AI analyzes every clause and suggests improvements
-                    </p>
-                </div>
-                <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all" />
-            </button>
-
-            {/* Instruction hint */}
-            <div className="flex items-center gap-2 px-3 py-2 bg-muted/40 border border-border/40 rounded-lg">
-                <Info className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
-                <p className="text-[11px] text-muted-foreground/60">
-                    Toggle clauses on/off, or use the icons to discuss or improve individual clauses with the AI.
-                </p>
-            </div>
-
-            {/* Clause cards */}
-            <div className="space-y-3 max-h-[calc(100vh-420px)] overflow-y-auto pr-1 scrollbar-hide pb-4">
-                {filteredClauses.map((clause, index) => {
-                    const isExpanded = expandedClause === clause.id;
-                    const realIndex = (blueprint.clauses || []).findIndex((c) => c.id === clause.id);
-
-                    return (
-                        <Card
-                            key={clause.id}
-                            className={`transition-all duration-300 relative overflow-hidden group ${
-                                clause.included
-                                    ? "border-border hover:border-foreground/12 bg-card hover:shadow-[0_4px_20px_rgb(0,0,0,0.03)]"
-                                    : "border-border/60 opacity-40 bg-muted/20 hover:opacity-60"
+                {/* Filter Bar */}
+                <div className="flex items-center gap-2">
+                    {(["all", "included", "excluded"] as const).map((f) => (
+                        <button
+                            key={f}
+                            onClick={() => setFilter(f)}
+                            className={`px-3 py-1.5 text-[10px] font-mono uppercase tracking-wider rounded-md border transition-all ${
+                                filter === f
+                                    ? "bg-primary/15 text-primary border-primary/30"
+                                    : "bg-muted/50 text-muted-foreground border-border hover:border-foreground/30"
                             }`}
                         >
-                            {clause.included && (
-                                <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-foreground/10" />
-                            )}
+                            {f === "all" ? `ALL (${stats.total})` : f === "included" ? `INCLUDED (${stats.included})` : `EXCLUDED (${stats.excluded})`}
+                        </button>
+                    ))}
+                </div>
 
-                            <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10 w-full">
-                                <div className="space-y-1 w-full pr-12">
-                                    <CardTitle className="text-[14px] flex items-center gap-2 flex-wrap tracking-tight">
-                                        <span className="text-muted-foreground/30 text-xs font-mono">
-                                            {String(realIndex + 1).padStart(2, "0")}
-                                        </span>
-                                        <span className="font-semibold mr-2">{clause.title}</span>
-                                        {clause.risk === "high" && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-red-200 bg-red-50 text-red-600 font-mono uppercase tracking-wider">
-                                                <Shield className="h-2.5 w-2.5" /> HIGH_RISK
-                                            </span>
-                                        )}
-                                        {clause.risk === "medium" && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-amber-200 bg-amber-50 text-amber-600 font-mono uppercase tracking-wider">
-                                                <AlertTriangle className="h-2.5 w-2.5" /> MEDIUM
-                                            </span>
-                                        )}
-                                        {clause.risk === "low" && (
-                                            <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-green-200 bg-green-50 text-green-600 font-mono uppercase tracking-wider">
-                                                OK
-                                            </span>
-                                        )}
-                                    </CardTitle>
-                                </div>
-                                <div className="flex items-center gap-1">
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                                        onClick={() => {
-                                            setActiveTab("chat");
-                                            setSuggestedInput({
-                                                text: `Why is the "${clause.title}" clause important here?`,
-                                                ts: Date.now(),
-                                            });
-                                        }}
-                                        title="Discuss with AI"
-                                    >
-                                        <MessageSquareText className="h-4 w-4" />
-                                    </Button>
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
-                                        onClick={() => {
-                                            setActiveTab("chat");
-                                            setSuggestedInput({
-                                                text: `Suggest a more favorable version of the "${clause.title}" clause.`,
-                                                ts: Date.now(),
-                                            });
-                                        }}
-                                        title="Improve Clause"
-                                    >
-                                        <Wand2 className="h-4 w-4" />
-                                    </Button>
-                                    <div className="w-px h-4 bg-border/50 mx-1" />
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={() => onToggleClause(clause.id)}
-                                        className={`h-8 w-8 p-0 rounded-none border ${
-                                            clause.included
-                                                ? "bg-primary/20 text-primary border-primary/30 hover:bg-primary/30"
-                                                : "bg-muted text-muted-foreground border-transparent hover:bg-muted/80"
-                                        }`}
-                                    >
-                                        {clause.included ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
-                                    </Button>
-                                </div>
-                            </CardHeader>
-                            <CardContent className="relative z-10 pt-2">
-                                <p className="text-sm text-muted-foreground leading-relaxed font-mono opacity-80 pl-4 border-l-2 border-primary/10">
-                                    {clause.description}
-                                </p>
-                                {clause.content && (
-                                    <div className="mt-3">
-                                        <button
-                                            onClick={() => setExpandedClause(isExpanded ? null : clause.id)}
-                                            className="flex items-center gap-1 text-[10px] font-mono text-primary/60 hover:text-primary transition-colors"
-                                        >
-                                            {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
-                                            {isExpanded ? "HIDE DRAFT" : "VIEW DRAFT"}
-                                        </button>
-                                        {isExpanded && (
-                                            <div className="mt-2 p-3 bg-secondary rounded border border-border text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
-                                                {clause.content}
-                                            </div>
-                                        )}
-                                    </div>
+                {/* Improve All Risk Button */}
+                <button
+                    onClick={() => {
+                        const included = (blueprint.clauses || []).filter((c) => c.included);
+                        const highCount = included.filter((c) => c.risk === "high").length;
+                        const medCount = included.filter((c) => c.risk === "medium").length;
+                        onNavigateToRefine(
+                            `Analyze ALL ${included.length} included clauses and improve their risk factors. There are currently ${highCount} high-risk and ${medCount} medium-risk clauses. For each clause: (1) identify specific weaknesses, (2) suggest concrete improvements to reduce risk, (3) rewrite descriptions with better protective language. Return the complete updated clause list with improved risk levels where possible.`
+                        );
+                    }}
+                    className="group w-full flex items-center gap-3 px-4 py-3 rounded-xl border border-border hover:border-foreground/15 bg-card hover:bg-accent/50 transition-all duration-300"
+                >
+                    <div className="h-8 w-8 rounded-lg bg-foreground/[0.04] border border-border flex items-center justify-center shrink-0 group-hover:bg-foreground/[0.08] transition-all">
+                        <Wand2 className="h-4 w-4 text-foreground/60 group-hover:text-foreground transition-colors" />
+                    </div>
+                    <div className="flex-1 text-left">
+                        <p className="text-[11px] font-semibold text-foreground tracking-tight">Improve All Risk Factors</p>
+                        <p className="text-[10px] text-muted-foreground/60 mt-0.5">
+                            AI analyzes every clause and suggests improvements
+                        </p>
+                    </div>
+                    <ArrowRight className="h-3.5 w-3.5 text-muted-foreground/30 group-hover:text-muted-foreground group-hover:translate-x-0.5 transition-all" />
+                </button>
+
+                {/* Instruction hint */}
+                <div className="flex items-center gap-2 px-3 py-2 bg-muted/40 border border-border/40 rounded-lg">
+                    <Info className="h-3.5 w-3.5 text-muted-foreground/40 shrink-0" />
+                    <p className="text-[11px] text-muted-foreground/60">
+                        Toggle clauses on/off, or use the icons to discuss or improve individual clauses with the AI.
+                    </p>
+                </div>
+
+                {/* Clause cards */}
+                <div className="space-y-3 max-h-[calc(100vh-420px)] overflow-y-auto pr-1 scrollbar-hide pb-4">
+                    {filteredClauses.map((clause, index) => {
+                        const isExpanded = expandedClause === clause.id;
+                        const realIndex = (blueprint.clauses || []).findIndex((c) => c.id === clause.id);
+
+                        return (
+                            <Card
+                                key={clause.id}
+                                className={`transition-all duration-300 relative overflow-hidden group ${
+                                    clause.included
+                                        ? "border-border hover:border-foreground/12 bg-card hover:shadow-[0_4px_20px_rgb(0,0,0,0.03)]"
+                                        : "border-border/60 opacity-40 bg-muted/20 hover:opacity-60"
+                                }`}
+                            >
+                                {clause.included && (
+                                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-foreground/10" />
                                 )}
-                            </CardContent>
-                        </Card>
-                    );
-                })}
-            </div>
-        </motion.div>
+
+                                <CardHeader className="flex flex-row items-start justify-between space-y-0 pb-2 relative z-10 w-full">
+                                    <div className="space-y-1 w-full pr-12">
+                                        <CardTitle className="text-[14px] flex items-center gap-2 flex-wrap tracking-tight">
+                                            <span className="text-muted-foreground/30 text-xs font-mono">
+                                                {String(realIndex + 1).padStart(2, "0")}
+                                            </span>
+                                            <span className="font-semibold mr-2">{clause.title}</span>
+                                            {clause.risk === "high" && (
+                                                <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-red-200 bg-red-50 text-red-600 font-mono uppercase tracking-wider">
+                                                    <Shield className="h-2.5 w-2.5" /> HIGH_RISK
+                                                </span>
+                                            )}
+                                            {clause.risk === "medium" && (
+                                                <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-amber-200 bg-amber-50 text-amber-600 font-mono uppercase tracking-wider">
+                                                    <AlertTriangle className="h-2.5 w-2.5" /> MEDIUM
+                                                </span>
+                                            )}
+                                            {clause.risk === "low" && (
+                                                <span className="flex items-center gap-1 text-[10px] px-2 py-0.5 rounded-none border border-green-200 bg-green-50 text-green-600 font-mono uppercase tracking-wider">
+                                                    OK
+                                                </span>
+                                            )}
+                                        </CardTitle>
+                                    </div>
+                                    <div className="flex items-center gap-1">
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                                            onClick={() => {
+                                                setActiveTab("chat");
+                                                setSuggestedInput({
+                                                    text: `Why is the "${clause.title}" clause important here?`,
+                                                    ts: Date.now(),
+                                                });
+                                            }}
+                                            title="Discuss with AI"
+                                        >
+                                            <MessageSquareText className="h-4 w-4" />
+                                        </Button>
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 w-8 p-0 text-muted-foreground hover:text-primary hover:bg-primary/10"
+                                            onClick={() => {
+                                                setActiveTab("chat");
+                                                setSuggestedInput({
+                                                    text: `Suggest a more favorable version of the "${clause.title}" clause.`,
+                                                    ts: Date.now(),
+                                                });
+                                            }}
+                                            title="Improve Clause"
+                                        >
+                                            <Wand2 className="h-4 w-4" />
+                                        </Button>
+                                        <div className="w-px h-4 bg-border/50 mx-1" />
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            onClick={() => onToggleClause(clause.id)}
+                                            className={`h-8 w-8 p-0 rounded-none border ${
+                                                clause.included
+                                                    ? "bg-primary/20 text-primary border-primary/30 hover:bg-primary/30"
+                                                    : "bg-muted text-muted-foreground border-transparent hover:bg-muted/80"
+                                            }`}
+                                        >
+                                            {clause.included ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+                                        </Button>
+                                    </div>
+                                </CardHeader>
+                                <CardContent className="relative z-10 pt-2">
+                                    <p className="text-sm text-muted-foreground leading-relaxed font-mono opacity-80 pl-4 border-l-2 border-primary/10">
+                                        {clause.description}
+                                    </p>
+                                    {clause.content && (
+                                        <div className="mt-3">
+                                            <button
+                                                onClick={() => setExpandedClause(isExpanded ? null : clause.id)}
+                                                className="flex items-center gap-1 text-[10px] font-mono text-primary/60 hover:text-primary transition-colors"
+                                            >
+                                                {isExpanded ? <ChevronUp className="h-3 w-3" /> : <ChevronDown className="h-3 w-3" />}
+                                                {isExpanded ? "HIDE DRAFT" : "VIEW DRAFT"}
+                                            </button>
+                                            {isExpanded && (
+                                                <div className="mt-2 p-3 bg-secondary rounded border border-border text-xs text-muted-foreground font-mono leading-relaxed whitespace-pre-wrap max-h-48 overflow-y-auto">
+                                                    {clause.content}
+                                                </div>
+                                            )}
+                                        </div>
+                                    )}
+                                </CardContent>
+                            </Card>
+                        );
+                    })}
+                </div>
+            </motion.div>
+
+            <AISuggestionsPanel 
+                suggestions={suggestions}
+                onAdd={onAddSuggestion}
+            />
+        </div>
     );
 }
 
@@ -840,11 +855,24 @@ export default function BlueprintReview({
     onBack,
 }: BlueprintReviewProps) {
     const [currentStep, setCurrentStep] = useState<ReviewSubStep>("overview");
-    const [completedSteps, setCompletedSteps] = useState<Set<ReviewSubStep>>(new Set());
+    const [completedSteps, setCompletedSteps] = useState<Set<ReviewSubStep>>(new Set(["overview"]));
     const [suggestedInput, setSuggestedInput] = useState<{ text: string; ts: number } | null>(null);
     const [activeTab, setActiveTab] = useState<"chat" | "plan">("chat");
     const [chatIsLoading, setChatIsLoading] = useState(false);
     const [messageCount, setMessageCount] = useState(0);
+
+    const handleAddSuggestion = (suggestion: ClauseSuggestion) => {
+        const newClause: BlueprintClause = {
+            id: suggestion.id,
+            title: suggestion.title,
+            description: suggestion.description,
+            risk: suggestion.risk,
+            content: suggestion.content,
+            included: true,
+        };
+        const updatedClauses = [...(blueprint.clauses || []), newClause];
+        setBlueprint({ ...blueprint, clauses: updatedClauses });
+    };
 
     // Dynamic agent tasks from blueprint state
     const { baseTasks, streamingState, updateStreamingState } = useAgentTasks(blueprint);
@@ -944,6 +972,7 @@ export default function BlueprintReview({
                                 setSuggestedInput({ text: message, ts: Date.now() });
                                 goToStep("refine");
                             }}
+                            onAddSuggestion={handleAddSuggestion}
                         />
                     )}
                     {currentStep === "risk" && (

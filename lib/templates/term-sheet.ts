@@ -40,6 +40,7 @@ export const termSheetTemplate: DocumentTemplate = {
         }
     ],
     defaultClauses: [
+        "Confidentiality & Privilege Notice",
         "Binding vs Non-Binding Nature",
         "Valuation and Capitalization",
         "Board of Directors",

@@ -64,6 +64,18 @@ export const NDA_CLAUSE_LIBRARY: ClauseDefinition[] = [
     // ═══ 1–4: CORE STRUCTURAL CLAUSES ═══════════════════════════════════════
 
     {
+        id: "confidential_header",
+        title: "Confidentiality & Privilege Notice",
+        category: "CORE_STRUCTURAL",
+        condition: "conditional",
+        includeWhen: "Always for NDAs, SHA, and Term Sheets",
+        defaultRisk: "low",
+        legalRefs: ["Indian Evidence Act, 1872 — S.126"],
+        text: `**PRIVILEGED AND CONFIDENTIAL**
+This document and its contents are legally privileged and strictly confidential, governed by the provisions of Section 126 of the Indian Evidence Act, 1872. Unauthorized review, use, disclosure, or distribution is prohibited.`,
+    },
+
+    {
         id: "title_effective_date",
         title: "Title and Effective Date",
         category: "CORE_STRUCTURAL",
